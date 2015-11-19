@@ -1,0 +1,65 @@
+  <div class="sb-slidebar sb-left sb-style-overlay">
+      <a href="http://www.wp.pl">Link 1</a>
+      <a href="http://www.wp.pl">Link 1</a>
+      <a href="http://www.wp.pl">Link 1</a>
+      <a href="http://www.wp.pl">Link 1</a>
+      <a href="http://www.wp.pl">Link 1</a>
+      <a href="http://www.wp.pl">Link 1</a>
+      <a href="http://www.wp.pl">Link 1</a>
+      <a href="http://www.wp.pl">Link 1</a>
+  </div>
+  <div class="sb-slidebar sb-right sb-style-overlay sb-toggle-right">
+     <span id="social-shares">
+     <a class="social fb" href="#"></a>
+     <a class="social flash" href="#"></a>
+     <a class="social tweet" href="#"></a>
+     <a class="social email" href="#"></a>
+         <span class="clearfix"></span>
+     </span>
+  </div>
+  <div id="feedback" data-toggle="modal" data-target=".feed"></div>
+  <!-- Modal -->
+  <div id="feedback-modal" class="modal fade feed" role="dialog">
+      <div class="modal-dialog">
+          <!-- Modal content-->
+          <div class="modal-content">
+              <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal"><img src="/img/close-modal.svg" alt="close"/></button>
+                  <h4 class="modal-title">Feedback</h4>
+                  <form method="post" accept-charset="utf-8" action="/"><div style="display:none;"><input type="hidden" name="_method" value="POST"></div><input type="text" name="name2" placeholder="ROBERT" id="name2"><input type="text" name="mail2" placeholder="INFO@ROBERTLADKANI.COM" id="mail2"><input type="text" name="info2" placeholder="ANREGUNGEN ZUR WEBSITE" id="info2"><textarea name="desc2" placeholder="DEIN FEEDBACK" id="desc2" rows="5"></textarea><input type="submit" value="abschicken"></form>            </div>
+          </div>
+      </div>
+  </div><div id="reg-modal" class="modal  register" role="dialog" aria-labelledby="reg-titile">
+      <div class="modal-dialog" role="document">
+          <!-- Modal content-->
+          <div class="modal-content">
+              <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" ><img src="/img/close-modal.svg" alt="close"/></button>
+                  <h4 class="modal-title reg" id="reg-titile">Anmelden</h4>
+                  <p class="reg-promo">Jetzt anmelden <span class="text-bold">5 &euro; Rabatt</span> für die 1. Buchung sichern! </p>
+                  <a class="fb-button" href="#"><img src="/img/facebook-reg.svg" alt=""/></a>
+                  <span class="oder">- oder -</span>
+
+                  <form method="post" accept-charset="utf-8" action="/"><div style="display:none;"><input type="hidden" name="_method" value="POST"></div><input type="text" name="name3" placeholder="VORNAME" id="name3"><input type="text" name="mail3" placeholder="NACHNAME" id="mail3"><input type="text" name="info3" placeholder="EMAIL" id="info3"><input type="password" name="desc3" placeholder="PASSWORT" class="lock-icon" id="desc3"><input type="submit" value="mit E-mail anmelden"><label class="agb"><input type="checkbox"> <span>Ich akzeptiere die <a href="#">AGBs</a> von hey! sharing community</span></label></form>                <a data-dismiss="modal" data-toggle="modal" data-target="#login" class="has-account text-center" href="#">Du hast bereits ein Konto? Melde dich an</a>
+              </div>
+          </div>
+      </div>
+  </div><div id="login" class="modal  register" role="dialog" aria-labelledby="login-title">
+      <div class="modal-dialog" role="document">
+          <!-- Modal content-->
+          <div class="modal-content">
+              <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal"><img src="/img/close-modal.svg" alt="close"/></button>
+                  <h4 class="modal-title reg" id="login-title">Login</h4>
+                  <a class="fb-button" href="#"><img src="/img/fb-log.svg" alt=""/></a>
+                  <span class="oder">- oder -</span>
+
+                  <form method="post" accept-charset="utf-8" action="/"><div style="display:none;"><input type="hidden" name="_method" value="POST"></div><input type="text" name="mail" placeholder="EMAIL" id="mail"><input type="password" name="desc" placeholder="PASSWORT" class="lock-icon" id="desc"><input type="submit" value="Login"></form>                <div class="text-center">
+                    <a data-dismiss="modal" data-toggle="modal" data-target="#reg-modal" class="reg-forgot text-center" href="#">Registrieren</a><a class="reg-forgot text-center" href="#">Passwort vergessen?</a>
+                </div>
+              </div>
+          </div>
+      </div>
+  </div>
+  <script src="/js/owl.carousel.min.js"></script><script src="/js/vendors/bootstrap.min.js"></script><script src="/js/vendors/bootstrap-select.min.js"></script><script src="/js/vendors/moment.min.js"></script><script src="/js/vendors/bootstrap-datetimepicker.min.js"></script><script src="/js/vendors/slidebars.min.js"></script><script src="/js/vendors/ion.rangeSlider.min.js"></script><script src="/js/build.js"></script></body>
+</html>

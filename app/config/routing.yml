@@ -1,0 +1,12 @@
+app:
+    resource: "@AppBundle/Controller/"
+    type:     annotation
+
+# catchall route must be the last route in config
+catchall:
+    path: /{content}
+    defaults: 
+        _controller: AppBundle:Default:catchall
+    requirements:
+        content: .+
+    
