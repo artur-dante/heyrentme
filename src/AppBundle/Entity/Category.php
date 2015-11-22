@@ -1,6 +1,7 @@
 <?php
 
 namespace AppBundle\Entity;
+
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -14,36 +15,46 @@ class Category
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    protected $ID;
+    protected $id;
     
     /**
      * @ORM\Column(type="string", length=256)
      */
     protected $name;
-
     /**
      * @ORM\Column(type="string", length=64)
      */
     protected $slug;
-
     /**
      * @ORM\Column(type="integer")
      */
     protected $position;
 
+    /**
+     * @ORM\OneToMany(targetEntity="Subcategory", mappedBy="category")
+     */
+    protected $subcategories;
+        
+    /**
+     * @ORM\OneToOne(targetEntity="Image")
+     * @ORM\JoinColumn(name="imageID", referencedColumnName="id")
+     */
+    protected $image;
     
     public function getImageUrl() {
-        return "/db-img/Category/{$this->ID}.jpg";
-        // TODO: unhardcode the path
+        return "/db-img/{$this->image->getPath()}/{$this->image->getUuid()}.{$this->image->getExtension()}";
     }
+    
+    
+    
     /**
-     * Get iD
+     * Get id
      *
      * @return integer
      */
-    public function getID()
+    public function getId()
     {
-        return $this->ID;
+        return $this->id;
     }
 
     /**
@@ -71,9 +82,9 @@ class Category
     }
 
     /**
-     * Set urlPart
+     * Set slug
      *
-     * @param string $urlPart
+     * @param string $slug
      *
      * @return Category
      */
@@ -85,7 +96,7 @@ class Category
     }
 
     /**
-     * Get urlPart
+     * Get slug
      *
      * @return string
      */
@@ -116,5 +127,70 @@ class Category
     public function getPosition()
     {
         return $this->position;
+    }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->subcategories = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add subcategory
+     *
+     * @param \AppBundle\Entity\Subcategory $subcategory
+     *
+     * @return Category
+     */
+    public function addSubcategory(\AppBundle\Entity\Subcategory $subcategory)
+    {
+        $this->subcategories[] = $subcategory;
+
+        return $this;
+    }
+
+    /**
+     * Remove subcategory
+     *
+     * @param \AppBundle\Entity\Subcategory $subcategory
+     */
+    public function removeSubcategory(\AppBundle\Entity\Subcategory $subcategory)
+    {
+        $this->subcategories->removeElement($subcategory);
+    }
+
+    /**
+     * Get subcategories
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getSubcategories()
+    {
+        return $this->subcategories;
+    }
+
+    /**
+     * Set image
+     *
+     * @param \AppBundle\Entity\Image $image
+     *
+     * @return Category
+     */
+    public function setImage(\AppBundle\Entity\Image $image = null)
+    {
+        $this->image = $image;
+
+        return $this;
+    }
+
+    /**
+     * Get image
+     *
+     * @return \AppBundle\Entity\Image
+     */
+    public function getImage()
+    {
+        return $this->image;
     }
 }

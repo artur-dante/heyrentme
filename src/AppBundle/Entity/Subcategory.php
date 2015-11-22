@@ -1,6 +1,7 @@
 <?php
 
 namespace AppBundle\Entity;
+
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -14,41 +15,54 @@ class Subcategory
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    protected $ID;
-    
-    /**
-     * @ORM\Column(name="CategoryID", type="integer")
-     */
-    protected $categoryID;    
+    protected $id;
     
     /**
      * @ORM\Column(type="string", length=256)
      */
     protected $name;
-
     /**
      * @ORM\Column(type="string", length=64)
      */
     protected $slug;
-
     /**
      * @ORM\Column(type="integer")
      */
     protected $position;
 
     /**
-     * Get iD
+     * @ORM\ManyToOne(targetEntity="Category", inversedBy="subcategories")
+     * @ORM\JoinColumn(name="categoryID", referencedColumnName="id")
+     */
+    protected $category;    
+
+    /**
+     * @ORM\OneToMany(targetEntity="Equipment", mappedBy="subcategory")
+     */
+    protected $equipments;
+   
+    /**
+     * @ORM\OneToOne(targetEntity="Image")
+     * @ORM\JoinColumn(name="imageID", referencedColumnName="id")
+     */
+    protected $image;
+    
+    public function getImageUrl() {
+        $url = '';
+        if ($this->image != null) {
+            $url = $this->image->getUrlPath();
+        }
+        return $url;
+    }
+
+    /**
+     * Get id
      *
      * @return integer
      */
-    public function getImageUrl() {
-        return "/db-img/Subcategory/{$this->ID}.jpg";
-        // TODO: unhardcode the path
-    }
-
-    public function getID()
+    public function getId()
     {
-        return $this->ID;
+        return $this->id;
     }
 
     /**
@@ -76,9 +90,9 @@ class Subcategory
     }
 
     /**
-     * Set urlPart
+     * Set slug
      *
-     * @param string $urlPart
+     * @param string $slug
      *
      * @return Category
      */
@@ -90,7 +104,7 @@ class Subcategory
     }
 
     /**
-     * Get urlPart
+     * Get slug
      *
      * @return string
      */
@@ -124,26 +138,91 @@ class Subcategory
     }
 
     /**
-     * Set categoryID
+     * Set category
      *
-     * @param integer $categoryID
+     * @param \AppBundle\Entity\Category $category
      *
      * @return Subcategory
      */
-    public function setCategoryID($categoryID)
+    public function setCategory(\AppBundle\Entity\Category $category = null)
     {
-        $this->categoryID = $categoryID;
+        $this->category = $category;
 
         return $this;
     }
 
     /**
-     * Get categoryID
+     * Get category
      *
-     * @return integer
+     * @return \AppBundle\Entity\Category
      */
-    public function getCategoryID()
+    public function getCategory()
     {
-        return $this->categoryID;
+        return $this->category;
+    }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->equipments = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add equipment
+     *
+     * @param \AppBundle\Entity\Equipment $equipment
+     *
+     * @return Subcategory
+     */
+    public function addEquipment(\AppBundle\Entity\Equipment $equipment)
+    {
+        $this->equipments[] = $equipment;
+
+        return $this;
+    }
+
+    /**
+     * Remove equipment
+     *
+     * @param \AppBundle\Entity\Equipment $equipment
+     */
+    public function removeEquipment(\AppBundle\Entity\Equipment $equipment)
+    {
+        $this->equipments->removeElement($equipment);
+    }
+
+    /**
+     * Get equipments
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getEquipments()
+    {
+        return $this->equipments;
+    }
+
+    /**
+     * Set image
+     *
+     * @param \AppBundle\Entity\Image $image
+     *
+     * @return Subcategory
+     */
+    public function setImage(\AppBundle\Entity\Image $image = null)
+    {
+        $this->image = $image;
+
+        return $this;
+    }
+
+    /**
+     * Get image
+     *
+     * @return \AppBundle\Entity\Image
+     */
+    public function getImage()
+    {
+        return $this->image;
     }
 }

@@ -10,10 +10,10 @@ namespace AppBundle\Entity;
  */
 class SubcategoryRepository extends \Doctrine\ORM\EntityRepository
 {
-    private $subcategories = null; // subcategories dictionary for fast check
+    private $subcategories = null; // categories dictionary for fast check
     
     public function getSubcategoryBySlug($slug) {
-        // initialise $categories
+        // initialise $subcategories
         if ($this->subcategories == null) {
             $result = $this
                 ->getEntityManager()
@@ -21,11 +21,10 @@ class SubcategoryRepository extends \Doctrine\ORM\EntityRepository
                 ->getResult();            
             
             $this->subcategories = array();
-            foreach ($result as $c) {
-                $this->subcategories[$c->getSlug()] = $c;
+            foreach ($result as $s) {
+                $this->subcategories[$s->getSlug()] = $s;
             }
         }
-        
         // actual get/check
         if (array_key_exists($slug, $this->subcategories)) {
             return $this->subcategories[$slug];
@@ -34,15 +33,9 @@ class SubcategoryRepository extends \Doctrine\ORM\EntityRepository
         }
     }
     
-    
-    public function getAllOrderedByPosition($category = null) {
-        if ($category == null)
-            $sql = 'select s from AppBundle:Subcategory s order by s.categoryID asc, s.position asc';
-        else
-            $sql = "select s from AppBundle:Subcategory s where s.categoryID = {$category->getID()} order by s.position asc";
-        return $this
-                ->getEntityManager()
-                ->createQuery($sql)
-                ->getResult();
+
+    public function getAllOrderedByPosition() {
+        $q = "select s from AppBundle:Subcategory s join s.category c order by c.position asc, s.position asc";
+        return $this->getEntityManager()->createQuery($q)->getResult();
     }
 }

@@ -3,10 +3,8 @@
 namespace AppBundle\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use AppBundle\Entity\CategoryRepository;
 
 class DefaultController extends BaseController {
     /**
@@ -20,8 +18,12 @@ class DefaultController extends BaseController {
      * @Route("/rentme", name="rentme")
      */
     public function rentmeAction(Request $request, $category = null) {        
+        $subcats = $this->getSubcategories($request, $category);
         
-        $subcats = $this->getDoctrine()->getRepository('AppBundle:Subcategory')->getAllOrderedByPosition();
+        $log = $this->get('monolog.logger.dev');
+        foreach($subcats as $sc) {
+            $log->info($sc->getImageUrl());
+        }
         
         return $this->render('default/equipment_mieten.html.twig', array(
             'subcats' => $subcats
@@ -37,11 +39,10 @@ class DefaultController extends BaseController {
          */
         
         // Category
-        $rep = $this->getDoctrine()->getRepository("AppBundle:Category");
-        $cat = $rep->getCategoryBySlug($content);
+        $cat = $this->getCategoryBySlug($request, $content);
         
         if ($cat != null) {
-            $subcats = $this->getDoctrine()->getRepository('AppBundle:Subcategory')->getAllOrderedByPosition($cat);
+            $subcats = $this->getSubcategories($request, $cat);
             
             return $this->render('default/equipment_mieten.html.twig', array(
                 'subcats' => $subcats
@@ -49,11 +50,10 @@ class DefaultController extends BaseController {
         }
         
         // Subcategory
-        $rep = $this->getDoctrine()->getRepository("AppBundle:Subcategory");
-        $subcat = $rep->getSubcategoryBySlug($content);
+        $subcat = $this->getSubcategoryBySlug($request, $content);
         
         if ($subcat != null) {
-            $equipments = $this->getDoctrine()->getRepository('AppBundle:Equipment')->getAll($subcat);
+            $equipments = $this->getDoctrine()->getRepository('AppBundle:Equipment')->findAll($subcat);
             
             return $this->render('default/categorie.html.twig', array(
                 'equipments' => $equipments
@@ -65,4 +65,24 @@ class DefaultController extends BaseController {
         throw $this->createNotFoundException();
     }
 
+    /**
+     * @Route("/test", name="test")
+     */
+    public function testAction(Request $request) {
+        $cat = $this->getDoctrine()->getRepository('AppBundle:Category')->find(1);
+        $subs = $cat->getSubcategories();
+        $s = '';
+        foreach($subs as $sub) {
+            $s = $s . "Sub: {$sub->getName()} (id: {$sub->getId()}) ";
+            $c = $sub->getCategory();
+            $img = $c->getImage();
+            $s = $s . "Cat: {$c->getName()} (id: {$c->getId()}), img: {$img->getUuid()} <br/>";
+            $eqs = $sub->getEquipments();
+            foreach($eqs as $eq) {
+                $s = $s . "----> Equipment: {$eq->getName()} (id: {$eq->getId()}) <br/>";
+            }
+        }
+        
+        return new Response($s);
+    }    
 }

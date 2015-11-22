@@ -1,6 +1,7 @@
 <?php
 
 namespace AppBundle\Entity;
+
 use Doctrine\ORM\Mapping as ORM;
 use Cocur\Slugify\Slugify;
 
@@ -10,86 +11,67 @@ use Cocur\Slugify\Slugify;
  */
 class Equipment
 {
-    public function getUrlPath() {
-       $sg = new Slugify(); // TODO: make slugify a helper (static)
-       $s = $sg->slugify($this->getName());
-       return "{$this->ID}/{$s}";//   ;
-    }
-    
     /**
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    protected $ID;
-    
-    /**
-     * @ORM\Column(name="SubcategoryID", type="integer")
-     */
-    protected $subcategoryID;
-
+    protected $id;
     /**
      * @ORM\Column(type="string", length=256)
      */
     protected $name;
-
     /**
      * @ORM\Column(type="string", length=256)
      */
     protected $description;
-
     /**
-     * @ORM\Column(type="decimal", precision=10, scale=2)
+     * @ORM\Column(type="decimal", scale=10, precision=2)
      */
     protected $price;
-
     /**
-     * @ORM\Column(type="decimal", precision=10, scale=0)
+     * @ORM\Column(type="decimal", scale=10, precision=0)
      */
     protected $discount;
-
     /**
-     * @ORM\Column(name="TestBuy", type="boolean")
+     * @ORM\Column(name="TestBuy", type="integer")
      */
     protected $testBuy;
+            
+    /**
+     * @ORM\ManyToOne(targetEntity="Subcategory", inversedBy="equipments")
+     * @ORM\JoinColumn(name="subcategoryID", referencedColumnName="id")
+     */
+    protected $subcategory;    
 
+    /**
+     * @ORM\OneToOne(targetEntity="Image")
+     * @ORM\JoinColumn(name="imageID", referencedColumnName="id")
+     */
+    protected $image;
+    
     public function getImageUrl() {
-        return "/db-img/Equipment/{$this->ID}.jpg";
-        // TODO: unhardcode the path
+        $url = '';
+        if ($this->image != null) {
+            $url = $this->image->getUrlPath();
+        }
+        return $url;
     }
-
+    
+    public function getUrlPath() {
+       $sg = new Slugify(); // TODO: make slugify a helper (static)
+       $s = $sg->slugify($this->getName());
+       return "{$this->id}/{$s}";//   ;
+    }
+    
     /**
-     * Get iD
+     * Get id
      *
      * @return integer
      */
-    public function getID()
+    public function getId()
     {
-        return $this->ID;
-    }
-
-    /**
-     * Set subcategoryID
-     *
-     * @param integer $subcategoryID
-     *
-     * @return Equipment
-     */
-    public function setSubcategoryID($subcategoryID)
-    {
-        $this->SubcategoryID = $subcategoryID;
-
-        return $this;
-    }
-
-    /**
-     * Get subcategoryID
-     *
-     * @return integer
-     */
-    public function getSubcategoryID()
-    {
-        return $this->SubcategoryID;
+        return $this->id;
     }
 
     /**
@@ -191,7 +173,7 @@ class Equipment
     /**
      * Set testBuy
      *
-     * @param boolean $testBuy
+     * @param integer $testBuy
      *
      * @return Equipment
      */
@@ -205,10 +187,58 @@ class Equipment
     /**
      * Get testBuy
      *
-     * @return boolean
+     * @return integer
      */
     public function getTestBuy()
     {
         return $this->testBuy;
+    }
+
+    /**
+     * Set subcategory
+     *
+     * @param \AppBundle\Entity\Subcategory $subcategory
+     *
+     * @return Equipment
+     */
+    public function setSubcategory(\AppBundle\Entity\Subcategory $subcategory = null)
+    {
+        $this->subcategory = $subcategory;
+
+        return $this;
+    }
+
+    /**
+     * Get subcategory
+     *
+     * @return \AppBundle\Entity\Subcategory
+     */
+    public function getSubcategory()
+    {
+        return $this->subcategory;
+    }
+
+    /**
+     * Set image
+     *
+     * @param \AppBundle\Entity\Image $image
+     *
+     * @return Equipment
+     */
+    public function setImage(\AppBundle\Entity\Image $image = null)
+    {
+        $this->image = $image;
+
+        return $this;
+    }
+
+    /**
+     * Get image
+     *
+     * @return \AppBundle\Entity\Image
+     */
+    public function getImage()
+    {
+        return $this->image;
     }
 }
