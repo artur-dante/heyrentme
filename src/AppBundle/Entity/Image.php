@@ -39,8 +39,7 @@ class Image
     protected $originalPath;
     
     public function getUrlPath() {
-        return "/db-img/{$this->getPath()}/{$this->getUuid()}.{$this->getExtension()}";
-        // TODO: unhardcode image path prefix
+        return "{$this->getPath()}/{$this->getUuid()}.{$this->getExtension()}";
     }
     /**
      * Get id

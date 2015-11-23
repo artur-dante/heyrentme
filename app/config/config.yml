@@ -35,6 +35,8 @@ framework:
 twig:
     debug:            "%kernel.debug%"
     strict_variables: "%kernel.debug%"
+    globals:
+        image_url_prefix: "%image_url_prefix%"
 
 # Assetic Configuration
 assetic:

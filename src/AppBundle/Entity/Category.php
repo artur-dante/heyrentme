@@ -42,7 +42,7 @@ class Category
     protected $image;
     
     public function getImageUrl() {
-        return "/db-img/{$this->image->getPath()}/{$this->image->getUuid()}.{$this->image->getExtension()}";
+        return $this->image->getUrlPath();
     }
     
     
