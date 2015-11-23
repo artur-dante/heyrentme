@@ -19,14 +19,10 @@ class DefaultController extends BaseController {
      */
     public function rentmeAction(Request $request, $category = null) {        
         $subcats = $this->getSubcategories($request, $category);
-        
-        $log = $this->get('monolog.logger.dev');
-        foreach($subcats as $sc) {
-            $log->info($sc->getImageUrl());
-        }
-        
+                
         return $this->render('default/equipment_mieten.html.twig', array(
-            'subcats' => $subcats
+            'subcategories' => $subcats,
+            'category' => $category
         ));
     }
         
@@ -45,7 +41,8 @@ class DefaultController extends BaseController {
             $subcats = $this->getSubcategories($request, $cat);
             
             return $this->render('default/equipment_mieten.html.twig', array(
-                'subcats' => $subcats
+                'subcategories' => $subcats,
+                'category' => $cat
             ));
         }
         
@@ -56,10 +53,10 @@ class DefaultController extends BaseController {
             $equipments = $this->getDoctrine()->getRepository('AppBundle:Equipment')->findAll($subcat);
             
             return $this->render('default/categorie.html.twig', array(
+                'subcategory' => $subcat,
                 'equipments' => $equipments
             ));
         }
-        
         
         // Nothing was matched, URL is invalid
         throw $this->createNotFoundException();

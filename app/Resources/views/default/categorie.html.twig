@@ -35,10 +35,13 @@
     <div class="container  background-white background-light-grey">
         <nav class="crumbs">
             <ul class="col-xs-6">
-                <li><a href="/pages">hey! VIENNA</a></li>
-                <li><a href="/heyrentme">hey! VIENNA</a></li>
-                <li><a href="/kategorie" class="active-crumb">Sport &amp; Freizeit</a></li>
+                <li><a href="/">hey! VIENNA</a></li>
+                <li><a href="{{ path('rentme') }}" {% if not subcategory %}class="active-crumb"{% endif %}>hey! rentme</a></li>
+                {% if subcategory %}
+                    <li><a href=""{{ path('catchall', { 'content': subcategory.Slug }) }}#categories" class="active-crumb">{{ subcategory.Name }}</a></li>
+                {% endif %}
             </ul>
+            <ul class="col-xs-6 pull-right text-right kaup-select">
                 <li><a class="active-crumb" href="#">In dieser Kategorie anbieten</a></li>
             </ul>
             <ul class="col-xs-4 pull-right text-right">
