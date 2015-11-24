@@ -17,3 +17,7 @@ parameters:
 
     # A secret key that's used to generate certain security-related tokens
     secret:            ThisTokenIsNotSoSecretChangeIt
+
+# custom parameters
+    image_url_prefix: "/db-img/"
+    image_storage_dir: "C:\\projects\\reddragon\\dev\\web\\db-img\\"

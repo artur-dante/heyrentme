@@ -42,21 +42,18 @@ class Equipment
      * @ORM\ManyToOne(targetEntity="Subcategory", inversedBy="equipments")
      * @ORM\JoinColumn(name="subcategoryID", referencedColumnName="id")
      */
-    protected $subcategory;    
-
-    /**
-     * @ORM\OneToOne(targetEntity="Image")
-     * @ORM\JoinColumn(name="imageID", referencedColumnName="id")
-     */
-    protected $image;
+    protected $subcategory;
     
-    public function getImageUrl() {
-        $url = '';
-        if ($this->image != null) {
-            $url = $this->image->getUrlPath();
-        }
-        return $url;
-    }
+    
+    /**
+     * 
+     * @ORM\ManyToMany(targetEntity="Image")
+     * @ORM\JoinTable(name="equipment_image",
+     *      joinColumns={ @ORM\JoinColumn(name="equipmentID", referencedColumnName="id") },
+     *      inverseJoinColumns={ @ORM\JoinColumn(name="imageID", referencedColumnName="id") }
+     *  )
+     */
+    protected $images;
     
     public function getUrlPath() {
        $sg = new Slugify(); // TODO: make slugify a helper (static)
@@ -217,28 +214,45 @@ class Equipment
     {
         return $this->subcategory;
     }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->images = new \Doctrine\Common\Collections\ArrayCollection();
+    }
 
     /**
-     * Set image
+     * Add image
      *
      * @param \AppBundle\Entity\Image $image
      *
      * @return Equipment
      */
-    public function setImage(\AppBundle\Entity\Image $image = null)
+    public function addImage(\AppBundle\Entity\Image $image)
     {
-        $this->image = $image;
+        $this->images[] = $image;
 
         return $this;
     }
 
     /**
-     * Get image
+     * Remove image
      *
-     * @return \AppBundle\Entity\Image
+     * @param \AppBundle\Entity\Image $image
      */
-    public function getImage()
+    public function removeImage(\AppBundle\Entity\Image $image)
     {
-        return $this->image;
+        $this->images->removeElement($image);
+    }
+
+    /**
+     * Get images
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getImages()
+    {
+        return $this->images;
     }
 }

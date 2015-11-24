@@ -35,6 +35,25 @@ class DefaultController extends BaseController {
          */
         
         // Category
+        $result = $this->processCategory($request, $content);
+        if ($result != null) {
+            return $result;
+        }
+        // Subcategory
+        $result = $this->processSubcategory($request, $content);
+        if ($result != null) {
+            return $result;
+        }        
+        // Equipment
+        $result = $this->processEquipment($request, $content);
+        if ($result != null) {
+            return $result;
+        }
+        // Nothing was matched, URL is invalid
+        throw $this->createNotFoundException();
+    }
+    
+    private function processCategory(Request $request, $content) {
         $cat = $this->getCategoryBySlug($request, $content);
         
         if ($cat != null) {
@@ -45,8 +64,9 @@ class DefaultController extends BaseController {
                 'category' => $cat
             ));
         }
-        
-        // Subcategory
+        return null;
+    }
+    private function processSubcategory(Request $request, $content) {
         $subcat = $this->getSubcategoryBySlug($request, $content);
         
         if ($subcat != null) {
@@ -57,9 +77,23 @@ class DefaultController extends BaseController {
                 'equipments' => $equipments
             ));
         }
+        return null;
+    }
+    private function processEquipment(Request $request, $content) {
+        $eq = null;
+        $pat = '^[[:digit:]]+/.+$';
+        if (ereg($pat, $content)) {
+            $arr = split('/', $content);
+            $eq = $this->getDoctrine()->getRepository('AppBundle:Equipment')->find(intval($arr[0]));
+        }
         
-        // Nothing was matched, URL is invalid
-        throw $this->createNotFoundException();
+        if ($eq != null) {
+            return $this->render('default/equipment.html.twig', array(
+                'equipment' => $eq,
+                'category' => $eq->getSubcategory()->getCategory()
+            ));
+        }
+        return null;
     }
 
     /**
