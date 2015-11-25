@@ -12,7 +12,7 @@ web_profiler:
     intercept_redirects: false
 
 monolog:
-    channels: ["dev"]
+    channels: ["artur"]
     handlers:
         main:
             type:   stream
@@ -33,11 +33,11 @@ monolog:
                 VERBOSITY_VERY_VERBOSE: NOTICE
                 VERBOSITY_DEBUG: DEBUG
             channels: ["doctrine"]
-        dev:
+        artur:
             type: stream
             path: "%kernel.logs_dir%/artur-dev.log"
             level: debug
-            channels: ["dev"]
+            channels: ["artur"]
         # uncomment to get logging in your browser
         # you may have to allow bigger header sizes in your Web server configuration
         #firephp:

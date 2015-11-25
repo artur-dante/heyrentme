@@ -30,13 +30,29 @@ class Equipment
      */
     protected $price;
     /**
-     * @ORM\Column(type="decimal", scale=10, precision=0)
+     * @ORM\Column(type="decimal", scale=10, precision=2)
      */
     protected $discount;
     /**
-     * @ORM\Column(name="TestBuy", type="integer")
+     * @ORM\Column(type="decimal", scale=10, precision=2)
      */
-    protected $testBuy;
+    protected $value;
+    /**
+     * @ORM\Column(type="decimal", scale=10, precision=2)
+     */
+    protected $deposit;
+    /**
+     * @ORM\Column(name="PriceBuy", type="decimal", scale=10, precision=2)
+     */
+    protected $priceBuy;
+    /**
+     * @ORM\Column(type="integer")
+     */
+    protected $invoice;
+    /**
+     * @ORM\Column(type="integer")
+     */
+    protected $industrial;
             
     /**
      * @ORM\ManyToOne(targetEntity="Subcategory", inversedBy="equipments")
@@ -61,6 +77,14 @@ class Equipment
        return "{$this->id}/{$s}";//   ;
     }
     
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->images = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
     /**
      * Get id
      *
@@ -168,27 +192,123 @@ class Equipment
     }
 
     /**
-     * Set testBuy
+     * Set value
      *
-     * @param integer $testBuy
+     * @param string $value
      *
      * @return Equipment
      */
-    public function setTestBuy($testBuy)
+    public function setValue($value)
     {
-        $this->testBuy = $testBuy;
+        $this->value = $value;
 
         return $this;
     }
 
     /**
-     * Get testBuy
+     * Get value
+     *
+     * @return string
+     */
+    public function getValue()
+    {
+        return $this->value;
+    }
+
+    /**
+     * Set deposit
+     *
+     * @param string $deposit
+     *
+     * @return Equipment
+     */
+    public function setDeposit($deposit)
+    {
+        $this->deposit = $deposit;
+
+        return $this;
+    }
+
+    /**
+     * Get deposit
+     *
+     * @return string
+     */
+    public function getDeposit()
+    {
+        return $this->deposit;
+    }
+
+    /**
+     * Set priceBuy
+     *
+     * @param string $priceBuy
+     *
+     * @return Equipment
+     */
+    public function setPriceBuy($priceBuy)
+    {
+        $this->priceBuy = $priceBuy;
+
+        return $this;
+    }
+
+    /**
+     * Get priceBuy
+     *
+     * @return string
+     */
+    public function getPriceBuy()
+    {
+        return $this->priceBuy;
+    }
+
+    /**
+     * Set invoice
+     *
+     * @param integer $invoice
+     *
+     * @return Equipment
+     */
+    public function setInvoice($invoice)
+    {
+        $this->invoice = $invoice;
+
+        return $this;
+    }
+
+    /**
+     * Get invoice
      *
      * @return integer
      */
-    public function getTestBuy()
+    public function getInvoice()
     {
-        return $this->testBuy;
+        return $this->invoice;
+    }
+
+    /**
+     * Set industrial
+     *
+     * @param integer $industrial
+     *
+     * @return Equipment
+     */
+    public function setIndustrial($industrial)
+    {
+        $this->industrial = $industrial;
+
+        return $this;
+    }
+
+    /**
+     * Get industrial
+     *
+     * @return integer
+     */
+    public function getIndustrial()
+    {
+        return $this->industrial;
     }
 
     /**
@@ -213,13 +333,6 @@ class Equipment
     public function getSubcategory()
     {
         return $this->subcategory;
-    }
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->images = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
