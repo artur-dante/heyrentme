@@ -68,7 +68,7 @@
     {% for eq in equipments %}
         <a class="text-black" href="{{ path('catchall', { 'content': eq.urlPath }) }}">
             <div class="col-md-4">
-                <img src="{{ eq.imageUrl }}" alt="placeholder"/>
+                <img src="{{ image_url_prefix }}{{ eq.imageUrl }}" alt="placeholder"/>
                 {% if eq.TestBuy %}
                     <img src="/img/cart.svg" alt="cart" class="cart"/>
                 {% endif %}

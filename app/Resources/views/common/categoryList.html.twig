@@ -4,7 +4,7 @@
         <span id="close-haup" class="haup-close-icon"></span>
         {% for cat in categories %}
             <p>
-                <a href="{{ path('catchall', { 'content': cat.Slug }) }}#categories"><img src="{{ cat.imageUrl }}" alt=""/></a>
+                <a href="{{ path('catchall', { 'content': cat.Slug }) }}#categories"><img src="{{ image_url_prefix }}{{ cat.imageUrl }}" alt=""/></a>
                 <a href="{{ path('catchall', { 'content': cat.Slug }) }}#categories">{{ cat.Name }}</a>
             </p>
         {% endfor %}

@@ -127,4 +127,12 @@ class DefaultController extends BaseController {
         
         return new Response($s);
     }    
+    
+    /**
+     * @Route("/bcrypt", name="bcrypt")
+     */
+    public function bcryptAction() {
+        $h = password_hash("ziller/1793", PASSWORD_BCRYPT, array( 'cost' => 12));
+        return new Response($h);
+    }
 }
