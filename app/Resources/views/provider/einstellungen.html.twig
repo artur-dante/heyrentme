@@ -1,0 +1,170 @@
+{% extends 'base.html.twig' %}
+
+{% block home_header %}{% endblock %}
+
+{% block body %}
+  <nav class="user-nav">
+    <div class="container relative">
+        <img src="/img/user.png" alt=""/>
+        <p>Peter</p>
+        <a href="#" id="open-menu"><span class="down"></span></a>
+        <ul class="dropdown-menu-span">
+          <li><a href="">Profil</a></li>
+          <li><a href="">Einstellungen</a></li>
+          <li><a href="">Ausloggen</a></li>
+        </ul>
+    </div>
+  </nav>
+    <section class="users container background-light-grey dashboard">
+      <div class="row">
+          <!-- Left side -->
+          <div class="col-md-9">
+              <img src="/img/logo-small.svg" alt=""/>
+            </div>
+          <!-- Right side -->
+          <div class="col-md-3 margin-rwd">
+              <div class="support">
+                <p class="head">Anbieter Support</p>
+                <p class="mail"><a href="mail:support@hey-tsc.com">support@hey-tsc.com</a></p>
+              </div>
+          </div>
+      </div>
+      <div class="row ">
+          <div class="col-md-9">
+              <div class="row users-profile">
+                  <div class="col-xs-12">
+                      <div>
+                          <div class="row">
+                              <div class="col-sm-12">
+                                  <span class="user-profil"></span>
+                                  <p class="form-heading">Einstellungen</p>
+                                  <form method="post" accept-charset="utf-8" class="user-profil-form" action="/users/profile"><div style="display:none;"><input type="hidden" name="_method" value="POST"></div>                                <input type="password" name="actual-pass" placeholder="aktuelles passwort" id="actual-pass">                                <input type="password" name="new-pass" placeholder="neues passwort" id="new-pass">                                <input type="password" name="repeat-pass" placeholder="neues passwort wiederholen" id="repeat-pass">
+                                  <div class="row user-names">
+                                      <div class="col-xs-6">
+                                          <input type="text" name="name-pass" placeholder="vorname" class="no-bg" id="name-pass">
+                                        </div>
+                                      <div class="col-xs-6">
+                                          <input type="text" name="lastname-pass" placeholder="nachname" id="lastname-pass">
+                                        </div>
+                                  </div>
+                                  <div class="phone-numer">
+                                    <h3>Telefon Nr. für User-Rückfragen</h3>
+                                    <div class="phone-inputs">
+                                      <span>+43</span><input type="number" maxlength="3" min="0" placeholder="000" />
+                                      <input type="number" maxlength="7" min="0" placeholder="1234567" />
+                                      <span>(verifiziert)</span>
+                                    </div>
+                                  </div>
+                                  <!--<input type="email" name="email" placeholder="e-Mail" id="email">-->
+                                  <div class="bank">
+                                    <h3>Bankverbindung für Rabatt-Zahlungen</h3>
+                                    <p>
+                                      Damit dein Angebot öfters gebucht wird, bietet die hey! sharing community Rabatte auf Buchungen. Um dir einen Buchungs-Rabatt auszahlen zu können, benötigen wir deine Bankverbindung.
+                                    </p>
+                                    <div class="bank-inputs row">
+                                      <div class="col-xs-6">
+                                          <input type="text" name="iban" placeholder="iban">
+                                        </div>
+                                        <div class="col-xs-6">
+                                          <input type="text" name="bic" placeholder="bic">
+                                        </div>
+                                    </div>
+                                  </div>
+                                  <input type="submit" class="green-big-button" value="Einstellungen speichern">
+                                  </form>
+                                </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <div class="col-md-3">
+              <div class="users-nav">
+                  <ul>
+                      <li><a data-toggle="modal" data-target="#reg-modal" class="active" href="#">Profil</a></li>
+                      <li><a data-toggle="modal" data-target="#delete-offer" href="#">Einstellungen</a></li>
+                      <li><a data-toggle="modal" data-target="#choose-offer" href="#">ausloggen</a></li>
+                      <li><a data-toggle="modal" data-target="#choose-offer" href="#">Anbieten</a></li>
+                      <li><a href="#">Konto löschen</a></li>
+                      <li><a href="#">zurück zu angebote</a></li>
+                  </ul>
+              </div>
+          </div>
+      </div>
+  </section>
+  <div id="reg-modal" class="modal  register" role="dialog" aria-labelledby="reg-titile">
+      <div class="modal-dialog" role="document">
+          <!-- Modal content-->
+          <div class="modal-content">
+              <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" ><img src="/img/close-modal.svg" alt="close"/></button>
+                  <h4 class="modal-title reg" id="reg-titile">Registrieren</h4>
+                  <p class="reg-promo">Jetzt registrieren <span class="text-bold">5 &euro; Rabatt</span> für die 1, Buchung sichern! </p>
+                  <a class="fb-button" href="#"><img src="/img/facebook-reg.svg" alt=""/></a>
+                  <span class="oder">- oder -</span>
+
+                  <form method="post" accept-charset="utf-8" action="/users/profile"><div style="display:none;"><input type="hidden" name="_method" value="POST"></div><input type="text" name="name3" placeholder="NAME" id="name3"><input type="text" name="mail3" placeholder="NACHNAME" id="mail3"><input type="text" name="info3" placeholder="EMAIL" id="info3"><input type="password" name="desc3" placeholder="PASSWORT" class="lock-icon" id="desc3"><input type="submit" value="Registriere dich per E-mail"><label class="agb"><input type="checkbox"> <span>Ich akzeptiere die <a href="#">AGBs</a> von hey-rentme</span></label></form>                <a data-dismiss="modal" data-toggle="modal" data-target="#login" class="has-account text-center" href="#">Du hast bereits ein Konto? Melde dich an</a>
+              </div>
+          </div>
+      </div>
+  </div>
+  <div id="delete-offer" class="modal fade delete-offer" role="dialog">
+      <div class="modal-dialog">
+          <!-- Modal content-->
+          <div class="modal-content">
+                  <button type="button" class="close" data-dismiss="modal"><img src="/img/close-modal.svg" alt="close"/></button>
+
+              <div class="content-modal">
+                  <p class="text-bold">Angebot “Cube Mountainbike” entfernen?</p>
+                  <p class="delate-info">Möchtest du dieses Angebot wirklich löschen? Dieser Schritt ist nicht rückgängig zu machen. </p>
+                  <button class="button btn-danger">Angebot entfernen</button>
+              </div>
+          </div>
+      </div>
+  </div>
+  <div id="choose-offer" class="modal fade delete-offer" role="dialog">
+      <div class="modal-dialog">
+          <!-- Modal content-->
+          <div class="modal-content">
+              <button type="button" class="close" data-dismiss="modal"><img src="/img/close-modal.svg" alt="close"/></button>
+
+              <div class="content-modal">
+                  <p class="text-bold">Was möchtest du anbieten?</p>
+                  <p class="delate-info">Hier kannst du entweder ein Equipment oder dein
+                      Talent bzw. eine Dienstleistung anbieten! </p>
+                  <a href="#" data-toggle="modal" data-target="#choose-category" class="button-black backgound-yellow text-black">Equipment Anbieten</a>
+                  <a href="#" class="button-black backgound-yellow text-black">Talent Anbieten</a>
+              </div>
+          </div>
+      </div>
+  </div>
+  <div id="choose-category" class="modal fade delete-offer" role="dialog">
+      <div class="modal-dialog">
+          <!-- Modal content-->
+          <div class="modal-content">
+              <button type="button" class="close" data-dismiss="modal"><img src="/img/close-modal.svg" alt="close"/></button>
+
+              <div class="content-modal">
+                  <p class="text-bold">Bitte wähle eine Kategorie</p>
+                  <p class="delate-info">Bitte wähle eine Haupt- und Detailkategorie, damit wir dein Angebot zuordnen können.</p>
+                  <div class="clearfix">
+                    <select title='Hauptkategorie' name="category" class="selectpicker bs-select-hidden ">
+                        <option>cat 1</option>
+                        <option>cat 2</option>
+                        <option>cat 3</option>
+                    </select>
+                    <select title='Detailcategorie' name="subcategory" class="selectpicker bs-select-hidden" disabled="disabled">
+                        <option>subcat 1</option>
+                        <option>subcat 2</option>
+                        <option>subcat 3</option>
+                    </select>
+                  </div>
+                  <div>
+                    <a href="#" class="button-black backgound-yellow text-black">Weiter</a>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+  </div>
+{% endblock %}

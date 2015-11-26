@@ -29,7 +29,8 @@ class EquipmentController extends BaseController {
             $data = $form->getData();
             // get subcategory
             $subcat = $this->getDoctrine()->getRepository('AppBundle:Subcategory')->find(3);            
-            // map fields
+            // map fields, TODO: move to Equipment's method
+            //<editor-fold> map fields
             $eq = new Equipment();
             $eq->setName('New item');
             $eq->setSubcategory($subcat);
@@ -39,13 +40,15 @@ class EquipmentController extends BaseController {
             $eq->setPriceBuy($data['priceBuy']);
             $eq->setInvoice($data['invoice']);
             $eq->setIndustrial($data['industrial']);
+            //</editor-fold>
             // save to db
             $em = $this->getDoctrine()->getManager();
             $em->persist($eq);
             $em->flush();
             
             //$this->get("logger:artur")->info("equipment id: {$eq->getId()})");
-            
+            $session = $request->getSession();
+            $session->set('EquipmentAddId', $eq->getId());
             return $this->redirectToRoute('equipment-add-2');
         }
         
@@ -57,6 +60,9 @@ class EquipmentController extends BaseController {
      * @Route("/equipment-add-2", name="equipment-add-2")
      */
     public function equipmentAdd2Action(Request $request) {
+        $session = $request->getSession();
+        
+        
         return $this->render('provider\equipment_add_step2.html.twig');
     }
     /**

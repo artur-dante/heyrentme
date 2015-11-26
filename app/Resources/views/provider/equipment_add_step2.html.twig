@@ -1,7 +1,11 @@
-<?php include('header.php'); ?>
+{% extends 'base.html.twig' %}
+
+{% block home_header %}{% endblock %}
+
+{% block body %}
   <nav class="user-nav">
     <div class="container relative">
-        <img src="/rentme/img/user.png" alt=""/>
+        <img src="/img/user.png" alt=""/>
         <p>Peter</p>
         <a href="#" id="open-menu"><span class="down"></span></a>
         <a href="#" id="open-menu"><span class="down"></span></a>
@@ -16,7 +20,7 @@
       <div class="row">
           <!-- Left side -->
           <div class="col-md-9">
-              <img src="/rentme/img/logo-small.svg" alt=""/>            <ul class="steps">
+              <img src="/img/logo-small.svg" alt=""/>            <ul class="steps">
                   <li class="step-1 active-step"><span class="counters"><span class="n-one"></span>Tarif</span></li>
                   <li class="step-2"><span class="counters text-bold"><span class="n-two"></span>Beschreibung</span>
                   </li>
@@ -134,11 +138,11 @@
                       <a href="#"> Photoservice</a> in Anspruch nehmen. Schreib uns dazu an <a href="mailto:support@hey-tsc.com">support@hey-tsc.com</a> </p>
                   <div id="owl-demo" class="owl-carousel user-owl">
                       <div class="item">
-                          <img src="/rentme/img/placeholder/bike5.jpg" alt=""/>                    </div>
+                          <img src="/img/placeholder/bike5.jpg" alt=""/>                    </div>
                       <div class="item">
-                          <img src="/rentme/img/placeholder/bike5.jpg" alt=""/>                    </div>
+                          <img src="/img/placeholder/bike5.jpg" alt=""/>                    </div>
                       <div class="item">
-                          <img src="/rentme/img/placeholder/bike5.jpg" alt=""/>                    </div>
+                          <img src="/img/placeholder/bike5.jpg" alt=""/>                    </div>
                   </div>
               </div>
           </div>
@@ -162,7 +166,7 @@
           <!-- Modal content-->
           <div class="modal-content">
               <div class="modal-header">
-                  <button type="button" class="close" data-dismiss="modal"><img src="/rentme/img/close-modal.svg" alt="close"/></button>
+                  <button type="button" class="close" data-dismiss="modal"><img src="/img/close-modal.svg" alt="close"/></button>
                   <h4 class="modal-title">Allgemeine Geschäftsbedingungen</h4>
                   <h5>Headline 1</h5>
                   <p>
@@ -180,7 +184,7 @@
           <!-- Modal content-->
           <div class="modal-content">
               <div class="modal-header">
-                  <button type="button" class="close" data-dismiss="modal"><img src="/rentme/img/close-modal.svg" alt="close"/></button>
+                  <button type="button" class="close" data-dismiss="modal"><img src="/img/close-modal.svg" alt="close"/></button>
                   <h4 class="modal-title reg vielen">Vielen Dank!</h4>
                   <p class="anggl">
                     und herzlich willkommen bei der <br />
@@ -200,7 +204,10 @@
           </div>
       </div>
   </div>
-  <script src="/rentme/js/vendors/upload/jquery.knob.js"></script><script src="/rentme/js/vendors/upload/jquery.ui.widget.js"></script><script src="/rentme/js/vendors/upload/jquery.iframe-transport.js"></script><script src="/rentme/js/vendors/upload/jquery.fileupload.js"></script><script src="/rentme/js/vendors/upload/script.js"></script>
+  <script src="/js/vendors/upload/jquery.knob.js"></script>
+  <script src="/js/vendors/upload/jquery.ui.widget.js"></script>
+  <script src="/js/vendors/upload/jquery.iframe-transport.js"></script>
+  <script src="/js/vendors/upload/jquery.fileupload.js"></script>
+  <script src="/js/vendors/upload/script.js"></script>
   </div>
-<?php include("page_footer.php"); ?>
-<?php include('footer.php'); ?>
+{% endblock %}
