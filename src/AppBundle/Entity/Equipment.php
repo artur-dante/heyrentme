@@ -26,7 +26,7 @@ class Equipment
      */
     protected $description;
     /**
-     * @ORM\Column(type="decimal", scale=10, precision=2)
+     * @ORM\Column(type="decimal", scale=2, precision=10)
      */
     protected $price;
     /**

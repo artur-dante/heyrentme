@@ -1,361 +1,108 @@
 <?php
-
 namespace AppBundle\Entity;
+// src/AppBundle/Entity/User.php
+#whole class added by Seba
 
+
+use FOS\UserBundle\Model\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Table(name="user")
+ * @ORM\Entity
+ * @ORM\Table(name="fos_user")
  * @ORM\Entity(repositoryClass="AppBundle\Entity\UserRepository")
  */
-class User implements UserInterface, \Serializable
+class User extends BaseUser
 {
     /**
-     * @ORM\Column(type="integer")
      * @ORM\Id
+     * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
-
-    /**
-     * @ORM\Column(type="string", length=64)
+    protected $id;
+      /**
+     * @var string
+     *
+     * @ORM\Column(name="facebookID", type="string", nullable=true)
      */
-    private $password;
-
-    /**
-     * @ORM\Column(type="string", length=128)
-     */
-    private $email;
-
-    /**
-     * @ORM\Column(type="boolean")
-     */
-    private $active;
-    /**
-     * @ORM\Column(type="boolean")
-     */
-    private $admin;
+    protected $facebookID;
     
-    /**
-     * @ORM\Column(name="FacebookID", type="bigint")
-     */    
-    private $facebookId;
-    
-    /**
-     * @ORM\Column(type="string", length=128)
-     */
-    private $name;
-    /**
-     * @ORM\Column(type="string", length=128)
-     */
-    private $surname;
-    /**
-     * @ORM\Column(name="RegistrationDT", type="timestamp")
-     */
-    private $registrationDT;
-    /**
-     * @ORM\Column(name="LastLoginDT", type="timestamp")
-     */
-    private $lastLoginDT;
-    /**
-     * @ORM\OneToOne(targetEntity="Image")
-     * @ORM\JoinColumn(name="imageID", referencedColumnName="id")
-     */
-    private $image;
-
-    public function getUsername()
+    public function getFacebookID()
     {
-        return $this->email;
+        return $this->facebookID;
     }
 
-    public function getSalt()
-    {
-        // you *may* need a real salt depending on your encoder
-        // see section on salt below
-        return null;
-    }
-
-    public function getPassword()
-    {
-        return $this->password;
-    }
-
-    public function getRoles()
-    {
-        if ($this->admin) {
-            return array('ROLE_ADMIN');
-        }
-        else {
-            return array('ROLE_USER');
-        }
-    }
-
-    public function eraseCredentials()
-    {
-    }
-
-    /** @see \Serializable::serialize() */
-    public function serialize()
-    {
-        return serialize(array(
-            $this->id,
-            $this->getEmail(),
-            $this->password,
-            // see section on salt below
-            // $this->salt,
-        ));
-    }
-
-    /** @see \Serializable::unserialize() */
-    public function unserialize($serialized)
-    {
-        list (
-            $this->id,
-            $this->email,
-            $this->password,
-            // see section on salt below
-            // $this->salt
-        ) = unserialize($serialized);
-    }
-
-    /**
-     * Get id
-     *
-     * @return integer
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * Set password
-     *
-     * @param string $password
-     *
-     * @return User
-     */
-    public function setPassword($password)
-    {
-        $this->password = $password;
-
-        return $this;
-    }
-
-    /**
-     * Set email
-     *
-     * @param string $email
-     *
-     * @return User
-     */
     public function setEmail($email)
     {
         $this->email = $email;
-
-        return $this;
+        $this->setUsername($email);
     }
-
-    /**
-     * Get email
-     *
-     * @return string
-     */
-    public function getEmail()
+    
+    public function setFacebookID($facebookID)
     {
-        return $this->email;
+        $this->facebookID = $facebookID;
     }
-
+    
     /**
-     * Set active
+     * @var string
      *
-     * @param boolean $active
-     *
-     * @return User
+     * @ORM\Column(name="Name", type="string", nullable=true)
+     * 
+     * 
+     *  * @Assert\NotBlank(message="Please enter your name.", groups={"Registration", "Profile"})
+     * @Assert\Length(
+     *     min=3,
+     *     max=128,
+     *     minMessage="The name is too short.",
+     *     maxMessage="The name is too long.",
+     *     groups={"Registration", "Profile"}
+     * )
+     * 
      */
-    public function setActive($active)
-    {
-        $this->active = $active;
-
-        return $this;
-    }
-
-    /**
-     * Get active
-     *
-     * @return boolean
-     */
-    public function getActive()
-    {
-        return $this->active;
-    }
-
-    /**
-     * Set admin
-     *
-     * @param boolean $admin
-     *
-     * @return User
-     */
-    public function setAdmin($admin)
-    {
-        $this->admin = $admin;
-
-        return $this;
-    }
-
-    /**
-     * Get admin
-     *
-     * @return boolean
-     */
-    public function getAdmin()
-    {
-        return $this->admin;
-    }
-
-    /**
-     * Set facebookId
-     *
-     * @param integer $facebookId
-     *
-     * @return User
-     */
-    public function setFacebookId($facebookId)
-    {
-        $this->facebookId = $facebookId;
-
-        return $this;
-    }
-
-    /**
-     * Get facebookId
-     *
-     * @return integer
-     */
-    public function getFacebookId()
-    {
-        return $this->facebookId;
-    }
-
-    /**
-     * Set name
-     *
-     * @param string $name
-     *
-     * @return User
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
-    /**
-     * Get name
-     *
-     * @return string
-     */
+    protected $name;
+    
     public function getName()
     {
         return $this->name;
     }
 
-    /**
-     * Set surname
-     *
-     * @param string $surname
-     *
-     * @return User
-     */
-    public function setSurname($surname)
+    public function setName($name)
     {
-        $this->surname = $surname;
-
-        return $this;
+        $this->name = $name;
     }
-
+    
     /**
-     * Get surname
+     * @var string
      *
-     * @return string
+     * @ORM\Column(name="Surname", type="string", nullable=true)
+     * 
+     *  *  * @Assert\NotBlank(message="Please enter your surname.", groups={"Registration", "Profile"})
+     * @Assert\Length(
+     *     min=3,
+     *     max=128,
+     *     minMessage="The name is too short.",
+     *     maxMessage="The name is too long.",
+     *     groups={"Registration", "Profile"}
+     * )
+     * 
      */
+    protected $surname;
+    
     public function getSurname()
     {
         return $this->surname;
     }
 
-    /**
-     * Set registrationDT
-     *
-     * @param \timestamp $registrationDT
-     *
-     * @return User
-     */
-    public function setRegistrationDT(\timestamp $registrationDT)
+    public function setSurname($surname)
     {
-        $this->registrationDT = $registrationDT;
-
-        return $this;
+        $this->surname = $surname;
     }
-
-    /**
-     * Get registrationDT
-     *
-     * @return \timestamp
-     */
-    public function getRegistrationDT()
+    
+    
+    public function __construct()
     {
-        return $this->registrationDT;
-    }
-
-    /**
-     * Set lastLoginDT
-     *
-     * @param \timestamp $lastLoginDT
-     *
-     * @return User
-     */
-    public function setLastLoginDT(\timestamp $lastLoginDT)
-    {
-        $this->lastLoginDT = $lastLoginDT;
-
-        return $this;
-    }
-
-    /**
-     * Get lastLoginDT
-     *
-     * @return \timestamp
-     */
-    public function getLastLoginDT()
-    {
-        return $this->lastLoginDT;
-    }
-
-    /**
-     * Set image
-     *
-     * @param \AppBundle\Entity\Image $image
-     *
-     * @return User
-     */
-    public function setImage(\AppBundle\Entity\Image $image = null)
-    {
-        $this->image = $image;
-
-        return $this;
-    }
-
-    /**
-     * Get image
-     *
-     * @return \AppBundle\Entity\Image
-     */
-    public function getImage()
-    {
-        return $this->image;
+        parent::__construct();
+        // your own logic
     }
 }

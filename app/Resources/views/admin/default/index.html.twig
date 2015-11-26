@@ -1,0 +1,15 @@
+{% extends 'admin/admin.base.html.twig' %}
+{% block body %}
+<div class="jumbotron">
+    <h1>Admin Area</h1>
+</div>
+<div class="row">
+    <div class="col-xs-6">
+        <a class="btn btn-default" href="{{ path('admin_category_list') }}">Manage categories</a>
+    </div>
+    <div class="col-xs-6">
+        <a class="btn btn-default" href="">Manage users</a>
+    </div>
+</div>    
+    
+{% endblock %}

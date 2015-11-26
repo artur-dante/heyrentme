@@ -23,3 +23,23 @@ parameters:
     image_storage_dir: "C:\\projects\\reddragon\\dev\\web\\db-img\\"
     facebook_client_id: '434563180081529'
     facebook_client_secret: 37b0f133322561ac5d5621bfd258043d
+# This file is a "template" of what your parameters.yml file should look like
+# Set parameters here that may be different on each deployment target of the app, e.g. development, staging, production.
+# http://symfony.com/doc/current/best_practices/configuration.html#infrastructure-related-configuration
+parameters:
+# symfony standard parameters
+    database_host: 192.168.9.6
+    database_port: null
+    database_name: heyrentme
+    database_user: heyrentme
+    database_password: ziller/1793
+    mailer_transport: smtp
+    mailer_host: 127.0.0.1
+    mailer_user: null
+    mailer_password: null
+    secret: sdfslifaspoajspdoi
+# custom parameters
+    image_url_prefix: "/db-img/"
+    image_storage_dir: "D:\\projects\\reddragon\\dev\\web\\db-img\\"
+    facebook_client_id: 434563180081529
+    facebook_client_secret: 37b0f133322561ac5d5621bfd258043d
