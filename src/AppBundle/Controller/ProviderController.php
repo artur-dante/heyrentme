@@ -28,6 +28,7 @@ class ProviderController extends BaseController {
      */
     public function equipmentAdd1Action(Request $request) {
         $form = $this->createFormBuilder()
+                ->add('name', 'text')
                 ->add('price', 'money')
                 ->add('deposit', 'money')
                 ->add('value', 'money')
@@ -41,11 +42,13 @@ class ProviderController extends BaseController {
         if ($form->isValid()) {
             $data = $form->getData();
             // get subcategory
-            $subcat = $this->getDoctrine()->getRepository('AppBundle:Subcategory')->find(3);            
+            $subcat = $this->getDoctrine()->getRepository('AppBundle:Subcategory')->find(3);
+            $user = $this->getUser();
             // map fields, TODO: move to Equipment's method
-            //<editor-fold> map fields
+            //<editor-fold> map fields            
             $eq = new Equipment();
-            $eq->setName('New item');
+            $eq->setName($data['name']);
+            $eq->setUser($user);
             $eq->setSubcategory($subcat);
             $eq->setPrice($data['price']);
             $eq->setValue($data['value']);
@@ -73,10 +76,26 @@ class ProviderController extends BaseController {
      * @Route("/provider/equipment-add-2", name="equipment-add-2")
      */
     public function equipmentAdd2Action(Request $request) {
-        $session = $request->getSession();
+        //$session = $request->getSession();
         
+        $form = $this->createFormBuilder()
+                ->add('description', 'textarea', array('max_length' => 500))
+                ->add('make_sure', 'checkbox')
+                ->add('street', 'text')
+                ->add('number', 'text')
+                ->add('postcode', 'text')
+                ->add('place', 'text')
+                ->add('accept', 'checkbox')
+                ->getForm();
         
-        return $this->render('provider\equipment_add_step2.html.twig');
+        $form->handleRequest($request);
+        
+        if ($form->isValid()) {
+        }
+        
+        return $this->render('provider\equipment_add_step2.html.twig', array(
+            'form' => $form->createView()
+        ));
     }
     /**
      * @Route("/provider/equipment-add-3", name="equipment-add-3")

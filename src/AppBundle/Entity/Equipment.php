@@ -59,6 +59,11 @@ class Equipment
      * @ORM\JoinColumn(name="subcategoryID", referencedColumnName="id")
      */
     protected $subcategory;
+    /**
+     * @ORM\ManyToOne(targetEntity="User", inversedBy="equipments")
+     * @ORM\JoinColumn(name="userID", referencedColumnName="id")
+     */
+    protected $user;
     
     
     /**
@@ -367,5 +372,29 @@ class Equipment
     public function getImages()
     {
         return $this->images;
+    }
+
+    /**
+     * Set user
+     *
+     * @param \AppBundle\Entity\User $user
+     *
+     * @return Equipment
+     */
+    public function setUser(\AppBundle\Entity\User $user = null)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return \AppBundle\Entity\User
+     */
+    public function getUser()
+    {
+        return $this->user;
     }
 }
