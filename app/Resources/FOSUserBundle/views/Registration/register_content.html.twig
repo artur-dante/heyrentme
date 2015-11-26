@@ -1,0 +1,54 @@
+<script>
+    $(function(){
+        var ajaxFormSubmit = function () {
+            var $form = $(this);
+
+            var options = {
+                url: $form.attr("action"),
+                type: $form.attr("method"),
+                data: $form.serialize()
+            };
+
+            $.ajax(options).done(function (data) {                
+                var $target = $("#formRegister");
+                var $newHtml = $(data);
+                if ($newHtml.text().indexOf("User_Is_Registered") != -1){                                      
+                    $target.replaceWith($newHtml);
+                } else {                    
+                    location.reload();
+                }
+            });
+
+            return false;
+        };
+        
+        $("#formRegister").submit(ajaxFormSubmit);
+    });
+</script>
+
+{% trans_default_domain 'FOSUserBundle' %}
+
+{{ form_start(form, {'method': 'post', 'action': path('fos_user_registration_register'), 'attr': { 'id':'formRegister', 'class': 'fos_user_registration_register'}}) }}    
+    {{ form_errors(form) }}
+    
+    
+    {{ form_errors(form.name) }}    
+    {{ form_widget(form.name, {'attr': {'placeholder': 'VORNAME'}}) }}
+    
+    {{ form_errors(form.surname) }}
+    {{ form_widget(form.surname, {'attr': {'placeholder': 'NACHNAME'}}) }}
+    
+    {{ form_errors(form.email) }}
+    {{ form_widget(form.email, {'attr': {'placeholder': 'EMAIL'}}) }}
+    
+    {{ form_errors(form.plainPassword) }}
+    {{ form_widget(form.plainPassword, {'attr': {'placeholder': 'PASSWORT', 'class': 'lock-icon'}}) }}
+    
+    
+    <input type="submit" value="mit E-mail anmelden">
+    <label class="agb"><input type="checkbox"> 
+        <span>Ich akzeptiere die <a href="#">AGBs</a> von hey! sharing community</span>
+    </label>
+{{ form_end(form) }}
+
+

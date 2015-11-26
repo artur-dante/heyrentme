@@ -1,0 +1,47 @@
+<script>
+    $(function(){
+        var ajaxFormSubmit = function () {
+            var $form = $(this);
+
+            var options = {
+                url: $form.attr("action"),
+                type: $form.attr("method"),
+                data: $form.serialize()
+            };
+
+            $.ajax(options).done(function (data) {
+                var $target = $("#formLogin");
+                var $newHtml = $(data);                
+                if ($newHtml.text().indexOf("User_Is_Logged") != -1){                    
+                    $target.replaceWith($newHtml);
+                } else {
+                    location.reload();
+                }
+                
+            });
+
+            return false;
+        };
+        
+        $("#formLogin").submit(ajaxFormSubmit);
+    });
+</script>
+
+{% block fos_user_content %}
+
+
+<form action="{{ path("fos_user_security_check") }}" method="post" id="formLogin">
+    
+    {% if error %}
+        <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+    {% endif %}
+    
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
+    
+    <input type="text" id="username" name="_username" value="{{ last_username }}" required="required" placeholder="EMAIL" />
+    
+    <input type="password" id="password" name="_password" required="required" class="lock-icon" placeholder="PASSWORT" />
+
+    <input type="submit" id="_submit" name="_submit" value="LOGIN" />
+</form>
+{% endblock fos_user_content %}
