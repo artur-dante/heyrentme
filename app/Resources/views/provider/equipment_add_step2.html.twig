@@ -3,19 +3,7 @@
 {% block home_header %}{% endblock %}
 
 {% block body %}
-  <nav class="user-nav">
-    <div class="container relative">
-        <img src="/img/user.png" alt=""/>
-        <p>Peter</p>
-        <a href="#" id="open-menu"><span class="down"></span></a>
-        <a href="#" id="open-menu"><span class="down"></span></a>
-        <ul class="dropdown-menu-span">
-          <li><a href="">Profil</a></li>
-          <li><a href="">Einstellungen</a></li>
-          <li><a href="">Ausloggen</a></li>
-        </ul>
-    </div>
-  </nav>
+    {% include('provider/user_nav.html.twig') %}
     <section class="users container background-light-grey">
       <div class="row">
           <!-- Left side -->

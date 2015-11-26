@@ -34,7 +34,7 @@ parameters:
     database_user: heyrentme
     database_password: ziller/1793
     mailer_transport: smtp
-    mailer_host: 127.0.0.1
+    mailer_host: 192.168.9.6
     mailer_user: null
     mailer_password: null
     secret: sdfslifaspoajspdoi

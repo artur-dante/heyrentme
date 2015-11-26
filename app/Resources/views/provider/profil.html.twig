@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block home_header %}{% endblock %}
+
+{% block body %}
+    {% include('provider/user_nav.html.twig') %}
+  <section class="users container background-light-grey dashboard">
+    <div class="row">
+        <!-- Left side -->
+        <div class="col-md-9">
+            <img src="/img/logo-small.svg" alt=""/>
+          </div>
+        <!-- Right side -->
+        <div class="col-md-3 margin-rwd">
+          <div class="support">
+            <p class="head">Anbieter Support</p>
+            <p class="mail"><a href="mail:support@hey-tsc.com">support@hey-tsc.com</a></p>
+          </div>
+        </div>
+    </div>
+    <div class="row ">
+        <div class="col-md-9">
+            <div class="row users-profile">
+                <div class="col-xs-12">
+                    <div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <span class="user-profil"></span>
+                                <p class="form-heading">Peter</p>
+
+                                <div class="offer user-upload">
+                                    <p>Profilbild</p>
+                                    <span class="user-upload-note">Schaffe Vertrauen und lade ein Profilbild hoch (max. 10MB, min. 250x250px)</span>
+
+                                    <img src="/img/placeholder/user-big.png" alt=""/>                                    <img src="/img/placeholder/user-upload.png" alt=""/>                                    <textarea placeholder=""></textarea>
+                                    <input type="submit" class="green-big-button step3-button submit-green" value="Einstellungen speichern >>">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            {{ include('provider/user_nav2.html.twig', { 'page': 'profil' }) }}
+        </div>
+    </div>
+  </section>
+  </div>
+{% endblock %}
