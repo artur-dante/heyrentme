@@ -35,8 +35,8 @@ $(document).ready(function(){
 
 
 function rowActions(cellvalue, options, cellobject) {
-      return "<a href='category/edit/" +  options.rowId +"'><u>Edit</u></a>  "+
-  	       "<a href='category/delete/" +  options.rowId +"' onclick=\"return confirm('Are you sure to delete?')\"><u>Delete</u></a>";
+      return "<a title='Edit' href='category/edit/" +  options.rowId +"'><u>Edit</u></a>  "+
+  	       "<a title='Delete' href='category/delete/" +  options.rowId +"' onclick=\"return confirm('Are you sure to delete?')\"><u>Delete</u></a>";
   }
 
 var grid = $('#jqgrid');
@@ -46,17 +46,16 @@ if( $('#jqgrid').length > 0 ) {
                 url: '{{ path('admin_category_jsondata') }}',
                 mtype: 'GET',
                 datatype: 'jsonp',
-                colNames: [' ', 'Id', 'Name', 'Slug','Position'],
                 colModel:[
-                        { name:'myac', width:80, fixed:true, sortable:false, resize:false, formatter:rowActions },
-                        { name:'ID', index:'id', width:1, editable:false, sortable:false, hidden: true },
+                        { name:' ', width:80, fixed:true, editable:false, sortable:false, formatter:rowActions },
+                        { name:'Id', index:'id', width:1, editable:false, sortable:false, hidden: true },
                         { name:'Name', index:'name', width: 200, editable:false, sortable:true },
                         { name:'Slug', index:'slug', width: 100, editable:false, sortable:true },
                         { name:'Position', index:'position', align:"right", width: 100, editable:false, sortable:true},
                 ],
                 height: 300,
                 rowNum: 10,
-                rowList: [2, 10, 20],
+                rowList: [10, 50, 200],
                 pager: 'jqgrid-pager',
                 sortname: 'position',
                 viewrecords: false,

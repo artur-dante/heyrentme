@@ -285,30 +285,6 @@ div.tablediv > .table-bordered {
 	border-top : 0px none !important;
 	min-height : 20px !important;
 }
-.ui-jqgrid .ui-pg-button  { 
-	height:auto; 
-}
-.ui-jqgrid  .ui-paging-pager td {
-	padding : 0 5px;
-}
-.ui-jqgrid .ui-pg-button span { 
-	display: block; 
-	margin: 0px 2px; 
-	float:left;
-}
-.ui-jqgrid .ui-pg-button:hover {  }
-.ui-jqgrid .ui-disabled:hover {}
-.ui-jqgrid .ui-pg-input,
-.ui-jqgrid .ui-jqgrid-toppager .ui-pg-input { 
-	display: initial;
-	height:auto;
-	width: auto;
-	font-size:.9em; 
-	margin:0;
-	line-height: inherit;
-	border: none; 
-	padding: 0px 3px
-}
 .ui-jqgrid .ui-pg-selbox, 
 .ui-jqgrid .ui-jqgrid-toppager .ui-pg-selbox {
 	font-size:.9em; 

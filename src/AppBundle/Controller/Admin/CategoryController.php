@@ -5,6 +5,7 @@ namespace AppBundle\Controller\Admin;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Response;
+use AppBundle\Entity\Category;
 
 class CategoryController extends BaseAdminController {
     
@@ -20,8 +21,30 @@ class CategoryController extends BaseAdminController {
      * 
      * @Route("/admin/category/new", name="admin_category_new")
      */
-    public function newAction(Request $request, $id) {
-        return $this->render('admin/category/new.html.twig');
+    public function newAction(Request $request) {
+        $category = new Category();
+        
+        $form = $this->createFormBuilder($category)
+                ->add('name', 'text')
+                ->add('slug', 'text')
+                ->add('position', 'text', array('required' => false))
+                ->getForm();
+        //when the form is posted this method prefills entity with data from form
+        $form->handleRequest($request);
+        
+        if ($form->isValid()) {
+            // save to db
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($category);
+            $em->flush();
+
+            return $this->redirectToRoute("admin_category_list");
+        }
+        
+        
+        return $this->render('admin/category/new.html.twig', array(
+            'form' => $form->createView()
+        ));
     }
     
     /**
@@ -29,7 +52,36 @@ class CategoryController extends BaseAdminController {
      * @Route("/admin/category/edit/{id}", name="admin_category_edit")
      */
     public function editAction(Request $request, $id) {
-        return $this->render('admin/category/edit.html.twig');
+        $category = $this->getDoctrine()->getRepository('AppBundle:Category')->find($id);
+
+        if (!$category) {
+            throw $this->createNotFoundException('No category found for id '.$id);
+        }
+        
+        $form = $this->createFormBuilder($category)
+                ->add('id', 'hidden')
+                ->add('name', 'text')
+                ->add('slug', 'text')
+                ->add('position', 'text', array('required' => false))
+                ->getForm();
+
+       
+        //when the form is posted this method prefills entity with data from form
+        $form->handleRequest($request);
+        
+        if ($form->isValid()) {
+            // save to db
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($category);
+            $em->flush();
+
+            return $this->redirectToRoute("admin_category_list");
+        }
+        
+        
+        return $this->render('admin/category/edit.html.twig', array(
+            'form' => $form->createView()
+        ));
     }
     
     /**
@@ -37,7 +89,14 @@ class CategoryController extends BaseAdminController {
      * @Route("/admin/category/delete/{id}", name="admin_category_delete")
      */
     public function deleteAction(Request $request, $id) {
-        
+        $category = $this->getDoctrine()->getRepository('AppBundle:Category')->find($id);
+
+        if (!$category) {
+            throw $this->createNotFoundException('No category found for id '.$id);
+        }
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($category);
+        $em->flush();
         return $this->redirectToRoute("admin_category_list");
     }
     

@@ -46,6 +46,18 @@ class Category
     }
     
     
+
+    /**
+     * Set id
+     *
+     * @return Category
+     * dummy for a skae of $form->handleRequest($request) becouse it looks for setId($id)
+     */
+    public function setId($id)
+    {
+        return $this;
+    }
+
     
     /**
      * Get id

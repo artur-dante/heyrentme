@@ -378,28 +378,6 @@ tr.ui-search-toolbar select {
   padding: 1px;
 }
 
-/* line 56, ../../sass/vendors/_ui.jqgrid.scss */
-.ui-jqgrid .ui-pg-button {
-  height: 19px !important;
-}
-
-/* line 57, ../../sass/vendors/_ui.jqgrid.scss */
-.ui-jqgrid .ui-pg-button span {
-  display: block;
-  margin: 1px;
-  float: left;
-}
-
-/* line 58, ../../sass/vendors/_ui.jqgrid.scss */
-.ui-jqgrid .ui-pg-button:hover {
-  padding: 0;
-}
-
-/* line 59, ../../sass/vendors/_ui.jqgrid.scss */
-.ui-jqgrid .ui-state-disabled:hover {
-  padding: 1px;
-}
-
 /* line 60, ../../sass/vendors/_ui.jqgrid.scss */
 .ui-jqgrid .ui-pg-input {
   height: 13px;
@@ -808,12 +786,6 @@ tr.ui-search-toolbar select {
   border-left: 0 none;
 }
 
-/* inline edit actions button*/
-/* line 127, ../../sass/vendors/_ui.jqgrid.scss */
-.ui-inline-del.ui-state-hover span, .ui-inline-edit.ui-state-hover span,
-.ui-inline-save.ui-state-hover span, .ui-inline-cancel.ui-state-hover span {
-  margin: -1px;
-}
 
 /* Tree Grid */
 /* line 132, ../../sass/vendors/_ui.jqgrid.scss */
@@ -1039,6 +1011,12 @@ a.g-menu-item, a.soptclass, a.clearsearchclass {
   background-color: #296EAA;
   color: #FFF;
 }
+.ui-jqgrid thead .ui-state-hover{
+  border-color: #296EAA;
+  margin: 0;
+  padding: 0;
+  font-weight: bold;
+}
 /* line 320, ../../sass/partials/_tables.scss */
 .ui-jqgrid tr.jqgfirstrow td {
   border: none;
@@ -1079,10 +1057,6 @@ a.g-menu-item, a.soptclass, a.clearsearchclass {
 /* line 364, ../../sass/partials/_tables.scss */
 .ui-jqgrid .ui-grid-ico-sort.ui-state-disabled {
   color: #60a1d9;
-}
-/* line 369, ../../sass/partials/_tables.scss */
-.ui-jqgrid .ui-pg-button:hover {
-  padding: 1px;
 }
 /* line 373, ../../sass/partials/_tables.scss */
 .ui-jqgrid .ui-pg-table {
