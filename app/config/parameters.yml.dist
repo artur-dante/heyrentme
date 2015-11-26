@@ -2,18 +2,17 @@
 # Set parameters here that may be different on each deployment target of the app, e.g. development, staging, production.
 # http://symfony.com/doc/current/best_practices/configuration.html#infrastructure-related-configuration
 parameters:
-    database_host:     127.0.0.1
-    database_port:     ~
-    database_name:     symfony
-    database_user:     root
-    database_password: ~
-    # You should uncomment this if you want use pdo_sqlite
-    # database_path: "%kernel.root_dir%/data.db3"
-
-    mailer_transport:  smtp
-    mailer_host:       127.0.0.1
-    mailer_user:       ~
-    mailer_password:   ~
-
-    # A secret key that's used to generate certain security-related tokens
-    secret:            ThisTokenIsNotSoSecretChangeIt
+# symfony standard parameters
+    database_host: 192.168.9.6
+    database_port: null
+    database_name: heyrentme
+    database_user: heyrentme
+    database_password: ziller/1793
+    mailer_transport: smtp
+    mailer_host: 127.0.0.1
+    mailer_user: null
+    mailer_password: null
+    secret: sdfslifaspoajspdoi
+# custom parameters
+    image_url_prefix: "/db-img/"
+    image_storage_dir: "D:\\projects\\reddragon\\dev\\web\\db-img\\"

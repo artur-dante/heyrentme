@@ -14,4 +14,33 @@ class CategoryRepository extends \Doctrine\ORM\EntityRepository
         $q = "select c from AppBundle:Category c order by c.position asc";
         return $this->getEntityManager()->createQuery($q)->getResult();
     }
+    
+    public function countAll() {
+        return $this->createQueryBuilder('c')
+            ->select('count(c.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+    
+    public function getAll($sortColumn, $sortDirection, $pageSize, $page) {
+        $sql = "SELECT c FROM AppBundle:Category c";
+        
+        if ($sortColumn != null && $sortColumn != ""){
+            $sql .= " ORDER BY c." . $sortColumn;
+        }
+        if ($sortDirection != null && $sortDirection != ""){
+            $sql .= " " . $sortDirection;
+        }
+        
+        $query = $this->getEntityManager()->createQuery($sql);
+        
+        if ($pageSize != null && $pageSize != ""){
+            $query->setMaxResults($pageSize);
+        }
+        if ($page != null && $page != "" && $page != 1){            
+            $query->setFirstResult(($page - 1) * $pageSize);
+        }
+        
+        return $query->getResult();
+    }
 }

@@ -10,9 +10,9 @@ class DefaultController extends BaseAdminController {
     
     /**
      * 
-     * @Route("/admin", name="admin")
+     * @Route("/admin", name="admin_area")
      */
     public function indexAction() {
-        return new Response("Hello Admin!");
+        return $this->render('admin/default/index.html.twig');
     }
 }
