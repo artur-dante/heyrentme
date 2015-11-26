@@ -37,6 +37,7 @@ class CategoryController extends BaseAdminController {
      * @Route("/admin/category/delete/{id}", name="admin_category_delete")
      */
     public function deleteAction(Request $request, $id) {
+        
         return $this->redirectToRoute("admin_category_list");
     }
     
@@ -53,8 +54,8 @@ class CategoryController extends BaseAdminController {
         $method = $_GET["callback"];
         
         $rows = $this->GetData($sortColumn, $sortDirection, $pageSize, $page);
-        $rowCount = $this->getDoctrine()->getRepository('AppBundle:Category')->countAll();
-        $pagesCount =   ceil($rowCount/$pageSize);
+        $rowsCount = $this->getDoctrine()->getRepository('AppBundle:Category')->countAll();
+        $pagesCount =   ceil($rowsCount/$pageSize);
         
         $rowsStr = "";
         $rowsTemplate = '{ "id": %s, "cell": [null, "%s", "%s", "%s", "%s" ] }';
@@ -67,7 +68,7 @@ class CategoryController extends BaseAdminController {
             $i .=1;
         }
         
-        $json = sprintf('{ "records":%s,"page":%s ,"total":%s ,"rows": [ %s ] }', $rowCount, $page, $pagesCount, $rowsStr );
+        $json = sprintf('{ "records":%s,"page":%s ,"total":%s ,"rows": [ %s ] }', $rowsCount, $page, $pagesCount, $rowsStr );
         
         $response = new Response();
         $response->setContent('/**/'.$method.'('. $json .')');

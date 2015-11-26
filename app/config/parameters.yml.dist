@@ -16,3 +16,5 @@ parameters:
 # custom parameters
     image_url_prefix: "/db-img/"
     image_storage_dir: "D:\\projects\\reddragon\\dev\\web\\db-img\\"
+    facebook_client_id: 434563180081529
+    facebook_client_secret: 37b0f133322561ac5d5621bfd258043d
