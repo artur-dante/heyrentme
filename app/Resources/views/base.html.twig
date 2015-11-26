@@ -1,7 +1,8 @@
 {% block header %}
     {{ render(controller('AppBundle:Common:header')) }}
 {% endblock %}
-{% block home_header %}
+
+{% block home_header %}    
     {{ include('common/home_header.html.twig') }}
 {% endblock %}
 {% block body %}{% endblock %}

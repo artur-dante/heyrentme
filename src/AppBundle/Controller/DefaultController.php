@@ -7,6 +7,48 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class DefaultController extends BaseController {
+    
+    
+     /**
+     * @Route("/send", name="sendEmail")
+     */
+    public function Send()
+    {
+        $name = "TestTESTtest";
+        $message = \Swift_Message::newInstance()
+        ->setSubject('Hello Email')
+        ->setFrom('yaspen@tlen.pl')
+        ->setTo('yaspen@tlen.pl')
+        ->setBody(
+            $this->renderView(
+                // app/Resources/views/Emails/registration.html.twig
+                'Emails/registration.html.twig',
+                array('name' => $name)
+            ),
+            'text/html'
+        )
+        /*
+         * If you also want to include a plaintext version of the message
+        ->addPart(
+            $this->renderView(
+                'Emails/registration.txt.twig',
+                array('name' => $name)
+            ),
+            'text/plain'
+        )
+        */
+        ;
+        $this->get('mailer')->send($message);
+    }
+    
+    /**
+     * @Route("/vermietung", name="vermietung")
+     */
+    public function someTestAction(Request $request) {
+        return $this->render('default/index.html.twig');
+    }
+    
+    
     /**
      * @Route("/", name="homepage")
      */

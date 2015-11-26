@@ -11,6 +11,8 @@ parameters:
 framework:
     #esi:             ~
     #translator:      { fallbacks: ["%locale%"] }
+    #added by Seba for user bundle
+    translator: ~
     secret:          "%secret%"
     router:
         resource: "%kernel.root_dir%/config/routing.yml"
@@ -80,3 +82,49 @@ swiftmailer:
     username:  "%mailer_user%"
     password:  "%mailer_password%"
     spool:     { type: memory }
+    
+#<added by Seba>
+fos_user:
+    db_driver: orm 
+    firewall_name: main
+    user_class: AppBundle\Entity\User
+    registration:
+        form:
+            type: app_user_registration
+    resetting:
+        token_ttl: 0
+        email:
+            from_email: 
+                address:        heyrentme@tlen.pl
+                sender_name:    HeyRentMe
+            template:   FOSUserBundle:Resetting:email.txt.twig
+        form:
+            type:               fos_user_resetting
+            name:               fos_user_resetting_form
+            validation_groups:  [ResetPassword, Default]
+        
+
+hwi_oauth:
+    # name of the firewall in which this bundle is active, this setting MUST be set
+    firewall_name: main
+    connect:
+        account_connector: app.provider.oauth
+    resource_owners:
+        facebook:
+            type:                facebook
+            client_id:           %facebook_client_id%
+            client_secret:       %facebook_client_secret%
+            scope:               "email, public_profile"
+            infos_url:           "https://graph.facebook.com/me?fields=id,name,email,picture.type(large)"
+            paths:
+                email: email
+            options:
+                display: page
+        #google:
+        #    type:                google
+        #    client_id:           %google_client_id%
+        #    client_secret:       %google_client_secret%
+        #    scope:              "https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile"
+        #    paths:
+        #        email: email
+#</added by Seba>
