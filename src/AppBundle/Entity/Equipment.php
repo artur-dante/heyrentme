@@ -30,33 +30,46 @@ class Equipment
      */
     protected $price;
     /**
-     * @ORM\Column(type="decimal", scale=0, precision=10)
+     * @ORM\Column(type="decimal", scale=10, precision=2)
      */
     protected $discount;
     /**
-     * @ORM\Column(name="TestBuy", type="integer")
+     * @ORM\Column(type="decimal", scale=10, precision=2)
      */
-    protected $testBuy;
+    protected $value;
+    /**
+     * @ORM\Column(type="decimal", scale=10, precision=2)
+     */
+    protected $deposit;
+    /**
+     * @ORM\Column(name="PriceBuy", type="decimal", scale=10, precision=2)
+     */
+    protected $priceBuy;
+    /**
+     * @ORM\Column(type="integer")
+     */
+    protected $invoice;
+    /**
+     * @ORM\Column(type="integer")
+     */
+    protected $industrial;
             
     /**
      * @ORM\ManyToOne(targetEntity="Subcategory", inversedBy="equipments")
      * @ORM\JoinColumn(name="subcategoryID", referencedColumnName="id")
      */
-    protected $subcategory;    
-
-    /**
-     * @ORM\OneToOne(targetEntity="Image")
-     * @ORM\JoinColumn(name="imageID", referencedColumnName="id")
-     */
-    protected $image;
+    protected $subcategory;
     
-    public function getImageUrl() {
-        $url = '';
-        if ($this->image != null) {
-            $url = $this->image->getUrlPath();
-        }
-        return $url;
-    }
+    
+    /**
+     * 
+     * @ORM\ManyToMany(targetEntity="Image")
+     * @ORM\JoinTable(name="equipment_image",
+     *      joinColumns={ @ORM\JoinColumn(name="equipmentID", referencedColumnName="id") },
+     *      inverseJoinColumns={ @ORM\JoinColumn(name="imageID", referencedColumnName="id") }
+     *  )
+     */
+    protected $images;
     
     public function getUrlPath() {
        $sg = new Slugify(); // TODO: make slugify a helper (static)
@@ -64,6 +77,14 @@ class Equipment
        return "{$this->id}/{$s}";//   ;
     }
     
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->images = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
     /**
      * Get id
      *
@@ -171,27 +192,123 @@ class Equipment
     }
 
     /**
-     * Set testBuy
+     * Set value
      *
-     * @param integer $testBuy
+     * @param string $value
      *
      * @return Equipment
      */
-    public function setTestBuy($testBuy)
+    public function setValue($value)
     {
-        $this->testBuy = $testBuy;
+        $this->value = $value;
 
         return $this;
     }
 
     /**
-     * Get testBuy
+     * Get value
+     *
+     * @return string
+     */
+    public function getValue()
+    {
+        return $this->value;
+    }
+
+    /**
+     * Set deposit
+     *
+     * @param string $deposit
+     *
+     * @return Equipment
+     */
+    public function setDeposit($deposit)
+    {
+        $this->deposit = $deposit;
+
+        return $this;
+    }
+
+    /**
+     * Get deposit
+     *
+     * @return string
+     */
+    public function getDeposit()
+    {
+        return $this->deposit;
+    }
+
+    /**
+     * Set priceBuy
+     *
+     * @param string $priceBuy
+     *
+     * @return Equipment
+     */
+    public function setPriceBuy($priceBuy)
+    {
+        $this->priceBuy = $priceBuy;
+
+        return $this;
+    }
+
+    /**
+     * Get priceBuy
+     *
+     * @return string
+     */
+    public function getPriceBuy()
+    {
+        return $this->priceBuy;
+    }
+
+    /**
+     * Set invoice
+     *
+     * @param integer $invoice
+     *
+     * @return Equipment
+     */
+    public function setInvoice($invoice)
+    {
+        $this->invoice = $invoice;
+
+        return $this;
+    }
+
+    /**
+     * Get invoice
      *
      * @return integer
      */
-    public function getTestBuy()
+    public function getInvoice()
     {
-        return $this->testBuy;
+        return $this->invoice;
+    }
+
+    /**
+     * Set industrial
+     *
+     * @param integer $industrial
+     *
+     * @return Equipment
+     */
+    public function setIndustrial($industrial)
+    {
+        $this->industrial = $industrial;
+
+        return $this;
+    }
+
+    /**
+     * Get industrial
+     *
+     * @return integer
+     */
+    public function getIndustrial()
+    {
+        return $this->industrial;
     }
 
     /**
@@ -219,26 +336,36 @@ class Equipment
     }
 
     /**
-     * Set image
+     * Add image
      *
      * @param \AppBundle\Entity\Image $image
      *
      * @return Equipment
      */
-    public function setImage(\AppBundle\Entity\Image $image = null)
+    public function addImage(\AppBundle\Entity\Image $image)
     {
-        $this->image = $image;
+        $this->images[] = $image;
 
         return $this;
     }
 
     /**
-     * Get image
+     * Remove image
      *
-     * @return \AppBundle\Entity\Image
+     * @param \AppBundle\Entity\Image $image
      */
-    public function getImage()
+    public function removeImage(\AppBundle\Entity\Image $image)
     {
-        return $this->image;
+        $this->images->removeElement($image);
+    }
+
+    /**
+     * Get images
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getImages()
+    {
+        return $this->images;
     }
 }

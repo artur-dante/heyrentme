@@ -1,0 +1,58 @@
+{% extends 'admin/admin.base.html.twig' %}
+{% block body %}
+<h1>Category add</h1>
+
+<div class="row">
+    <div class="col-xs-12">
+        <a class="btn btn-default" href="{{ path('admin_category_list') }}">Back to Category list</a>
+    </div>
+</div>
+    
+{{ form_start(form) }}
+<div class="form-horizontal">
+    {{ form_errors(form) }}
+
+    <div class="row">
+        <div class="form-group">
+          <label for="form_name" class="control-label col-xs-2">Name</label>
+          <div class="col-xs-10">
+            {{ form_errors(form.name) }}
+            {{ form_widget(form.name, { 'attr': { 'class': 'text-box single-line', 'placeholder': 'Input name' }}) }}
+          </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group">
+          <label for="form_slug" class="control-label col-xs-2">Slug</label>
+          <div class="col-xs-10">
+          {{ form_errors(form.slug) }}
+          {{ form_widget(form.slug, { 'attr': { 'class': 'text-box single-line', 'placeholder': 'Input slug' }}) }}
+          </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group">
+          <label for="form_position" class="control-label col-xs-2">Position</label>
+          <div class="col-xs-10">
+          {{ form_errors(form.position) }}
+          {{ form_widget(form.position, { 'attr': { 'class': 'text-box single-line', 'placeholder': 'Input position' }}) }}
+          </div>
+        </div>
+    </div>
+    <div class="row">          
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" class="btn btn-default" value="Add">
+            </div>
+        </div>
+    </div>
+    
+</div>
+{{ form_end(form) }}
+
+<div class="row">
+    <div class="col-xs-12">
+        <a class="btn btn-default" href="{{ path('admin_category_list') }}">Back to Category list</a>
+    </div>
+</div>            
+{% endblock %}
