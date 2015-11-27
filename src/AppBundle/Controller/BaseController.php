@@ -7,6 +7,9 @@ use Symfony\Component\HttpFoundation\Request;
 
 class BaseController extends Controller
 {
+    public function getUser() {
+        return $this->get('security.token_storage')->getToken()->getUser();
+    }
     /*
      * We cach categories and subcategories in user session,
      * since they won't change often.
