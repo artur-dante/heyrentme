@@ -34,7 +34,7 @@ security:
                 failure_path: /rentme?login
                 login_path: /rentme?login
                 check_path: /connect_check
-                provider: fos_userbundle
+                provider: fos_userbundle                                                
                 resource_owners:
                     facebook: "/login/check-facebook"
                     google: "/login/check-google"
@@ -43,6 +43,8 @@ security:
             form_login:
                 provider: fos_userbundle
                 csrf_provider: security.csrf.token_manager
+                default_target_path: /loggedIn
+                always_use_default_target_path: true
 
             logout:       true
             anonymous:    true

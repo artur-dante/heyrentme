@@ -17,6 +17,9 @@ class RegistrationType extends AbstractType
         $builder->add('email');
         $builder->add('plainPassword','password');
         $builder->remove('username');
+        $builder->add('accept', 'checkbox', array(                
+                'required' => true,
+));
                 
     }
 
