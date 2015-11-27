@@ -54,6 +54,18 @@ class Subcategory
         }
         return $url;
     }
+    
+    /**
+     * Set id
+     *
+     * @return Subcategory
+     * dummy for a sake of $form->handleRequest($request) becouse it looks for setId($id)
+     */
+    public function setId($id)
+    {
+        return $this;
+    }
+    
 
     /**
      * Get id
