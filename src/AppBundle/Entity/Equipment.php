@@ -53,6 +53,23 @@ class Equipment
      * @ORM\Column(type="integer")
      */
     protected $industrial;
+    
+    /**
+     * @ORM\Column(name="AddrStreet", type="string", length=128)
+     */
+    protected $addrStreet;
+    /**
+     * @ORM\Column(name="AddrNumber", type="string", length=16)
+     */
+    protected $addrNumber;
+    /**
+     * @ORM\Column(name="AddrPostcode", type="string", length=4)
+     */
+    protected $addrPostcode;
+    /**
+     * @ORM\Column(name="AddrPlace", type="string", length=128)
+     */
+    protected $addrPlace;
             
     /**
      * @ORM\ManyToOne(targetEntity="Subcategory", inversedBy="equipments")
@@ -396,5 +413,101 @@ class Equipment
     public function getUser()
     {
         return $this->user;
+    }
+
+    /**
+     * Set addrStreet
+     *
+     * @param string $addrStreet
+     *
+     * @return Equipment
+     */
+    public function setAddrStreet($addrStreet)
+    {
+        $this->addrStreet = $addrStreet;
+
+        return $this;
+    }
+
+    /**
+     * Get addrStreet
+     *
+     * @return string
+     */
+    public function getAddrStreet()
+    {
+        return $this->addrStreet;
+    }
+
+    /**
+     * Set addrNumber
+     *
+     * @param string $addrNumber
+     *
+     * @return Equipment
+     */
+    public function setAddrNumber($addrNumber)
+    {
+        $this->addrNumber = $addrNumber;
+
+        return $this;
+    }
+
+    /**
+     * Get addrNumber
+     *
+     * @return string
+     */
+    public function getAddrNumber()
+    {
+        return $this->addrNumber;
+    }
+
+    /**
+     * Set addrPostcode
+     *
+     * @param string $addrPostcode
+     *
+     * @return Equipment
+     */
+    public function setAddrPostcode($addrPostcode)
+    {
+        $this->addrPostcode = $addrPostcode;
+
+        return $this;
+    }
+
+    /**
+     * Get addrPostcode
+     *
+     * @return string
+     */
+    public function getAddrPostcode()
+    {
+        return $this->addrPostcode;
+    }
+
+    /**
+     * Set addrPlace
+     *
+     * @param string $addrPlace
+     *
+     * @return Equipment
+     */
+    public function setAddrPlace($addrPlace)
+    {
+        $this->addrPlace = $addrPlace;
+
+        return $this;
+    }
+
+    /**
+     * Get addrPlace
+     *
+     * @return string
+     */
+    public function getAddrPlace()
+    {
+        return $this->addrPlace;
     }
 }
