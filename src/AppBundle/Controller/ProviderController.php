@@ -13,6 +13,7 @@ use AppBundle\Utils;
 class ProviderController extends BaseController {
     
     /**
+     * @Route("/provider", name="provider")
      * @Route("/provider/profil", name="profil")
      */
     public function profilAction(Request $request) {
@@ -157,7 +158,7 @@ class ProviderController extends BaseController {
                 $fullPath = sprintf("%s.%s", $uuid, $file->getClientOriginalExtension());
                 $fullPath = sprintf("%s.%s", $uuid, $file->getClientOriginalExtension());
                 
-                $file->move(, $fullPath);
+                //$file->move(, $fullPath);
                 
                 $ef = array(
                     $uuid,
