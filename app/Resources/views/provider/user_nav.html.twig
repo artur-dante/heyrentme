@@ -2,7 +2,7 @@
     <div class="container relative">
         {% if app.user %}
             <img src="/img/user.png" alt=""/>
-            <p>Peter</p>
+            <p>{{ app.user.name }}</p>
             <a href="#" id="open-menu"><span class="down"></span></a>
             <ul class="dropdown-menu-span">
               <li><a href="{{ path('profil') }}">Profil</a></li>
