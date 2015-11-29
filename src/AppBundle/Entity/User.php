@@ -99,6 +99,25 @@ class User extends BaseUser
         $this->surname = $surname;
     }
     
+    /**
+     * @var bit
+     *     
+     * 
+     *  *  * @Assert\NotBlank(message="Please accept your surname.", groups={"Registration"})    
+     * 
+     */
+    protected $accept;
+    
+    public function getAccept()
+    {
+        return $this->accept;
+    }
+
+    public function setAccept($accept)
+    {
+        $this->accept = $accept;
+    }
+    
     
     public function __construct()
     {

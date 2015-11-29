@@ -1,15 +1,15 @@
 {% extends 'admin/admin.base.html.twig' %}
 {% block body %}
-<h1>Category list</h1>
+<h1>Subcategories for {{ category.getName() }}</h1>
 
 <div class="row">
     <div class="col-xs-12">
-        <a class="btn btn-default" href="{{ path('admin_area') }}">Back to Admin Area</a>
+        <a class="btn btn-default" href="{{ path('admin_category_list') }}">Back to Category list</a>
     </div>
 </div>        
 <div class="row">    
     <div class="col-xs-12">
-        <a class="btn btn-default" href="{{ path('admin_category_new') }}">New category</a>
+        <a class="btn btn-default" href="{{ path('admin_subcategory_new', { 'categoryID': category.getId() }) }}">New Subcategory</a>
     </div>
 </div>    
 
@@ -35,21 +35,21 @@ $(document).ready(function(){
 
 
 function rowActions(cellvalue, options, cellobject) {
-      return   "<a title='Subcategories'    href='subcategory/"     +  options.rowId + "'><u>Subcategories</u></a>  "+  
-               "<a title='Edit'             href='category/edit/"   +  options.rowId + "'><u>Edit</u></a>  "+
-  	       "<a title='Delete'           href='category/delete/" +  options.rowId + "' onclick=\"return confirm('Are you sure to delete?')\"><u>Delete</u></a>";
+      return "<a title='Edit' href='edit/" +  options.rowId +"'><u>Edit</u></a>  "+
+  	       "<a title='Delete' href='delete/" +  options.rowId +"' onclick=\"return confirm('Are you sure to delete?')\"><u>Delete</u></a>";
   }
 
 var grid = $('#jqgrid');
 
 if( $('#jqgrid').length > 0 ) {
         grid.jqGrid({
-                url: '{{ path('admin_category_jsondata') }}',
+                url: '{{ path('admin_subcategory_jsondata', { 'categoryID': category.getId() }) }}',
                 mtype: 'GET',
                 datatype: 'jsonp',
                 colModel:[
-                        { name:' ', width:180, fixed:true, editable:false, sortable:false, formatter:rowActions },
+                        { name:' ', width:80, fixed:true, editable:false, sortable:false, formatter:rowActions },
                         { name:'Id', index:'id', width:1, editable:false, sortable:false, hidden: true },
+                        { name:'Category', index:'category', width: 200, editable:false, sortable:true },
                         { name:'Name', index:'name', width: 200, editable:false, sortable:true },
                         { name:'Slug', index:'slug', width: 100, editable:false, sortable:true },
                         { name:'Position', index:'position', align:"right", width: 100, editable:false, sortable:true},
@@ -61,7 +61,7 @@ if( $('#jqgrid').length > 0 ) {
                 sortname: 'position',
                 viewrecords: false,
                 sortorder: "asc",
-                caption: "Categories",
+                caption: "Subcategories",
                 multiselect: false,
         });
 }

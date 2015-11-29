@@ -10,8 +10,10 @@ parameters:
 
 framework:
     #esi:             ~
+
     translator:      ~ 
     # translator: { fallbacks: ["%locale%"] }
+
     secret:          "%secret%"
     router:
         resource: "%kernel.root_dir%/config/routing.yml"
@@ -174,8 +176,11 @@ fos_user:
     registration:
         form:
             type: app_user_registration
+        confirmation:
+            enabled: true
+            template: Emails/registration_confirm.html.twig
     resetting:
-        token_ttl: 0
+        token_ttl: 3600
         email:
             from_email: 
                 address:        heyrentme@tlen.pl
@@ -185,6 +190,8 @@ fos_user:
             type:               fos_user_resetting
             name:               fos_user_resetting_form
             validation_groups:  [ResetPassword, Default]
+    service:
+        mailer: app.custom_fos_user_mailer
         
 
 hwi_oauth:

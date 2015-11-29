@@ -38,4 +38,39 @@ class SubcategoryRepository extends \Doctrine\ORM\EntityRepository
         $q = "select s from AppBundle:Subcategory s join s.category c order by c.position asc, s.position asc";
         return $this->getEntityManager()->createQuery($q)->getResult();
     }
+    
+    public function countAllByCategoryId($categoryID) {
+        return $this->createQueryBuilder('sc')
+            ->where('sc.category = :categoryID')
+            ->setParameter('categoryID', $categoryID)                
+            ->select('count(sc.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+    
+    public function getAllByCategoryId($categoryID, $sortColumn, $sortDirection, $pageSize, $page) {
+        $sql = "SELECT sc FROM AppBundle:Subcategory sc WHERE sc.category = :categoryID";
+        
+        
+        if ($sortColumn != null && $sortColumn != ""){
+            $sql .= " ORDER BY sc." . $sortColumn;
+        }
+        if ($sortDirection != null && $sortDirection != ""){
+            $sql .= " " . $sortDirection;
+        }
+        
+        $query = $this->getEntityManager()->createQuery($sql);
+        $query->setParameter('categoryID', $categoryID);
+
+        
+        if ($pageSize != null && $pageSize != ""){
+            $query->setMaxResults($pageSize);
+        }
+        if ($page != null && $page != "" && $page != 1){            
+            $query->setFirstResult(($page - 1) * $pageSize);
+        }
+        
+        return $query->getResult();
+    }
+    
 }

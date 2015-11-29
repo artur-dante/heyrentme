@@ -2,11 +2,15 @@
 
 namespace AppBundle\Controller;
 
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use FOS\UserBundle\Controller\SecurityController as BaseSecurityController;
+
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
-
-
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\Security;
+use Symfony\Component\Security\Core\SecurityContextInterface;
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
 class SecurityController extends BaseSecurityController
 {
@@ -61,9 +65,11 @@ class SecurityController extends BaseSecurityController
             'csrf_token' => $csrfToken,
         ));
     }
-    
+     /**
+     * @Route("/loggedIn", name="loggedin")
+     */
     public function userIsLoggedAction(){
-        $response = new Response("User_Is_Logged");
+        $response = new Response(json_encode("User_Is_Logged"));
         $response->headers->set('Content-Type', 'application/json');
         return $response;
     }

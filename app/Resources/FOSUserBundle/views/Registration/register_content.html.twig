@@ -1,31 +1,4 @@
-<script>
-    $(function(){
-        var ajaxFormSubmit = function () {
-            var $form = $(this);
-
-            var options = {
-                url: $form.attr("action"),
-                type: $form.attr("method"),
-                data: $form.serialize()
-            };
-
-            $.ajax(options).done(function (data) {                
-                var $target = $("#formRegister");
-                var $newHtml = $(data);
-                if ($newHtml.text().indexOf("User_Is_Registered") != -1){                                      
-                    $target.replaceWith($newHtml);
-                } else {                    
-                    location.reload();
-                }
-            });
-
-            return false;
-        };
-        
-        $("#formRegister").submit(ajaxFormSubmit);
-    });
-</script>
-
+<script src="/js/register.js"></script>
 {% trans_default_domain 'FOSUserBundle' %}
 
 {{ form_start(form, {'method': 'post', 'action': path('fos_user_registration_register'), 'attr': { 'id':'formRegister', 'class': 'fos_user_registration_register'}}) }}    
@@ -46,7 +19,7 @@
     
     
     <input type="submit" value="mit E-mail anmelden">
-    <label class="agb"><input type="checkbox"> 
+    <label class="agb">{{ form_widget(form.accept) }}
         <span>Ich akzeptiere die <a href="#">AGBs</a> von hey! sharing community</span>
     </label>
 {{ form_end(form) }}
