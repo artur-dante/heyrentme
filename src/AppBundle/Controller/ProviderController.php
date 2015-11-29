@@ -65,7 +65,6 @@ class ProviderController extends BaseController {
             $em->persist($eq);
             $em->flush();
             
-            //$this->get("logger:artur")->info("equipment id: {$eq->getId()})");
             $session = $request->getSession();
             $session->set('EquipmentAddId', $eq->getId());
             return $this->redirectToRoute('equipment-add-2');
@@ -134,6 +133,9 @@ class ProviderController extends BaseController {
                 
                 $eq->addImage($img);
                 $em->flush();
+                
+                $session->remove('EquipmentAddFileArray');
+                return $this->redirectToRoute('equipment-add-3');
             }
         }
         
@@ -154,11 +156,11 @@ class ProviderController extends BaseController {
             $eqFiles = $session->get('EquipmentAddFileArray');
             if (count($eqFiles) < 3) {
                 $uuid = Utils::getUuid();
-                $path = $this->getParameter('image_storage_dir');
-                $fullPath = sprintf("%s.%s", $uuid, $file->getClientOriginalExtension());
-                $fullPath = sprintf("%s.%s", $uuid, $file->getClientOriginalExtension());
+                $path = sprintf("%stemp\\", $this->getParameter('image_storage_dir'));
+                $name = sprintf("%s.%s", $uuid, $file->getClientOriginalExtension());
+                $fullPath = sprintf("%s%s", $path, $name);
                 
-                //$file->move(, $fullPath);
+                $f = $file->move($path, $name);
                 
                 $ef = array(
                     $uuid,
