@@ -48,11 +48,7 @@ class Subcategory
     protected $image;
     
     public function getImageUrl() {
-        $url = '';
-        if ($this->image != null) {
-            $url = $this->image->getUrlPath();
-        }
-        return $url;
+        return $this->image != null ? $this->image->getUrlPath() : "";
     }
     
     /**

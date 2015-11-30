@@ -10,11 +10,15 @@ $(function(){
 
             $.ajax(options).done(function (data) {    
                 var $target = $("#formRegister");
-                var $newHtml = $(data);                
+                var $newHtml = $(data);        
+                $target.replaceWith($newHtml);
                 if (data.indexOf("User_Is_Registered") == -1){                                      
+                   
                     $target.replaceWith($newHtml);
-                } else {                    
-                    location.reload();
+                } else {
+                    $("#confirmationDiv").show();
+                   
+                    
                 }
             });
 

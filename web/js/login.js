@@ -1,4 +1,5 @@
- $(function(){
+
+$(function(){
         var ajaxFormSubmit = function () {
             var $form = $(this);
 
@@ -15,7 +16,8 @@
                 if (data.indexOf("User_Is_Logged") == -1){                                      
                     $target.replaceWith($newHtml);
                 } else {              
-                    location.reload();
+                    //location.reload();
+                    location.href = "provider/profil";
                 }
                 
             });

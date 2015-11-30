@@ -5,7 +5,10 @@ namespace AppBundle\Controller\Admin;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Response;
+use AppBundle\Utils;
 use AppBundle\Entity\Category;
+
+
 
 class CategoryController extends BaseAdminController {
     
@@ -33,8 +36,38 @@ class CategoryController extends BaseAdminController {
         $form->handleRequest($request);
         
         if ($form->isValid()) {
-            // save to db
+            //check if there is file
+            $file = $request->files->get('upl');
+            
             $em = $this->getDoctrine()->getManager();
+            
+            if ($file != null && $file->isValid()) {
+                
+                // save file
+                $uuid = Utils::getUuid();
+                $image_storage_dir = $this->getParameter('image_storage_dir');
+                
+                $destDir = sprintf("%scategory\\",$image_storage_dir);
+                $destFilename = sprintf("%s.%s", $uuid, $file->getClientOriginalExtension());
+                
+                $file->move($destDir, $destFilename);
+                
+                // create object
+                $img = new \AppBundle\Entity\Image();
+                $img->setUuid($uuid);
+                $img->setName($destFilename);
+                $img->setExtension($file->getClientOriginalExtension());
+                $img->setOriginalPath($file->getClientOriginalName());
+                $img->setPath('category');
+                              
+                $em->persist($img);
+                $em->flush();
+                
+                $category->setImage($img);
+            }
+            
+            // save to db
+            
             $em->persist($category);
             $em->flush();
 
@@ -70,8 +103,43 @@ class CategoryController extends BaseAdminController {
         $form->handleRequest($request);
         
         if ($form->isValid()) {
-            // save to db
+            
+            //check if there is file
+            $file = $request->files->get('upl');
+            
             $em = $this->getDoctrine()->getManager();
+            
+            if ($file != null && $file->isValid()) {
+                
+                //remove old Image (both file from filesystem and entity from db)
+                $this->getDoctrine()->getRepository('AppBundle:Category')->removeImage($category, $this->getParameter('image_storage_dir'));
+                
+                
+                // save file
+                $uuid = Utils::getUuid();
+                $image_storage_dir = $this->getParameter('image_storage_dir');
+                
+                $destDir = sprintf("%scategory\\",$image_storage_dir);
+                $destFilename = sprintf("%s.%s", $uuid, $file->getClientOriginalExtension());
+                
+                $file->move($destDir, $destFilename);
+                
+                // create object
+                $img = new \AppBundle\Entity\Image();
+                $img->setUuid($uuid);
+                $img->setName($destFilename);
+                $img->setExtension($file->getClientOriginalExtension());
+                $img->setOriginalPath($file->getClientOriginalName());
+                $img->setPath('category');
+                              
+                $em->persist($img);
+                $em->flush();
+                
+                $category->setImage($img);
+            }            
+            
+            // save to db
+
             $em->persist($category);
             $em->flush();
 
@@ -80,7 +148,8 @@ class CategoryController extends BaseAdminController {
         
         
         return $this->render('admin/category/edit.html.twig', array(
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'category' => $category
         ));
     }
     
@@ -94,6 +163,13 @@ class CategoryController extends BaseAdminController {
         if (!$category) {
             throw $this->createNotFoundException('No category found for id '.$id);
         }
+        
+        //remove old Image (both file from filesystem and entity from db)
+        $this->getDoctrine()->getRepository('AppBundle:Category')->removeImage($category, $this->getParameter('image_storage_dir'));
+        
+        //remove subcategories
+        $this->getDoctrine()->getRepository('AppBundle:Category')->removeSubcategoriesFromCategory($category);
+        
         $em = $this->getDoctrine()->getManager();
         $em->remove($category);
         $em->flush();
