@@ -9,46 +9,6 @@ use Symfony\Component\HttpFoundation\Response;
 class DefaultController extends BaseController {
     
     
-     /**
-     * @Route("/send", name="sendEmail")
-     */
-    public function Send()
-    {
-        $name = "TestTESTtest";
-        $message = \Swift_Message::newInstance()
-        ->setSubject('Hello Email')
-        ->setFrom('yaspen@tlen.pl')
-        ->setTo('yaspen@tlen.pl')
-        ->setBody(
-            $this->renderView(
-                // app/Resources/views/Emails/registration.html.twig
-                'Emails/registration.html.twig',
-                array('name' => $name)
-            ),
-            'text/html'
-        )
-        /*
-         * If you also want to include a plaintext version of the message
-        ->addPart(
-            $this->renderView(
-                'Emails/registration.txt.twig',
-                array('name' => $name)
-            ),
-            'text/plain'
-        )
-        */
-        ;
-        $this->get('mailer')->send($message);
-    }
-    
-    /**
-     * @Route("/vermietung", name="vermietung")
-     */
-    public function someTestAction(Request $request) {
-        return $this->render('default/index.html.twig');
-    }
-    
-    
     /**
      * @Route("/", name="homepage")
      */
@@ -146,20 +106,46 @@ class DefaultController extends BaseController {
      * @Route("/test", name="test")
      */
     public function testAction(Request $request) {
-        $cat = $this->getDoctrine()->getRepository('AppBundle:Category')->find(1);
-        $subs = $cat->getSubcategories();
-        $s = '';
-        foreach($subs as $sub) {
-            $s = $s . "Sub: {$sub->getName()} (id: {$sub->getId()}) ";
-            $c = $sub->getCategory();
-            $img = $c->getImage();
-            $s = $s . "Cat: {$c->getName()} (id: {$c->getId()}), img: {$img->getUuid()} <br/>";
-            $eqs = $sub->getEquipments();
-            foreach($eqs as $eq) {
-                $s = $s . "----> Equipment: {$eq->getName()} (id: {$eq->getId()}) <br/>";
-            }
-        }
-        
-        return new Response($s);
+        return new Response(phpinfo());
     }        
+    
+     /**
+     * @Route("/send", name="sendEmail")
+     */
+    public function Send()
+    {
+        $name = "TestTESTtest";
+        $message = \Swift_Message::newInstance()
+        ->setSubject('Hello Email')
+        ->setFrom('yaspen@tlen.pl')
+        ->setTo('yaspen@tlen.pl')
+        ->setBody(
+            $this->renderView(
+                // app/Resources/views/Emails/registration.html.twig
+                'Emails/registration.html.twig',
+                array('name' => $name)
+            ),
+            'text/html'
+        )
+        /*
+         * If you also want to include a plaintext version of the message
+        ->addPart(
+            $this->renderView(
+                'Emails/registration.txt.twig',
+                array('name' => $name)
+            ),
+            'text/plain'
+        )
+        */
+        ;
+        $this->get('mailer')->send($message);
+    }
+    
+    /**
+     * @Route("/vermietung", name="vermietung")
+     */
+    public function someTestAction(Request $request) {
+        return $this->render('default/index.html.twig');
+    }
+    
 }
