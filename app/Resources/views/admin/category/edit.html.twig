@@ -7,7 +7,7 @@
         <a class="btn btn-default" href="{{ path('admin_category_list') }}">Back to Category list</a>
     </div>
 </div>        
-{{ form_start(form) }}
+{{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
 <div class="form-horizontal">
     {{ form_errors(form) }}
     
@@ -40,6 +40,17 @@
           </div>
         </div>
     </div>
+    
+    <div class="row">
+        <img src="{{ image_url_prefix }}{{ category.imageUrl }}" alt=""/>
+        <div class="form-group">
+          <label for="form_upl" class="control-label col-xs-2">Change category image</label>
+          <div class="col-xs-10">
+            <input type="file" name="upl"/>
+          </div>
+        </div>
+    </div>
+          
     <div class="row">          
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">

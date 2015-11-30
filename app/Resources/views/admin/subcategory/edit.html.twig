@@ -7,7 +7,7 @@
         <a class="btn btn-default" href="{{ path('admin_subcategory_list', { 'categoryID': category.getId() }) }}">Back to Subcategory list</a>
     </div>
 </div>        
-{{ form_start(form) }}
+{{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
 <div class="form-horizontal">
     {{ form_errors(form) }}
     
@@ -50,6 +50,18 @@
           </div>
         </div>
     </div>
+
+    <div class="row">
+        <img src="{{ image_url_prefix }}{{ subcategory.imageUrl }}" alt=""/>
+        <div class="form-group">
+          <label for="form_upl" class="control-label col-xs-2">Change subcategory image</label>
+          <div class="col-xs-10">
+            <input type="file" name="upl"/>
+          </div>
+        </div>
+    </div>
+          
+          
     <div class="row">          
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">

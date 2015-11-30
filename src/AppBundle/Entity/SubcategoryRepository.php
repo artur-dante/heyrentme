@@ -2,6 +2,9 @@
 
 namespace AppBundle\Entity;
 
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
+
 /**
  * SubcategoryRepository
  *
@@ -72,5 +75,24 @@ class SubcategoryRepository extends \Doctrine\ORM\EntityRepository
         
         return $query->getResult();
     }
-    
+    public function removeImage($subcategory, $image_storage_dir) {
+        $oldImage = $subcategory->getImage();
+        if ($oldImage != null) {
+            $fullPath = sprintf("%s%s\\%s",
+                $image_storage_dir,
+                $oldImage->getPath(),
+                $oldImage->getName());
+            $fs = new Filesystem();
+            $fs->remove($fullPath);
+
+            $em = $this->getEntityManager();
+
+            $subcategory->setImage(null); 
+            $em->remove($oldImage);
+            $em->flush();
+        }
+        
+        return $subcategory;
+    }
+
 }
