@@ -2,6 +2,9 @@
 
 namespace AppBundle\Entity;
 
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
+
 /**
  * CategoryRepository
  *
@@ -43,4 +46,35 @@ class CategoryRepository extends \Doctrine\ORM\EntityRepository
         
         return $query->getResult();
     }
+    
+    public function removeImage($category, $image_storage_dir) {
+        $oldImage = $category->getImage();
+        if ($oldImage != null) {
+            $fullPath = sprintf("%s%s\\%s",
+                $image_storage_dir,
+                $oldImage->getPath(),
+                $oldImage->getName());
+            $fs = new Filesystem();
+            $fs->remove($fullPath);
+
+            $em = $this->getEntityManager();
+
+            $category->setImage(null); 
+            $em->remove($oldImage);
+            $em->flush();
+        }
+        
+        return $category;
+    }
+    
+    public function removeSubcategoriesFromCategory($category) {
+        $em = $this->getEntityManager();
+        $subs = $category->getSubcategories();
+        foreach($subs as $sub) {
+            $em->remove($sub);
+        }
+        $em->flush();
+        return $category;
+    }
+
 }

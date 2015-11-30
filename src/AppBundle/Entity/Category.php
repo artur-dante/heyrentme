@@ -42,7 +42,7 @@ class Category
     protected $image;
     
     public function getImageUrl() {
-        return $this->image->getUrlPath();
+        return $this->image != null ? $this->image->getUrlPath() : "";
     }
     
     
