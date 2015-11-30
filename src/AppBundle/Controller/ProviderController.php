@@ -12,6 +12,28 @@ use AppBundle\Utils;
 
 class ProviderController extends BaseController {
     
+    
+    public function userNav2Action(Request $request, $page) {
+        $cats = $this->getCategories($request);
+        return $this->render('provider/user_nav2.html.twig', array(
+            'categories' => $cats,
+            'page' => $page
+        ));
+    }
+    
+    /**
+     * @Route("/provider/subcats/{id}", name="subcat")
+     */
+    public function subcategoriesAction(Request $request, $id) {
+        $subcats = $this->getSubcategories($request, $id);
+        $arr = array();
+        foreach ($subcats as $s) {
+            array_push($arr, array('id' => $s->getId(), 'name' => $s->getName()));
+        }
+        
+        return new \Symfony\Component\HttpFoundation\JsonResponse($arr);
+    }
+    
     /**
      * @Route("/provider", name="provider")
      * @Route("/provider/profil", name="profil")
@@ -27,9 +49,9 @@ class ProviderController extends BaseController {
         return $this->render('provider/einstellungen.html.twig');
     }
     /**
-     * @Route("/provider/equipment-add-1", name="equipment-add-1")
+     * @Route("/provider/equipment-add-1/{subcategoryId}", name="equipment-add-1")
      */
-    public function equipmentAdd1Action(Request $request) {
+    public function equipmentAdd1Action(Request $request, $subcategoryId) {
         $form = $this->createFormBuilder()
                 ->add('name', 'text')
                 ->add('price', 'money')
@@ -45,7 +67,7 @@ class ProviderController extends BaseController {
         if ($form->isValid()) {
             $data = $form->getData();
             // get subcategory
-            $subcat = $this->getDoctrine()->getRepository('AppBundle:Subcategory')->find(3);
+            $subcat = $this->getDoctrine()->getRepository('AppBundle:Subcategory')->find($subcategoryId);
             $user = $this->getUser();
             // map fields, TODO: move to Equipment's method
             //<editor-fold> map fields            
@@ -135,8 +157,9 @@ class ProviderController extends BaseController {
                 $em->flush();
                 
                 $session->remove('EquipmentAddFileArray');
-                return $this->redirectToRoute('equipment-add-3');
             }
+            
+            return $this->redirectToRoute('profil');
         }
         
         return $this->render('provider\equipment_add_step2.html.twig', array(

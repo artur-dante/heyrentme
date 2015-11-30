@@ -60,7 +60,11 @@ class DefaultController extends BaseController {
      * @Route("/rentme", name="rentme")
      */
     public function rentmeAction(Request $request, $category = null) {        
-        $subcats = $this->getSubcategories($request, $category);
+        $catId = null;
+        if ($category != null) {
+            $catId = $category->getId();
+        }
+        $subcats = $this->getSubcategories($request, $catId);
                 
         return $this->render('default/equipment_mieten.html.twig', array(
             'subcategories' => $subcats,
@@ -99,7 +103,7 @@ class DefaultController extends BaseController {
         $cat = $this->getCategoryBySlug($request, $content);
         
         if ($cat != null) {
-            $subcats = $this->getSubcategories($request, $cat);
+            $subcats = $this->getSubcategories($request, $cat->getId());
             
             return $this->render('default/equipment_mieten.html.twig', array(
                 'subcategories' => $subcats,
@@ -111,8 +115,8 @@ class DefaultController extends BaseController {
     private function processSubcategory(Request $request, $content) {
         $subcat = $this->getSubcategoryBySlug($request, $content);
         
-        if ($subcat != null) {
-            $equipments = $this->getDoctrine()->getRepository('AppBundle:Equipment')->findAll($subcat);
+        if ($subcat != null) {            
+            $equipments = $this->getDoctrine()->getRepository('AppBundle:Equipment')->getAllBySubcategory($subcat->getId());
             
             return $this->render('default/categorie.html.twig', array(
                 'subcategory' => $subcat,
@@ -157,13 +161,5 @@ class DefaultController extends BaseController {
         }
         
         return new Response($s);
-    }    
-    
-    /**
-     * @Route("/bcrypt", name="bcrypt")
-     */
-    public function bcryptAction() {
-        $h = password_hash("ziller/1793", PASSWORD_BCRYPT, array( 'cost' => 12));
-        return new Response($h);
-    }
+    }        
 }

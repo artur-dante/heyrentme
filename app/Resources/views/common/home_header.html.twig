@@ -7,9 +7,11 @@
                       <a href="{{ path('vermietung') }}" class="button-black backgound-yellow text-black">Anbieten / Vermieten</a>
                   </div>
                   <div class="col-xs-6 text-right padding-right-none">
-                      {% if app.user == null %}
+                      {% if not app.user %}
                         <a data-toggle="modal" data-target="#reg-modal" class="button-black" href="#">Anmelden / 5 &euro; Startrabatt</a>
                         <a data-toggle="modal" data-target="#login" class="button-black" href="#">Login</a>
+                      {% else %}
+                          <a href="{{ path('profil') }}" class="button-black">Profil</a>
                       {% endif %}
                       <a href="/pages/equipment_mieten" class="button-black">Hilfe & Faq</a>
                     </div>

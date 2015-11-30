@@ -68,7 +68,7 @@
               </div>
           </div>
           <div class="col-md-3">
-            {{ include('provider/user_nav2.html.twig', { 'page': 'einstellungen' }) }}
+            {{ render(controller('AppBundle:Provider:userNav2', { 'page': 'einstellungen' })) }}
           </div>
       </div>
   </section>
@@ -98,50 +98,6 @@
                   <p class="text-bold">Angebot “Cube Mountainbike” entfernen?</p>
                   <p class="delate-info">Möchtest du dieses Angebot wirklich löschen? Dieser Schritt ist nicht rückgängig zu machen. </p>
                   <button class="button btn-danger">Angebot entfernen</button>
-              </div>
-          </div>
-      </div>
-  </div>
-  <div id="choose-offer" class="modal fade delete-offer" role="dialog">
-      <div class="modal-dialog">
-          <!-- Modal content-->
-          <div class="modal-content">
-              <button type="button" class="close" data-dismiss="modal"><img src="/img/close-modal.svg" alt="close"/></button>
-
-              <div class="content-modal">
-                  <p class="text-bold">Was möchtest du anbieten?</p>
-                  <p class="delate-info">Hier kannst du entweder ein Equipment oder dein
-                      Talent bzw. eine Dienstleistung anbieten! </p>
-                  <a href="#" data-toggle="modal" data-target="#choose-category" class="button-black backgound-yellow text-black">Equipment Anbieten</a>
-                  <a href="#" class="button-black backgound-yellow text-black">Talent Anbieten</a>
-              </div>
-          </div>
-      </div>
-  </div>
-  <div id="choose-category" class="modal fade delete-offer" role="dialog">
-      <div class="modal-dialog">
-          <!-- Modal content-->
-          <div class="modal-content">
-              <button type="button" class="close" data-dismiss="modal"><img src="/img/close-modal.svg" alt="close"/></button>
-
-              <div class="content-modal">
-                  <p class="text-bold">Bitte wähle eine Kategorie</p>
-                  <p class="delate-info">Bitte wähle eine Haupt- und Detailkategorie, damit wir dein Angebot zuordnen können.</p>
-                  <div class="clearfix">
-                    <select title='Hauptkategorie' name="category" class="selectpicker bs-select-hidden ">
-                        <option>cat 1</option>
-                        <option>cat 2</option>
-                        <option>cat 3</option>
-                    </select>
-                    <select title='Detailcategorie' name="subcategory" class="selectpicker bs-select-hidden" disabled="disabled">
-                        <option>subcat 1</option>
-                        <option>subcat 2</option>
-                        <option>subcat 3</option>
-                    </select>
-                  </div>
-                  <div>
-                    <a href="#" class="button-black backgound-yellow text-black">Weiter</a>
-                  </div>
               </div>
           </div>
       </div>

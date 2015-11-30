@@ -94,9 +94,8 @@ class Equipment
     protected $images;
     
     public function getUrlPath() {
-       $sg = new Slugify(); // TODO: make slugify a helper (static)
-       $s = $sg->slugify($this->getName());
-       return "{$this->id}/{$s}";//   ;
+       $s = \AppBundle\Utils::slugify($this->getName());
+       return "{$this->id}/{$s}";
     }
     
     /**
