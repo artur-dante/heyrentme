@@ -29,35 +29,15 @@ class HeyrentmeMailer implements MailerInterface {
         //$username = $user->getName(). " ". $user->getSurname();
         $to = $user->getEmail();
         $url = $this->router->generate('fos_user_registration_confirm', array('token' => $user->getConfirmationToken()), true);
-        
+        //$url .= "?emailConfirmation";
         $template = 'Emails/registration_confirm.html.twig';
         
         $rendered = $this->templating->render($template, array(
             'user' => $user,
             'confirmationUrl' =>  $url
         ));
+        $this->sendEmailMessage($rendered, $from, $to, "Heyrentme confirmation email.");
         
-        
-        $message = \Swift_Message::newInstance()
-        ->setSubject('Heyrentme Confirmation Email.')
-        ->setFrom($from)
-        ->setTo($to)
-        ->setBody(
-            $rendered, 'text/html'
-        )
-        /*
-         * If you also want to include a plaintext version of the message
-        ->addPart(
-            $this->renderView(
-                'Emails/registration.txt.twig',
-                array('name' => $name)
-            ),
-            'text/plain'
-        )
-        */
-        ;
-        $this->mailer->send($message);
-       
     }
 
     /**
@@ -66,13 +46,17 @@ class HeyrentmeMailer implements MailerInterface {
     public function sendResettingEmailMessage(UserInterface $user)
     {
         $from = $this->fromEmail;    
-        $template = $this->parameters['resetting.template'];
-        $url = $this->router->generate('fos_user_resetting_reset', array('token' => $user->getConfirmationToken()), true);
+        $template = 'Emails/password_reseting_email.html.twig';
+        $url = $this->router->generate('rentme', array('token' => $user->getConfirmationToken()), true);
+        //$url = path('rentme') . "?passwordResetButton&token=" + $user->getConfirmationToken();
+        $url .= "?passwordReset";
+        $to = $user->getEmail();
         $rendered = $this->templating->render($template, array(
             'user' => $user,
-            'confirmationUrl' => $url
+            'resetUrl' => $url
         ));
-        $this->sendEmailMessage($rendered, $from, $user->getEmail());
+        
+        $this->sendEmailMessage($rendered, $from, $to, "Heyrentme password reset.");
     }
 
     /**
@@ -80,19 +64,24 @@ class HeyrentmeMailer implements MailerInterface {
      * @param string $fromEmail
      * @param string $toEmail
      */
-    protected function sendEmailMessage($renderedTemplate, $fromEmail, $toEmail)
+    protected function sendEmailMessage($rendered, $from, $to, $subject)
     {
-        // Render the email, use the first line as the subject, and the rest as the body
-        $renderedLines = explode("\n", trim($renderedTemplate));
-        $subject = $renderedLines[0];
-        $body = implode("\n", array_slice($renderedLines, 1));
-
-        $message = \Swift_Message::newInstance()
-            ->setSubject($subject)
-            ->setFrom($fromEmail)
-            ->setTo($toEmail)
-            ->setBody($body);
-
+       $message = \Swift_Message::newInstance()
+        ->setSubject($subject)
+        ->setFrom($from)
+        ->setTo($to)
+        ->setBody(
+            $rendered, 'text/html'
+        )/*
+         * If you also want to include a plaintext version of the message
+        ->addPart(
+            $this->renderView(
+                'Emails/registration.txt.twig',
+                array('name' => $name)
+            ),
+            'text/plain'
+        )
+        */;
         $this->mailer->send($message);
     }
 }

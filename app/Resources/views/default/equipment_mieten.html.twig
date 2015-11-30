@@ -213,7 +213,16 @@
     $(function(){
         if (getUrlParameter("login")) {            
             $("a[data-target='#login']")[0].click();
-        }       
+        } else if (getUrlParameter("passwordReset")) {            
+            $("#passwordResetButton").click();
+        } else if (getUrlParameter("confirmed")) {  
+            $("#emailConfirmedButton").click();
+        }      
+        $("#emailConfirmed .close").unbind("click");
+        $("#emailConfirmed .close").click(function(e){
+            e.preventDefault();
+            location.href = "provider/profil";
+        });
     });
 </script>
   

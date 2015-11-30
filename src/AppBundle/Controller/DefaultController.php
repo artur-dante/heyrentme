@@ -9,38 +9,6 @@ use Symfony\Component\HttpFoundation\Response;
 class DefaultController extends BaseController {
     
     
-     /**
-     * @Route("/send", name="sendEmail")
-     */
-    public function Send()
-    {
-        $name = "TestTESTtest";
-        $message = \Swift_Message::newInstance()
-        ->setSubject('Hello Email')
-        ->setFrom('yaspen@tlen.pl')
-        ->setTo('yaspen@tlen.pl')
-        ->setBody(
-            $this->renderView(
-                // app/Resources/views/Emails/registration.html.twig
-                'Emails/registration.html.twig',
-                array('name' => $name)
-            ),
-            'text/html'
-        )
-        /*
-         * If you also want to include a plaintext version of the message
-        ->addPart(
-            $this->renderView(
-                'Emails/registration.txt.twig',
-                array('name' => $name)
-            ),
-            'text/plain'
-        )
-        */
-        ;
-        $this->get('mailer')->send($message);
-    }
-    
     /**
      * @Route("/vermietung", name="vermietung")
      */
@@ -55,16 +23,24 @@ class DefaultController extends BaseController {
     public function indexAction(Request $request) {
         return $this->render('default/index.html.twig');
     }
-    
+   
     /**
-     * @Route("/rentme", name="rentme")
+     * @Route("/rentme/{token}", name="rentme")
      */
-    public function rentmeAction(Request $request, $category = null) {        
-        $subcats = $this->getSubcategories($request, $category);
-                
+    public function rentmeAction(Request $request, $category = null, $token=null) {        
+        $subcats = $this->getSubcategories($request, $category);        
+        
+        $confirmed= null;
+        $confParam = $request->query->get('confirmed');
+        if ($confParam != null){
+            $confirmed = true;
+        }
+        
         return $this->render('default/equipment_mieten.html.twig', array(
             'subcategories' => $subcats,
-            'category' => $category
+            'category' => $category,
+            'token' => $token,
+            'confirmed' => $confirmed
         ));
     }
         

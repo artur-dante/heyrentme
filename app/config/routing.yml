@@ -3,7 +3,6 @@ app:
     type:     annotation
 
 
-
 #<added by Seba>
 fos_user:
     resource: "@FOSUserBundle/Resources/config/routing/all.xml"

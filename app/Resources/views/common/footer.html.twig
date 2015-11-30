@@ -19,6 +19,8 @@
   </div>
   <div id="feedback" data-toggle="modal" data-target=".feed"></div>
   <!-- Modal -->
+  <a id="passwordResetButton" data-dismiss="modal" data-toggle="modal" data-target="#passwordReset" class="has-account text-center" href="#"></a>
+  
   <div id="feedback-modal" class="modal fade feed" role="dialog">
       <div class="modal-dialog">
           <!-- Modal content-->
@@ -41,7 +43,9 @@
                   <p class="reg-promo">Jetzt anmelden <span class="text-bold">5 &euro; Rabatt</span> für die 1. Buchung sichern! </p>
                   <a class="fb-button" href="{{ path('hwi_oauth_service_redirect', {'service': 'facebook' }) }}"><img src="/img/facebook-reg.svg" alt=""/></a>
                   <span class="oder">- oder -</span>             
-                  
+                  <div id = "confirmationDiv" style="display:none;">
+                      Your account is registered. Please check your email and click confirmation link.
+                  </div>
                   {{ render(controller('FOSUserBundle:Registration:register')) }}
                   
                     <a data-dismiss="modal" data-toggle="modal" data-target="#login" class="has-account text-center" 
@@ -92,6 +96,50 @@
       </div>
   </div>
                   
+    
+       
+       
+                  
+    {% if token is defined and token != null %}
+  <div id="passwordReset" class="modal  register" role="dialog" aria-labelledby="login-title">
+      <div class="modal-dialog" role="document">
+          <!-- Modal content-->
+          <div class="modal-content">
+              <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal"><img src="/img/close-modal.svg" alt="close"/></button>
+                  <h4 class="modal-title reg" id="login-title">Reset</h4>
+                  <a class="fb-button" href="{{ path('hwi_oauth_service_redirect', {'service': 'facebook' }) }}"><img src="/img/fb-log.svg" alt=""/></a>
+                  <span class="oder">- oder -</span>
+
+                  {{ render(controller('FOSUserBundle:Resetting:reset', { "token":token } )) }}
+                       
+              </div>
+          </div>
+      </div>
+  </div>
+      {% endif %}      
+                   
+
   {% endif %}
+  
+  {% if app.user != null and confirmed is defined and confirmed != null %}  
+  <a id="emailConfirmedButton" data-dismiss="modal" data-toggle="modal" data-target="#emailConfirmed" class="has-account text-center" href="#"></a>
+  <div id="emailConfirmed" class="modal  register" role="dialog" aria-labelledby="login-title">
+      <div class="modal-dialog" role="document">
+          <!-- Modal content-->
+          <div class="modal-content">
+              <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal"><img src="/img/close-modal.svg" alt="close"/></button>
+                  <h4 class="modal-title reg" id="login-title">Confirmed</h4>
+                 
+                  
+                  {{ render(controller('FOSUserBundle:Registration:confirmed' )) }}
+                       
+                  
+              </div>
+          </div>
+      </div>
+  </div>      
+{% endif %}
   <script src="/js/owl.carousel.min.js"></script><script src="/js/vendors/bootstrap.min.js"></script><script src="/js/vendors/bootstrap-select.min.js"></script><script src="/js/vendors/moment.min.js"></script><script src="/js/vendors/bootstrap-datetimepicker.min.js"></script><script src="/js/vendors/slidebars.min.js"></script><script src="/js/vendors/ion.rangeSlider.min.js"></script><script src="/js/build.js"></script></body>
 </html>
