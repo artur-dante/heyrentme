@@ -135,36 +135,89 @@ class ProviderController extends BaseController {
             
             // store images
             $eqFiles = $session->get('EquipmentAddFileArray');
-            foreach ($eqFiles as $file) {
-                // copy file
-                $fullPath = sprintf("%sequipment\\%s.%s",
-                    $this->getParameter('image_storage_dir'),
-                    $file[0],
-                    $file[2]);
-                copy($file[3], $fullPath);
-                
-                // create object
-                $img = new \AppBundle\Entity\Image();
-                $img->setUuid($file[0]);
-                $img->setName($file[1]);
-                $img->setExtension($file[2]);
-                $img->setPath('equipment');
-                              
-                $em->persist($img);
-                $em->flush();
-                
-                $eq->addImage($img);
-                $em->flush();
-                
-                $session->remove('EquipmentAddFileArray');
-            }
+            $this->handleImages($eqFiles, $eq, $em);
             
+            $session->remove('EquipmentAddFileArray');            
             return $this->redirectToRoute('profil');
         }
         
         return $this->render('provider\equipment_add_step2.html.twig', array(
             'form' => $form->createView()
         ));
+    }
+    private function handleImages($eqFiles, $eq, $em) {
+        foreach ($eqFiles as $file) {
+            // store the original, and image itself
+            $origFullPath = sprintf("%sequipment\\original\\%s.%s",
+                $this->getParameter('image_storage_dir'),
+                $file[0],
+                $file[2]);
+            $imgFullPath = sprintf("%sequipment\\%s.%s",
+                $this->getParameter('image_storage_dir'),
+                $file[0],
+                $file[2]);
+            rename($file[3], $origFullPath);
+            
+            // TODO: check image size
+            $imgInfo = getimagesize($origFullPath);
+            $ow = $imgInfo[0]; // original width
+            $oh = $imgInfo[1]; // original height
+            $r = $ow / $oh; // ratio
+            $nw = $ow; // new width
+            $nh = $oh; // new height
+            $scale = False;
+            
+            if ($r > 1) {
+                if ($ow > 1024) {
+                    $nw = 1024;
+                    $m = $nw / $ow; // multiplier
+                    $nh = $oh * $m;
+                    $scale = True;
+                }
+            }
+            else {
+                if ($oh > 768) {
+                    $nh = 768;
+                    $m = $nh / $oh; // multiplier
+                    $nw = $ow * $m;
+                    $scale = True;
+                }
+            }
+            
+            if ($scale) {
+                if ($file[2] == 'png') {
+                    $img = imagecreatefrompng($origFullPath);
+                }
+                else {
+                    $img = imagecreatefromjpeg($origFullPath);
+                }
+                $sc = imagescale($img, intval(round($nw)), intval(round($nh)), IMG_BICUBIC_FIXED);
+                if ($file[2] == 'png') {
+                    imagepng($sc, $imgFullPath);
+                }
+                else {
+                    imagejpeg($sc, $imgFullPath);
+                }
+            }
+            else {
+                copy($origFullPath, $imgFullPath);
+            }        
+
+            // create object
+            $img = new \AppBundle\Entity\Image();
+            $img->setUuid($file[0]);
+            $img->setName($file[1]);
+            $img->setExtension($file[2]);
+            $img->setPath('equipment');
+            $img->setOriginalPath('equipment\\original');
+
+            $em->persist($img);
+            $em->flush();
+
+            $eq->addImage($img);
+            $em->flush();
+        }
+        
     }
     
     /**
@@ -188,7 +241,7 @@ class ProviderController extends BaseController {
                 $ef = array(
                     $uuid,
                     $file->getClientOriginalName(),
-                    $file->getClientOriginalExtension(),
+                    strtolower($file->getClientOriginalExtension()),
                     $fullPath
                 );
                 

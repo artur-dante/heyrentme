@@ -98,7 +98,11 @@
                 <span>-20%</span>
               </div>
               <div id="media-content">
-                  <img src="{{ image_url_prefix }}{{ equipment.images[0].urlPath }}" alt=""/>    
+                    {% if equipment.images|length > 0 %}
+                        <img src="{{ image_url_prefix }}{{ equipment.images[0].urlPath }}" alt=""/>
+                    {% else %}
+                        <img src="/img/equipment-default.jpg" alt=""/>
+                    {% endif %}
               </div>
 
               <iframe id="player"></iframe>
