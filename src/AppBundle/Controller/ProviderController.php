@@ -120,8 +120,8 @@ class ProviderController extends BaseController {
         if ($form->isValid()) {
             // update Equipment object
             $data = $form->getData();
-            //$eq = $this->getDoctrine()->getRepository('AppBundle:Equipment')->find($session->get('EquipmentAddId'));
-            $eq = $this->getDoctrine()->getRepository('AppBundle:Equipment')->find(110);
+            $eq = $this->getDoctrine()->getRepository('AppBundle:Equipment')->find($session->get('EquipmentAddId'));
+            //$eq = $this->getDoctrine()->getRepository('AppBundle:Equipment')->find(110);
             // map fields
             //<editor-fold>
             $eq->setDescription($data['description']);
