@@ -2,12 +2,18 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Equipment;
+use AppBundle\Entity\Image;
+use AppBundle\Utils;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session;
-use AppBundle\Entity\Equipment;
-use AppBundle\Utils;
+use Symfony\Component\Validator\Constraints\Callback;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Regex;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 
 class ProviderController extends BaseController {
@@ -31,7 +37,7 @@ class ProviderController extends BaseController {
             array_push($arr, array('id' => $s->getId(), 'name' => $s->getName()));
         }
         
-        return new \Symfony\Component\HttpFoundation\JsonResponse($arr);
+        return new JsonResponse($arr);
     }
     
     /**
@@ -57,7 +63,7 @@ class ProviderController extends BaseController {
                 ->add('price', 'money')
                 ->add('deposit', 'money')
                 ->add('value', 'money')
-                ->add('priceBuy', 'money')
+                ->add('priceBuy', 'money', array('required' => false))
                 ->add('invoice', 'checkbox', array('required' => false))
                 ->add('industrial', 'checkbox', array('required' => false))
                 ->getForm();
@@ -104,16 +110,56 @@ class ProviderController extends BaseController {
         if ($request->getMethod() == "GET") {
             $session->set('EquipmentAddFileArray', array());
         }
+        else {
+            $this->fileCount = count($session->get('EquipmentAddFileArray'));
+        }
         
+        //<editor-fold>
         $form = $this->createFormBuilder()
-                ->add('description', 'textarea', array('max_length' => 500))
-                ->add('make_sure', 'checkbox')
-                ->add('street', 'text')
-                ->add('number', 'text')
-                ->add('postcode', 'text')
-                ->add('place', 'text')
-                ->add('accept', 'checkbox')
+                ->add('description', 'textarea', array(
+                    'constraints' => array(
+                        new NotBlank(),
+                        new Length(array('max' => 500)),
+                        new Callback(array($this, 'validate'))
+                    )
+                ))
+                ->add('make_sure', 'checkbox', array(
+                    'constraints' => array(
+                        new NotBlank(array('message' => 'You must check this box'))
+                    )
+                ))
+                ->add('street', 'text', array(
+                    'constraints' => array(
+                        new NotBlank(),
+                        new Length(array('max' => 128))
+                    )
+                ))
+                ->add('number', 'text', array(
+                    'constraints' => array(
+                        new NotBlank(),
+                        new Length(array('max' => 16))
+                    )
+                ))
+                ->add('postcode', 'text', array(
+                    'constraints' => array(
+                        new NotBlank(),
+                        new Length(array('max' => 4)),
+                        new Regex(array('pattern' => '/^\d{4}$/', 'message' => 'Please fill in a valid postal code'))
+                    )
+                ))
+                ->add('place', 'text', array(
+                    'constraints' => array(
+                        new NotBlank(),
+                        new Length(array('max' => 128))
+                    )
+                ))
+                ->add('accept', 'checkbox', array(
+                    'constraints' => array(
+                        new NotBlank(array('message' => 'You must check this box'))
+                    )
+                ))
                 ->getForm();
+        //</editor-fold>
         
         $form->handleRequest($request);
         
@@ -137,13 +183,24 @@ class ProviderController extends BaseController {
             $eqFiles = $session->get('EquipmentAddFileArray');
             $this->handleImages($eqFiles, $eq, $em);
             
+            // clean up
             $session->remove('EquipmentAddFileArray');            
+            $this->fileCount = null;
+            
             return $this->redirectToRoute('profil');
         }
         
         return $this->render('provider\equipment_add_step2.html.twig', array(
             'form' => $form->createView()
         ));
+    }
+    private $fileCount = null;
+    public function validate($value, ExecutionContextInterface $context) {
+        if ($this->fileCount == null || $this->fileCount == 0) {
+            $context->buildViolation('Please upload at least one image')->addViolation();
+        }
+        
+        
     }
     private function handleImages($eqFiles, $eq, $em) {
         foreach ($eqFiles as $file) {
@@ -204,7 +261,7 @@ class ProviderController extends BaseController {
             }        
 
             // create object
-            $img = new \AppBundle\Entity\Image();
+            $img = new Image();
             $img->setUuid($file[0]);
             $img->setName($file[1]);
             $img->setExtension($file[2]);

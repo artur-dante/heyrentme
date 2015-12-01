@@ -9,3 +9,6 @@
     padding-right: 20%;
     background-color: #000000;
 }
+div.err-msg  ul  li {
+    color: #c00;
+}
