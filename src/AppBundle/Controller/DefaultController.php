@@ -8,39 +8,26 @@ use Symfony\Component\HttpFoundation\Response;
 
 class DefaultController extends BaseController {
     
-    
-    /**
-     * @Route("/vermietung", name="vermietung")
-     */
-    public function someTestAction(Request $request) {
-        return $this->render('default/index.html.twig');
-    }
-    
-    
     /**
      * @Route("/", name="homepage")
      */
     public function indexAction(Request $request) {
         return $this->render('default/index.html.twig');
     }
-   
+    
     /**
-     * @Route("/rentme/{token}", name="rentme")
+     * @Route("/rentme", name="rentme")
      */
-    public function rentmeAction(Request $request, $category = null, $token=null) {        
-        $subcats = $this->getSubcategories($request, $category);        
-        
-        $confirmed= null;
-        $confParam = $request->query->get('confirmed');
-        if ($confParam != null){
-            $confirmed = true;
+    public function rentmeAction(Request $request, $category = null) {        
+        $catId = null;
+        if ($category != null) {
+            $catId = $category->getId();
         }
-        
+        $subcats = $this->getSubcategories($request, $catId);
+                
         return $this->render('default/equipment_mieten.html.twig', array(
             'subcategories' => $subcats,
-            'category' => $category,
-            'token' => $token,
-            'confirmed' => $confirmed
+            'category' => $category
         ));
     }
         
@@ -75,7 +62,7 @@ class DefaultController extends BaseController {
         $cat = $this->getCategoryBySlug($request, $content);
         
         if ($cat != null) {
-            $subcats = $this->getSubcategories($request, $cat);
+            $subcats = $this->getSubcategories($request, $cat->getId());
             
             return $this->render('default/equipment_mieten.html.twig', array(
                 'subcategories' => $subcats,
@@ -87,8 +74,8 @@ class DefaultController extends BaseController {
     private function processSubcategory(Request $request, $content) {
         $subcat = $this->getSubcategoryBySlug($request, $content);
         
-        if ($subcat != null) {
-            $equipments = $this->getDoctrine()->getRepository('AppBundle:Equipment')->findAll($subcat);
+        if ($subcat != null) {            
+            $equipments = $this->getDoctrine()->getRepository('AppBundle:Equipment')->getAllBySubcategory($subcat->getId());
             
             return $this->render('default/categorie.html.twig', array(
                 'subcategory' => $subcat,
@@ -118,28 +105,45 @@ class DefaultController extends BaseController {
      * @Route("/test", name="test")
      */
     public function testAction(Request $request) {
-        $cat = $this->getDoctrine()->getRepository('AppBundle:Category')->find(1);
-        $subs = $cat->getSubcategories();
-        $s = '';
-        foreach($subs as $sub) {
-            $s = $s . "Sub: {$sub->getName()} (id: {$sub->getId()}) ";
-            $c = $sub->getCategory();
-            $img = $c->getImage();
-            $s = $s . "Cat: {$c->getName()} (id: {$c->getId()}), img: {$img->getUuid()} <br/>";
-            $eqs = $sub->getEquipments();
-            foreach($eqs as $eq) {
-                $s = $s . "----> Equipment: {$eq->getName()} (id: {$eq->getId()}) <br/>";
-            }
-        }
-        
-        return new Response($s);
-    }    
+        return new Response(phpinfo());
+    }        
+    
+     /**
+     * @Route("/send", name="sendEmail")
+     */
+    public function Send()
+    {
+        $name = "TestTESTtest";
+        $message = \Swift_Message::newInstance()
+        ->setSubject('Hello Email')
+        ->setFrom('yaspen@tlen.pl')
+        ->setTo('yaspen@tlen.pl')
+        ->setBody(
+            $this->renderView(
+                // app/Resources/views/Emails/registration.html.twig
+                'Emails/registration.html.twig',
+                array('name' => $name)
+            ),
+            'text/html'
+        )
+        /*
+         * If you also want to include a plaintext version of the message
+        ->addPart(
+            $this->renderView(
+                'Emails/registration.txt.twig',
+                array('name' => $name)
+            ),
+            'text/plain'
+        )
+        */
+        ;
+        $this->get('mailer')->send($message);
+    }
     
     /**
-     * @Route("/bcrypt", name="bcrypt")
+     * @Route("/vermietung", name="vermietung")
      */
-    public function bcryptAction() {
-        $h = password_hash("ziller/1793", PASSWORD_BCRYPT, array( 'cost' => 12));
-        return new Response($h);
-    }
+    public function someTestAction(Request $request) {
+        return $this->render('default/index.html.twig');
+    }    
 }

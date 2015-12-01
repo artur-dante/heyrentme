@@ -56,11 +56,11 @@ class BaseController extends Controller
             $session->set('SubcategoryDict', $subcategoriesDict);
         }
     }
-    protected function getSubcategories(Request $request, $category = null) {
+    protected function getSubcategories(Request $request, $categoryId = null) {
         $session = $request->getSession();
         $this->initSubcategories($session);
-        if ($category != null) {
-            return $session->get('SubcategoryDict')[$category->getId()];
+        if ($categoryId != null) {
+            return $session->get('SubcategoryDict')[$categoryId];
         }
         else {
             return $session->get('SubcategoryList');

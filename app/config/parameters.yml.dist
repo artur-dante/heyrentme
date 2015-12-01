@@ -20,6 +20,6 @@ parameters:
 # custom parameters
     image_url_prefix: "/db-img/"
     image_storage_dir: "C:\\projects\\reddragon\\dev\\web\\db-img\\"
-    facebook_client_id: '434563180081529'
-    facebook_client_secret: 37b0f133322561ac5d5621bfd258043d
+    facebook_client_id: 1390938247874229
+    facebook_client_secret: c801ab39b2606d9818641b2731ef3555
     mailer_fromemail: heyrentme@o2.pl

@@ -93,23 +93,25 @@
             <span class="status">Letzer Status für dieses Angebot:</span>
             <p class="detail-notice">Das ist eine Statusmeldung. Mir geht es gut und ich fühle mich heute super wohl!</p>
             <div class="position-relative" id="media-container">
-              <img src="/rentme/img/cart.svg" alt="cart" class="cart">
+              <img src="/img/cart.svg" alt="cart" class="cart">
               <div class="discount discount-big">
                 <span>-20%</span>
               </div>
               <div id="media-content">
-                  <img src="/rentme/img/placeholder/video2.jpg" alt=""/>    </div>
+                  <img src="{{ image_url_prefix }}{{ equipment.images[0].urlPath }}" alt=""/>    
+              </div>
 
               <iframe id="player"></iframe>
               <div class="media-list" id="media-list">
-
-                  <span class="media-img"><!--<a id="videos-ico"></a>--><img src="/rentme/img/placeholder/video2.jpg" alt=""/></span>
-                  <span class="media-img"> <img src="/rentme/img/placeholder/video3.jpg" alt=""/>  </span>
-                  <span><a class="videos-ico" id="3"></a><img src="/rentme/img/placeholder/video2.jpg" id="3" alt=""/>   </span>
-
+                    {% for img in equipment.images %}
+                        <span class="media-img"><img src="{{ image_url_prefix }}{{ img.urlPath }}" alt=""/></span>
+                    {% endfor %}
+                    {#
+                        <span><a class="videos-ico" id="3"></a><img src="/img/placeholder/video2.jpg" id="3" alt=""/>   </span>
+                    #}
               </div>
             </div>
-        <script src="/rentme/js/vendors/vimeo.js"></script>
+        <script src="/js/vendors/vimeo.js"></script>
         <script>
           $(document).ready(function(){
 
@@ -423,7 +425,7 @@
             </div>
             <div class="user-data">
                 <h3>Details:</h3>
-                <img src="/rentme/img/placeholder/ulli.png" alt="Ulli" class="user-avatar"/>
+                <img src="/img/placeholder/ulli.png" alt="Ulli" class="user-avatar"/>
                 <p class="user-name">Ulli</p>
                 <div class="user-data-tabs">
                   <div class="user-tab euro">
@@ -449,7 +451,7 @@
                 </div>
             </div>
             <div class="user-info">
-                <img src="/rentme/img/placeholder/info.jpg" alt="info"/>
+                <img src="/img/placeholder/info.jpg" alt="info"/>
                 <div class="row">
                     <div class="col-xs-9">
                         <p>Die 10 besten mountainbike
@@ -459,7 +461,7 @@
                         INFO
                     </div>
                 </div>
-                <img src="/rentme/img/info-icon.svg" alt="info-icon" class="icon-info"/>
+                <img src="/img/info-icon.svg" alt="info-icon" class="icon-info"/>
               </div>
         </div>
         <!-- End of right side -->
@@ -472,8 +474,8 @@
             <p class="see-also mobile-hidden">Das könnte dich auch interessieren:</p>
             <div class="col-sm-3">
                 <div>
-                <img src="/rentme/img/placeholder/bike.png" alt="placeholder"/>
-                <img src="/rentme/img/cart-pro.svg" alt="cart" class="cart"/>
+                <img src="/img/placeholder/bike.png" alt="placeholder"/>
+                <img src="/img/cart-pro.svg" alt="cart" class="cart"/>
                 <div class="product-info">
                     <div class="row">
                         <div class="col-xs-6">
@@ -502,7 +504,7 @@
             </div>
             <div class="col-sm-3">
                 <div>
-                <img src="/rentme/img/placeholder/bike2.png" alt="placeholder"/>
+                <img src="/img/placeholder/bike2.png" alt="placeholder"/>
                 <div class="product-info">
                     <div class="row">
                         <div class="col-xs-6">
@@ -531,7 +533,7 @@
             </div>
             <div class="col-sm-3">
                 <div>
-                <img src="/rentme/img/placeholder/bike2.png" alt="placeholder"/>
+                <img src="/img/placeholder/bike2.png" alt="placeholder"/>
                 <div class="product-info">
                     <div class="row">
                         <div class="col-xs-6">
@@ -560,7 +562,7 @@
             </div>
             <div class="col-sm-3">
                 <div>
-                <img src="/rentme/img/placeholder/bike2.png" alt="placeholder"/>
+                <img src="/img/placeholder/bike2.png" alt="placeholder"/>
                 <div class="product-info">
                     <div class="row">
                         <div class="col-xs-6">
@@ -616,14 +618,14 @@
         <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><img src="/rentme/img/close-modal.svg" alt="close"/></button>
+                <button type="button" class="close" data-dismiss="modal"><img src="/img/close-modal.svg" alt="close"/></button>
                 <h4 class="modal-title">Anfrage</h4>
                 <p><span class="text-bold" >Abholung:</span>  <span id="from-data"></span>, <span id="from-time">&nbsp; &nbsp; &nbsp; &nbsp; 10:00</span> </p>
                 <p><span class="text-bold">Rückgabe:</span> <span id="to-data"></span>, <span id="to-time">&nbsp; &nbsp; &nbsp; &nbsp; 18:00</span></p>
                 <p><span class="text-bold">Gesamtkosten Miete: </span><span class="price-calc">30</span>,- €</p>
                 <p><span class="text-bold">Kaution:</span> 100,- €</p>
                 <p><span class="text-bold">Preis bei Kauf:</span> 800,- €</p>
-                <form method="post" accept-charset="utf-8" class="rent" action="/rentme/detail/index/1"><div style="display:none;"><input type="hidden" name="_method" value="POST"></div><input type="text" name="name" placeholder="DEIN NAME*" id="name" value=""><input type="text" name="name2" placeholder="DEIN EMAIL*" id="name2" value=""><textarea name="desc" placeholder="NACHRICHT: WOFÜR BENÖTIGST DU DAS EQUIPMENT?*" id="desc" rows="5"></textarea><input type="submit" value="abschicken"></form>            </div>
+                <form method="post" accept-charset="utf-8" class="rent" action="/detail/index/1"><div style="display:none;"><input type="hidden" name="_method" value="POST"></div><input type="text" name="name" placeholder="DEIN NAME*" id="name" value=""><input type="text" name="name2" placeholder="DEIN EMAIL*" id="name2" value=""><textarea name="desc" placeholder="NACHRICHT: WOFÜR BENÖTIGST DU DAS EQUIPMENT?*" id="desc" rows="5"></textarea><input type="submit" value="abschicken"></form>            </div>
         </div>
     </div>
   </div>
@@ -632,7 +634,7 @@
         <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><img src="/rentme/img/close-modal.svg" alt="close"/></button>
+                <button type="button" class="close" data-dismiss="modal"><img src="/img/close-modal.svg" alt="close"/></button>
                 <h4 class="modal-title">Angebot melden</h4>
                 <form method="post" accept-charset="utf-8">
                   <input type="text" name="mail" placeholder="ANGEBOT MELDEN">

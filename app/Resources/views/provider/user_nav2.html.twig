@@ -8,3 +8,85 @@
         <li><a href="#">zurück zu angebote</a></li>
     </ul>
 </div>
+  <div id="choose-offer" class="modal fade delete-offer" role="dialog">
+      <div class="modal-dialog">
+          <!-- Modal content-->
+          <div class="modal-content">
+              <button type="button" class="close" data-dismiss="modal"><img src="/img/close-modal.svg" alt="close"/></button>
+
+              <div class="content-modal">
+                  <p class="text-bold">Was möchtest du anbieten?</p>
+                  <p class="delate-info">Hier kannst du entweder ein Equipment oder dein
+                      Talent bzw. eine Dienstleistung anbieten! </p>
+                  <a href="#" data-toggle="modal" data-target="#choose-category" class="button-black backgound-yellow text-black">Equipment Anbieten</a>
+                  <a href="#" class="button-black backgound-yellow text-black">Talent Anbieten</a>
+              </div>
+          </div>
+      </div>
+  </div>
+  <div id="choose-category" class="modal fade delete-offer" role="dialog">
+      <div class="modal-dialog">
+          <!-- Modal content-->
+          <div class="modal-content">
+              <button type="button" class="close" data-dismiss="modal"><img src="/img/close-modal.svg" alt="close"/></button>
+
+              <div class="content-modal">
+                  <p class="text-bold">Bitte wähle eine Kategorie</p>
+                  <p class="delate-info">Bitte wähle eine Haupt- und Detailkategorie, damit wir dein Angebot zuordnen können.</p>
+                  <div class="clearfix">
+                    <select title='Hauptkategorie' id="category" name="category" class="selectpicker bs-select-hidden ">
+                        {% for cat in categories %}
+                            <option value="{{ cat.id }}">{{ cat.name }}</option>
+                        {% endfor %}
+                    </select>
+                    <select title='Detailcategorie' name="subcategory" id="subcategory" class="selectpicker bs-select-hidden" disabled="disabled">
+                    </select>
+                  </div>
+                  <div>
+                    <a href="#" id="equipment-add" class="button-black backgound-yellow text-black" disabled="disabled">Weiter</a>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+<script>
+    $(function() {
+        $("equipment-add").attr('disabled', 'disabled');
+        
+        $("#category").change(function() {
+            var id = $("#category").val();
+            var url = '{{ path('subcat', { 'id': 'CAT_ID' }) }}'.replace('CAT_ID', id.toString());           
+            var subsel = $("#subcategory");
+            $.getJSON(url)
+                .done(function(json) {
+                    subsel.empty();
+                    subsel.attr('disabled', 'disabled').selectpicker('refresh');
+                    $.each(json, function(index, item) {
+                        var opt = $("<option>").attr('value', item.id).text(item.name);                   
+                        subsel.append(opt);
+                    });
+                    subsel.removeAttr('disabled').selectpicker('refresh');
+                })
+                .fail(function(jqxhr, textStatus, error) {
+                    var err = textStatus + ", " + error;
+                    console.log("Request Failed: " + err);
+                    alert("Subcategories cannot be loaded, please try again.");
+                    subsel.attr('disabled', 'disabled').selectpicker('refresh');
+                });
+        });
+        
+        $("#subcategory").change(function() {
+            var butt = $('#equipment-add');
+            if ($("#subcategory").is(":selected"))
+                butt.removeAttr('disabled');
+            else
+                butt.attr('disabled', 'disabled');
+        });
+        
+        $("#equipment-add").click(function() {
+            var id = $("#subcategory").val();
+            var url = '{{ path('equipment-add-1', { 'subcategoryId': 'SUBCAT_ID' }) }}'.replace('SUBCAT_ID', id);
+            window.location = url;
+        });
+    });
+</script>
