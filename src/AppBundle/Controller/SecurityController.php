@@ -69,8 +69,25 @@ class SecurityController extends BaseSecurityController
      * @Route("/loggedIn", name="loggedin")
      */
     public function userIsLoggedAction(){
-        $response = new Response(json_encode("User_Is_Logged"));
+        $targetUrl = $this->getTargetUrlFromSession();
+        $response = new Response(json_encode("User_Is_Logged;".$targetUrl));
         $response->headers->set('Content-Type', 'application/json');
         return $response;
+    }
+    
+    private function getTargetUrlFromSession()
+    {
+        // Set the SecurityContext for Symfony <2.6
+        if (interface_exists('Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface')) {
+            $tokenStorage = $this->get('security.token_storage');
+        } else {
+            $tokenStorage = $this->get('security.context');
+        }
+
+        $key = sprintf('_security.%s.target_path', $tokenStorage->getToken()->getProviderKey());
+
+        if ($this->get('session')->has($key)) {
+            return $this->get('session')->get($key);
+        }
     }
 }

@@ -82,9 +82,7 @@
               <div class="modal-header">
                   <button type="button" class="close" data-dismiss="modal"><img src="/img/close-modal.svg" alt="close"/></button>
                   <h4 class="modal-title reg" id="login-title">Reset</h4>
-                  <a class="fb-button" href="{{ path('hwi_oauth_service_redirect', {'service': 'facebook' }) }}"><img src="/img/fb-log.svg" alt=""/></a>
-                  <span class="oder">- oder -</span>
-
+                  
                   {{ render(controller('FOSUserBundle:Resetting:request')) }}
                        
                   <div class="text-center">
@@ -108,9 +106,7 @@
               <div class="modal-header">
                   <button type="button" class="close" data-dismiss="modal"><img src="/img/close-modal.svg" alt="close"/></button>
                   <h4 class="modal-title reg" id="login-title">Reset</h4>
-                  <a class="fb-button" href="{{ path('hwi_oauth_service_redirect', {'service': 'facebook' }) }}"><img src="/img/fb-log.svg" alt=""/></a>
-                  <span class="oder">- oder -</span>
-
+                  
                   {{ render(controller('FOSUserBundle:Resetting:reset', { "token":token } )) }}
                        
               </div>

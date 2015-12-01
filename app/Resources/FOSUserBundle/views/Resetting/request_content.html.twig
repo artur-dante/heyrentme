@@ -1,37 +1,9 @@
 {% trans_default_domain 'FOSUserBundle' %}
+<script src="/js/resetPasswordRequest.js"></script>
 
-
-<script>
-    $(function(){
-        var ajaxFormSubmit = function () {
-            var $form = $(this);
-
-            var options = {
-                url: $form.attr("action"),
-                type: $form.attr("method"),
-                data: $form.serialize()
-            };
-
-            $.ajax(options).done(function (data) {
-                var $target = $("#formRecovery");
-                var $newHtml = $(data);                
-                $target.replaceWith($newHtml);
-                //if ($newHtml.text().indexOf("User_Is_Logged") != -1){                    
-                //    $target.replaceWith($newHtml);
-                //} else {
-                //    location.reload();
-                //}
-                
-            });
-
-            return false;
-        };
-        
-        $("#formRecovery").submit(ajaxFormSubmit);
-    });
-</script>
 
 <form action="{{ path('fos_user_resetting_send_email') }}" method="POST" class="fos_user_resetting_request" id="formRecovery">
+    
     <div>
         {% if invalid_username is defined %}
             <p>{{ 'resetting.request.invalid_username'|trans({'%username%': invalid_username}) }}</p>

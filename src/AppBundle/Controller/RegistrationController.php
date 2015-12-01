@@ -139,6 +139,22 @@ class RegistrationController extends BaseRegistrationController
         $this->get('mailer')->send($message);
     }
     
+    
+    /**
+     * Tell the user his account is now confirmed
+     */
+    public function confirmedAction()
+    {
+        $user = $this->getUser();
+        if (!is_object($user) || !$user instanceof UserInterface) {
+            throw new AccessDeniedException('This user does not have access to this section.');
+        }
+
+        return $this->render('FOSUserBundle:Registration:emailconfirmed.html.twig', array(
+            'user' => $user,
+            'targetUrl' => "",
+        ));
+    }
 
     public function userIsRegisteredAction(){        
         $response = new Response(json_encode("User_Is_Registered"));
