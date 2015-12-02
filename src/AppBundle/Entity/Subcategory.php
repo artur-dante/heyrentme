@@ -47,6 +47,12 @@ class Subcategory
      */
     protected $image;
     
+    /**
+    * @ORM\OneToMany(targetEntity="FeatureSection", mappedBy="subcategory")
+    */
+    protected $featureSections;
+    
+    
     public function getImageUrl() {
         return $this->image != null ? $this->image->getUrlPath() : "";
     }
@@ -232,5 +238,39 @@ class Subcategory
     public function getImage()
     {
         return $this->image;
+    }
+
+    /**
+     * Add featureSection
+     *
+     * @param \AppBundle\Entity\FeatureSection $featureSection
+     *
+     * @return Subcategory
+     */
+    public function addFeatureSection(\AppBundle\Entity\FeatureSection $featureSection)
+    {
+        $this->featureSections[] = $featureSection;
+
+        return $this;
+    }
+
+    /**
+     * Remove featureSection
+     *
+     * @param \AppBundle\Entity\FeatureSection $featureSection
+     */
+    public function removeFeatureSection(\AppBundle\Entity\FeatureSection $featureSection)
+    {
+        $this->featureSections->removeElement($featureSection);
+    }
+
+    /**
+     * Get featureSections
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getFeatureSections()
+    {
+        return $this->featureSections;
     }
 }

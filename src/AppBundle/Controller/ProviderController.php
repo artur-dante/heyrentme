@@ -222,7 +222,7 @@ class ProviderController extends BaseController {
             $session->remove('EquipmentAddFileArray');            
             $this->fileCount = null;
             
-            return $this->redirectToRoute('profil');
+            return $this->redirectToRoute('equipment-add-3');
         }
         
         return $this->render('provider\equipment_add_step2.html.twig', array(
@@ -358,6 +358,14 @@ class ProviderController extends BaseController {
      * @Route("/provider/equipment-add-3", name="equipment-add-3")
      */
     public function equipmentAdd3Action(Request $request) {
-        return $this->render('provider\equipment_add_step3.html.twig');
+        $session = $request->getSession();
+        //$id = $ $session->get('EquipmentAddId');
+        $id = 118; // CRITICAL: remove this
+        $eq = $this->getDoctrine()->getRepository('AppBundle:Equipment')->find($id);
+        
+        return $this->render('provider\equipment_add_step3.html.twig', array(
+            'subcategory' => $eq->getSubcategory(),
+            'featureSectionRepo' => $this->getDoctrine()->getRepository('AppBundle:FeatureSection')
+        ));
     }
 }

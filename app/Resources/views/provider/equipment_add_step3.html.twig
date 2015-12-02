@@ -1,10 +1,14 @@
-<?php include('header.php'); ?>
+{% extends 'base.html.twig' %}
+
+{% block home_header %}{% endblock %}
+
+{% block body %}
     {% include('provider/user_nav.html.twig') %}
     <section class="users container background-light-grey">
       <div class="row">
           <!-- Left side -->
           <div class="col-md-9">
-              <img src="/rentme/img/logo-small.svg" alt=""/>            <ul class="steps">
+              <img src="/img/logo-small.svg" alt=""/>            <ul class="steps">
                   <li class="step-1 active-step"><span class="counters"><span class="n-one"></span>Tarif</span></li>
                   <li class="step-2 active-step"><span class="counters"><span class="n-two"></span>Beschreibung</span>
                   </li>
@@ -35,110 +39,39 @@
                           </div>
                       </div>
                   </div>
-                  <div class="col-xs-12 border-bottom-white form-head describe">
-                      <div class="form-container">
-                          <div class="row">
-                              <div class="col-sm-12">
-                                  <p>Welchen Typ Fahrrad bietest du an?</p>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-                  <div class="col-xs-12">
-                      <div class="form-container form-input-border">
-                          <div class="row">
-                              <div class="col-xs-4">
-                                <div class="chbox-holder">
-                                    <input type="checkbox" id="citybike"><label for="citybike"><span></span>Citybike</label>
+                  {% for section in subcategory.featureSections %}
+                        <div class="col-xs-12 border-bottom-white form-head describe">
+                            <div class="form-container">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <p>{{ section.name }}</p>
+                                    </div>
                                 </div>
-                              </div>
-                              <div class="col-xs-4">
-                                <div class="chbox-holder">
-                                    <input type="checkbox" id="mountainbike"><label for="mountainbike"><span></span>Mountainbike</label>
+                            </div>
+                        </div>
+                        <div class="col-xs-12">
+                            <div class="form-container form-input-border">
+                                <div class="row">
+                                {% for feature in featureSectionRepo.textlessFeaturesSorted(section.id, 0) %}
+                                    <div class="col-xs-4">
+                                      <div class="chbox-holder">
+                                        <input type="checkbox" id="feature_{{ feature.id }}">
+                                        <label for="feature_{{ feature.id }}"><span></span>{{ feature.name }}</label>
+                                      </div>
+                                    </div>
+                                {% endfor %}
+                                {% for feature in featureSectionRepo.textlessFeaturesSorted(section.id, 1) %}
+                                    <div class="col-xs-12">
+                                      <div class="chbox-holder">
+                                        <input type="checkbox" id="feature_{{ feature.id }}">
+                                        <label for="feature_{{ feature.id }}"><span></span><input type="text" placeholder="{{ feature.name }}" /></label>
+                                      </div>
+                                    </div>
+                                {% endfor %}
                                 </div>
-                              </div>
-                              <div class="col-xs-4">
-                                <div class="chbox-holder">
-                                    <input type="checkbox" id="rennrad"><label for="rennrad"><span></span>Rennrad</label>
-                                </div>
-                              </div>
-                              <div class="col-xs-12">
-                                <div class="chbox-holder">
-                                    <input type="checkbox" id="c2hx"><label for="c2hx"><span></span><input type="text" placeholder="Sonstiges" /></label>
-                                </div>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-                  <div class="col-xs-12 border-bottom-white form-head describe">
-                      <div class="form-container">
-                          <div class="row">
-                              <div class="col-sm-12">
-                                  <p>Damen-, Kinder- oder Herrenrad?</p>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-                  <div class="col-xs-12">
-                      <div class="form-container form-input-border">
-                          <div class="row">
-                              <div class="col-xs-4">
-                                <div class="chbox-holder">
-                                    <input type="checkbox" id="Damenrad"><label for="Damenrad"><span></span>Damenrad</label>
-                                </div>
-                              </div>
-                              <div class="col-xs-4">
-                                <div class="chbox-holder">
-                                    <input type="checkbox" id="Herrenrad"><label for="Herrenrad"><span></span>Herrenrad</label>
-                                </div>
-                              </div>
-                              <div class="col-xs-4">
-                                <div class="chbox-holder">
-                                    <input type="checkbox" id="Kinderrad"><label for="Kinderrad"><span></span>Kinderrad</label>
-                                </div>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-                  <div class="col-xs-12 border-bottom-white form-head describe">
-                      <div class="form-container">
-                          <div class="row">
-                              <div class="col-sm-12">
-                                  <p>Wann wäre dir eine Abholung/Treffen generell am liebsten?</p>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-                  <div class="col-xs-12">
-                      <div class="form-container form-input-border">
-                          <div class="row">
-                              <div class="col-xs-4">
-                                <div class="chbox-holder">
-                                    <input type="checkbox" id="Vormittags"><label for="Vormittags"><span></span>Vormittags</label>
-                                </div>
-                              </div>
-                              <div class="col-xs-4">
-                                <div class="chbox-holder">
-                                    <input type="checkbox" id="Nachmittags"><label for="Nachmittags"><span></span>Nachmittags</label>
-                                </div>
-                              </div>
-                              <div class="col-xs-4">
-                                <div class="chbox-holder">
-                                    <input type="checkbox" id="Wochenende"><label for="Wochenende"><span></span>Wochenende</label>
-                                </div>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-                  <div class="col-xs-12 border-bottom-white form-head describe">
-                      <div class="form-container">
-                          <div class="row">
-                              <div class="col-sm-12">
-                                  <p>Tel.-Nr. für Rückfragen:</p>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
+                            </div>
+                        </div>
+                  {% endfor %}
                   <div class="col-xs-12">
                       <div class="form-container form-input-border">
                           <div class="row">
@@ -155,5 +88,4 @@
       </div>
   </section>
   </div>
-  <?php include("page_footer.php"); ?>
-<?php include('footer.php'); ?>
+{% endblock %}
