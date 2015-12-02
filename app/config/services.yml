@@ -20,4 +20,9 @@ services:
     app.custom_fos_user_mailer:
         class: AppBundle\Mailer\HeyrentmeMailer
         arguments: [%mailer_fromEmail%, @router, @templating, @mailer,{ resetting.template: %fos_user.resetting.email.template% }]
+        
+    form_einstellungen:
+        class: AppBundle\Form\EinstellungenType
+        tags:
+         -  { name: form.type, alias: form_einstellungen  }
     #</added by Seba>

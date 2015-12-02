@@ -27,20 +27,33 @@
                               <div class="col-sm-12">
                                   <span class="user-profil"></span>
                                   <p class="form-heading">Einstellungen</p>
-                                  <form method="post" accept-charset="utf-8" class="user-profil-form" action="/users/profile"><div style="display:none;"><input type="hidden" name="_method" value="POST"></div>                                <input type="password" name="actual-pass" placeholder="aktuelles passwort" id="actual-pass">                                <input type="password" name="new-pass" placeholder="neues passwort" id="new-pass">                                <input type="password" name="repeat-pass" placeholder="neues passwort wiederholen" id="repeat-pass">
+                                  
+                                {{ form_start(form, {'method': 'post', 'action': path('einstellungen'), 'attr': { 'class': 'user-profil-form', 'accept-charset': 'utf-8'}}) }}    
+                                      
+                                        {{ form_errors(form) }}
+                                        
+                                        
+                                        {{ form_widget(form.password, {'attr': {'placeholder': 'aktuelles passwort', 'id': 'actual-pass'}}) }}
+                                        {{ form_widget(form.newPassword, {'attr': {'placeholder': 'neues passwort', 'id': 'new-pass'}}) }}
+                                        {{ form_widget(form.repeatedPassword, {'attr': {'placeholder': 'neues passwort wiederholen', 'id': 'repeat-pass'}}) }}
+                                    
+                                        
                                   <div class="row user-names">
                                       <div class="col-xs-6">
-                                          <input type="text" name="name-pass" placeholder="vorname" class="no-bg" id="name-pass">
+                                          {{ form_widget(form.name, {'attr': {'placeholder': 'vorname', 'id': 'name-pass'}}) }}
                                         </div>
-                                      <div class="col-xs-6">
-                                          <input type="text" name="lastname-pass" placeholder="nachname" id="lastname-pass">
+                                      <div class="col-xs-6">                                          
+                                          {{ form_widget(form.surname, {'attr': {'placeholder': 'nachname', 'id': 'lastname-pass'}}) }}
                                         </div>
                                   </div>
                                   <div class="phone-numer">
                                     <h3>Telefon Nr. für User-Rückfragen</h3>
                                     <div class="phone-inputs">
-                                      <span>+43</span><input type="number" maxlength="3" min="0" placeholder="000" />
-                                      <input type="number" maxlength="7" min="0" placeholder="1234567" />
+                                      <span>+43</span>
+                                      
+                                      {{ form_widget(form.phonePrefix, {'attr': {'placeholder': '000'}}) }}
+                                      {{ form_widget(form.phone, {'attr': {'placeholder': '1234567'}}) }}
+                                      
                                       <span>(verifiziert)</span>
                                     </div>
                                   </div>
@@ -52,15 +65,15 @@
                                     </p>
                                     <div class="bank-inputs row">
                                       <div class="col-xs-6">
-                                          <input type="text" name="iban" placeholder="iban">
+                                          {{ form_widget(form.iban, {'attr': {'placeholder': 'iban'}}) }}
                                         </div>
                                         <div class="col-xs-6">
-                                          <input type="text" name="bic" placeholder="bic">
+                                          {{ form_widget(form.bic, {'attr': {'placeholder': 'bic'}}) }}
                                         </div>
                                     </div>
                                   </div>
                                   <input type="submit" class="green-big-button" value="Einstellungen speichern">
-                                  </form>
+                                  {{ form_end(form) }}
                                 </div>
                           </div>
                       </div>

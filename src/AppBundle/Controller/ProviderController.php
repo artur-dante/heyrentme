@@ -2,13 +2,15 @@
 
 namespace AppBundle\Controller;
 
+
+
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session;
 use AppBundle\Entity\Equipment;
 use AppBundle\Utils;
-
+use AppBundle\Form\EinstellungenType;
 
 class ProviderController extends BaseController {
     
@@ -46,7 +48,30 @@ class ProviderController extends BaseController {
      * @Route("/provider/einstellungen", name="einstellungen")
      */
     public function einstellungenAction(Request $request) {
-        return $this->render('provider/einstellungen.html.twig');
+        
+        $user = $this->getUser();
+        
+        //$form = $this->createForm(EinstellungenType::class, $user);
+        $form = $this->createForm($this->get('form_einstellungen'), $user);
+        
+        /*
+        $form = $this->createFormBuilder()
+                ->add('currentPassword', 'password')
+                ->add('newPassword', 'password')
+                ->add('repeatedPassword', 'password')
+                ->add('name', 'text')
+                ->add('surname', 'text')
+                
+                ->add('phone', 'integer')
+                ->add('phonePrefix', 'integer')
+                
+                ->add('iban', 'text')
+                ->add('bic', 'text')             
+                ->getForm();*/
+        
+        return $this->render('provider/einstellungen.html.twig', array(  
+            'form' => $form->createView()
+        ));
     }
     /**
      * @Route("/provider/equipment-add-1/{subcategoryId}", name="equipment-add-1")

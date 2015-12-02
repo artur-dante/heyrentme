@@ -119,6 +119,82 @@ class User extends BaseUser
     }
     
     
+    
+    protected $newPassword;    
+    public function getNewPassword()
+    {
+        return $this->newPassword;
+    }
+    public function setNewPassword($newPassword)
+    {
+        $this->newPassword = $newPassword;
+    }
+    
+    protected $repeatedPassword;    
+    public function getRepeatedPassword()
+    {
+        return $this->repeatedPassword;
+    }
+    public function setRepeatedPassword($repeatedPassword)
+    {
+        $this->repeatedPassword = $repeatedPassword;
+    }
+    
+    protected $phone;    
+    public function getPhone()
+    {
+        return $this->phone;
+    }
+    public function setPhone($phone)
+    {
+        $this->phone = $phone;
+    }
+    
+    protected $phonePrefix;    
+    public function getPhonePrefix()
+    {
+        return $this->phonePrefix;
+    }
+    public function setPhonePrefix($phonePrefix)
+    {
+        $this->phonePrefix = $phonePrefix;
+    }
+    
+    protected $iban;    
+    public function getIban()
+    {
+        return $this->iban;
+    }
+    public function setIban($iban)
+    {
+        $this->iban = $iban;
+    }
+    
+    protected $bic;    
+    public function getBic()
+    {
+        return $this->bic;
+    }
+    public function setBic($bic)
+    {
+        $this->bic = $bic;
+    }
+    
+    
+    public function getProfilePicture($large)
+    {
+        $imageUrl = "/img/placeholder/user-big.png";
+        if ($this->facebookID != null){
+            $imageUrl = 'http://graph.facebook.com/'. $this->facebookID .'/picture';
+        }         
+        
+        if ($large){
+            $imageUrl .= "?type=large";
+        }
+        
+        return $imageUrl;
+    }
+    
     public function __construct()
     {
         parent::__construct();

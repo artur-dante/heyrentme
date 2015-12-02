@@ -31,8 +31,11 @@
                                 <div class="offer user-upload">
                                     <p>Profilbild</p>
                                     <span class="user-upload-note">Schaffe Vertrauen und lade ein Profilbild hoch (max. 10MB, min. 250x250px)</span>
-                                    <img src="/img/placeholder/user-big.png" alt=""/>                                    
-                                    <img src="/img/placeholder/user-upload.png" alt=""/>                                    <textarea placeholder=""></textarea>
+                                    <img src="{{ app.user.getProfilePicture(true) }}" alt=""/>                
+                                    
+                                    <img src="/img/placeholder/user-upload.png" alt=""/>                                   
+                                    
+                                    <div>&nbsp;</div>
                                     <input type="submit" class="green-big-button step3-button submit-green" value="Einstellungen speichern >>">
                                 </div>
                             </div>
