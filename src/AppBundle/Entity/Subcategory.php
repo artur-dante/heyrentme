@@ -32,7 +32,7 @@ class Subcategory
 
     /**
      * @ORM\ManyToOne(targetEntity="Category", inversedBy="subcategories")
-     * @ORM\JoinColumn(name="categoryID", referencedColumnName="id")
+     * @ORM\JoinColumn(name="category_id", referencedColumnName="id")
      */
     protected $category;    
 
@@ -43,7 +43,7 @@ class Subcategory
    
     /**
      * @ORM\OneToOne(targetEntity="Image")
-     * @ORM\JoinColumn(name="imageID", referencedColumnName="id")
+     * @ORM\JoinColumn(name="image_id", referencedColumnName="id")
      */
     protected $image;
     
