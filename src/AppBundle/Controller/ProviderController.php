@@ -114,51 +114,57 @@ class ProviderController extends BaseController {
             $this->fileCount = count($session->get('EquipmentAddFileArray'));
         }
         
+        // validation form
         //<editor-fold>
-        $form = $this->createFormBuilder()
-                ->add('description', 'textarea', array(
-                    'constraints' => array(
-                        new NotBlank(),
-                        new Length(array('max' => 500)),
-                        new Callback(array($this, 'validate'))
-                    )
-                ))
-                ->add('make_sure', 'checkbox', array(
-                    'constraints' => array(
-                        new NotBlank(array('message' => 'You must check this box'))
-                    )
-                ))
-                ->add('street', 'text', array(
-                    'constraints' => array(
-                        new NotBlank(),
-                        new Length(array('max' => 128))
-                    )
-                ))
-                ->add('number', 'text', array(
-                    'constraints' => array(
-                        new NotBlank(),
-                        new Length(array('max' => 16))
-                    )
-                ))
-                ->add('postcode', 'text', array(
-                    'constraints' => array(
-                        new NotBlank(),
-                        new Length(array('max' => 4)),
-                        new Regex(array('pattern' => '/^\d{4}$/', 'message' => 'Please fill in a valid postal code'))
-                    )
-                ))
-                ->add('place', 'text', array(
-                    'constraints' => array(
-                        new NotBlank(),
-                        new Length(array('max' => 128))
-                    )
-                ))
-                ->add('accept', 'checkbox', array(
-                    'constraints' => array(
-                        new NotBlank(array('message' => 'You must check this box'))
-                    )
-                ))
-                ->getForm();
+        $form = $this->createFormBuilder(null, array(
+                'constraints' => array(
+                    new Callback(array($this, 'validateImages'))
+                )
+            ))
+            ->add('description', 'textarea', array(
+                'constraints' => array(
+                    new NotBlank(),
+                    new Length(array('max' => 500))
+                )
+            ))
+            ->add('make_sure', 'checkbox', array(
+                'required' => false,
+                'constraints' => array(
+                    new Callback(array($this, 'validateMakeSure'))                    
+                )
+            ))
+            ->add('street', 'text', array(
+                'constraints' => array(
+                    new NotBlank(),
+                    new Length(array('max' => 128))
+                )
+            ))
+            ->add('number', 'text', array(
+                'constraints' => array(
+                    new NotBlank(),
+                    new Length(array('max' => 16))
+                )
+            ))
+            ->add('postcode', 'text', array(
+                'constraints' => array(
+                    new NotBlank(),
+                    new Length(array('max' => 4)),
+                    new Regex(array('pattern' => '/^\d{4}$/', 'message' => 'Please fill in a valid postal code'))
+                )
+            ))
+            ->add('place', 'text', array(
+                'constraints' => array(
+                    new NotBlank(),
+                    new Length(array('max' => 128))
+                )
+            ))
+            ->add('accept', 'checkbox', array(
+                'required' => false,
+                'constraints' => array(
+                    new Callback(array($this, 'validateAccept'))
+                )
+            ))
+            ->getForm();
         //</editor-fold>
         
         $form->handleRequest($request);
@@ -167,7 +173,6 @@ class ProviderController extends BaseController {
             // update Equipment object
             $data = $form->getData();
             $eq = $this->getDoctrine()->getRepository('AppBundle:Equipment')->find($session->get('EquipmentAddId'));
-            //$eq = $this->getDoctrine()->getRepository('AppBundle:Equipment')->find(110);
             // map fields
             //<editor-fold>
             $eq->setDescription($data['description']);
@@ -195,12 +200,20 @@ class ProviderController extends BaseController {
         ));
     }
     private $fileCount = null;
-    public function validate($value, ExecutionContextInterface $context) {
+    public function validateAccept($value, ExecutionContextInterface $context) {
+        if (!$value) {
+            $context->buildViolation('You must check this box')->atPath('accept')->addViolation();
+        }            
+    }
+    public function validateMakeSure($value, ExecutionContextInterface $context) {
+        if (!$value) {
+            $context->buildViolation('You must check this box')->atPath('make_sure')->addViolation();
+        }            
+    }
+    public function validateImages($data, ExecutionContextInterface $context) {
         if ($this->fileCount == null || $this->fileCount == 0) {
             $context->buildViolation('Please upload at least one image')->addViolation();
         }
-        
-        
     }
     private function handleImages($eqFiles, $eq, $em) {
         foreach ($eqFiles as $file) {
