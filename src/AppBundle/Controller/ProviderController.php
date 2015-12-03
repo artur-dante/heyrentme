@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\Range;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
@@ -105,15 +106,44 @@ class ProviderController extends BaseController {
      * @Route("/provider/equipment-add-1/{subcategoryId}", name="equipment-add-1")
      */
     public function equipmentAdd1Action(Request $request, $subcategoryId) {
+        
+        // build form
+        //<editor-fold>
         $form = $this->createFormBuilder()
-                ->add('name', 'text')
-                ->add('price', 'money')
-                ->add('deposit', 'money')
-                ->add('value', 'money')
-                ->add('priceBuy', 'money', array('required' => false))
+                ->add('name', 'text', array(
+                    'constraints' => array(
+                        new NotBlank(),
+                        new Length(array('max' => 256))
+                    )
+                ))
+                ->add('price', 'money', array(
+                    'constraints' => array(
+                        new NotBlank(),
+                        new Range(array('min' => 0))
+                    )
+                ))
+                ->add('deposit', 'money', array(
+                    'constraints' => array(
+                        new NotBlank(),
+                        new Range(array('min' => 0))
+                    )
+                ))
+                ->add('value', 'money', array(
+                    'constraints' => array(
+                        new NotBlank(),
+                        new Range(array('min' => 0))
+                    )
+                ))
+                ->add('priceBuy', 'money', array(
+                    'required' => false,
+                    'constraints' => array(
+                        new Range(array('min' => 0))
+                    )
+                ))
                 ->add('invoice', 'checkbox', array('required' => false))
                 ->add('industrial', 'checkbox', array('required' => false))
                 ->getForm();
+        //</editor-fold>
         
         $form->handleRequest($request);
         
@@ -239,7 +269,7 @@ class ProviderController extends BaseController {
             $session->remove('EquipmentAddFileArray');            
             $this->fileCount = null;
             
-            return $this->redirectToRoute('profil');
+            return $this->redirectToRoute('equipment-add-3');
         }
         
         return $this->render('provider\equipment_add_step2.html.twig', array(
@@ -275,7 +305,7 @@ class ProviderController extends BaseController {
                 $file[2]);
             rename($file[3], $origFullPath);
             
-            // TODO: check image size
+            // check image size
             $imgInfo = getimagesize($origFullPath);
             $ow = $imgInfo[0]; // original width
             $oh = $imgInfo[1]; // original height
@@ -301,6 +331,7 @@ class ProviderController extends BaseController {
                 }
             }
             
+            // scale the image
             if ($scale) {
                 if ($file[2] == 'png') {
                     $img = imagecreatefrompng($origFullPath);
@@ -320,7 +351,7 @@ class ProviderController extends BaseController {
                 copy($origFullPath, $imgFullPath);
             }        
 
-            // create object
+            // store entry in database
             $img = new Image();
             $img->setUuid($file[0]);
             $img->setName($file[1]);
@@ -374,6 +405,14 @@ class ProviderController extends BaseController {
      * @Route("/provider/equipment-add-3", name="equipment-add-3")
      */
     public function equipmentAdd3Action(Request $request) {
-        return $this->render('provider\equipment_add_step3.html.twig');
+        $session = $request->getSession();
+        //$id = $ $session->get('EquipmentAddId');
+        $id = 118; // CRITICAL: remove this
+        $eq = $this->getDoctrine()->getRepository('AppBundle:Equipment')->find($id);
+        
+        return $this->render('provider\equipment_add_step3.html.twig', array(
+            'subcategory' => $eq->getSubcategory(),
+            'featureSectionRepo' => $this->getDoctrine()->getRepository('AppBundle:FeatureSection')
+        ));
     }
 }

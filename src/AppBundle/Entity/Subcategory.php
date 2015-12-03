@@ -32,7 +32,7 @@ class Subcategory
 
     /**
      * @ORM\ManyToOne(targetEntity="Category", inversedBy="subcategories")
-     * @ORM\JoinColumn(name="categoryID", referencedColumnName="id")
+     * @ORM\JoinColumn(name="category_id", referencedColumnName="id")
      */
     protected $category;    
 
@@ -43,9 +43,15 @@ class Subcategory
    
     /**
      * @ORM\OneToOne(targetEntity="Image")
-     * @ORM\JoinColumn(name="imageID", referencedColumnName="id")
+     * @ORM\JoinColumn(name="image_id", referencedColumnName="id")
      */
     protected $image;
+    
+    /**
+    * @ORM\OneToMany(targetEntity="FeatureSection", mappedBy="subcategory")
+    */
+    protected $featureSections;
+    
     
     public function getImageUrl() {
         return $this->image != null ? $this->image->getUrlPath() : "";
@@ -232,5 +238,39 @@ class Subcategory
     public function getImage()
     {
         return $this->image;
+    }
+
+    /**
+     * Add featureSection
+     *
+     * @param \AppBundle\Entity\FeatureSection $featureSection
+     *
+     * @return Subcategory
+     */
+    public function addFeatureSection(\AppBundle\Entity\FeatureSection $featureSection)
+    {
+        $this->featureSections[] = $featureSection;
+
+        return $this;
+    }
+
+    /**
+     * Remove featureSection
+     *
+     * @param \AppBundle\Entity\FeatureSection $featureSection
+     */
+    public function removeFeatureSection(\AppBundle\Entity\FeatureSection $featureSection)
+    {
+        $this->featureSections->removeElement($featureSection);
+    }
+
+    /**
+     * Get featureSections
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getFeatureSections()
+    {
+        return $this->featureSections;
     }
 }

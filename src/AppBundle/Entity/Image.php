@@ -34,7 +34,7 @@ class Image
      */
     protected $extension;
     /**
-     * @ORM\Column(name="originalPath", type="string", length=128)
+     * @ORM\Column(type="string", length=128)
      */
     protected $originalPath;
     

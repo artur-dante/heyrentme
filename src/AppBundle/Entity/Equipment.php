@@ -42,7 +42,7 @@ class Equipment
      */
     protected $deposit;
     /**
-     * @ORM\Column(name="PriceBuy", type="decimal", scale=10, precision=2)
+     * @ORM\Column(type="decimal", scale=10, precision=2)
      */
     protected $priceBuy;
     /**
@@ -55,30 +55,30 @@ class Equipment
     protected $industrial;
     
     /**
-     * @ORM\Column(name="AddrStreet", type="string", length=128)
+     * @ORM\Column(type="string", length=128)
      */
     protected $addrStreet;
     /**
-     * @ORM\Column(name="AddrNumber", type="string", length=16)
+     * @ORM\Column(type="string", length=16)
      */
     protected $addrNumber;
     /**
-     * @ORM\Column(name="AddrPostcode", type="string", length=4)
+     * @ORM\Column(type="string", length=4)
      */
     protected $addrPostcode;
     /**
-     * @ORM\Column(name="AddrPlace", type="string", length=128)
+     * @ORM\Column(type="string", length=128)
      */
     protected $addrPlace;
             
     /**
      * @ORM\ManyToOne(targetEntity="Subcategory", inversedBy="equipments")
-     * @ORM\JoinColumn(name="subcategoryID", referencedColumnName="id")
+     * @ORM\JoinColumn(name="subcategory_id", referencedColumnName="id")
      */
     protected $subcategory;
     /**
      * @ORM\ManyToOne(targetEntity="User", inversedBy="equipments")
-     * @ORM\JoinColumn(name="userID", referencedColumnName="id")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      */
     protected $user;
     
@@ -87,8 +87,8 @@ class Equipment
      * 
      * @ORM\ManyToMany(targetEntity="Image")
      * @ORM\JoinTable(name="equipment_image",
-     *      joinColumns={ @ORM\JoinColumn(name="equipmentID", referencedColumnName="id") },
-     *      inverseJoinColumns={ @ORM\JoinColumn(name="imageID", referencedColumnName="id") }
+     *      joinColumns={ @ORM\JoinColumn(name="equipment_id", referencedColumnName="id") },
+     *      inverseJoinColumns={ @ORM\JoinColumn(name="image_id", referencedColumnName="id") }
      *  )
      */
     protected $images;

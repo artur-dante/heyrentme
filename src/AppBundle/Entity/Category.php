@@ -37,7 +37,7 @@ class Category
         
     /**
      * @ORM\OneToOne(targetEntity="Image")
-     * @ORM\JoinColumn(name="imageID", referencedColumnName="id")
+     * @ORM\JoinColumn(name="image_id", referencedColumnName="id")
      */
     protected $image;
     
