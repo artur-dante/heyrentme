@@ -180,6 +180,21 @@ class User extends BaseUser
         $this->bic = $bic;
     }
     
+     /**
+     * @var string
+     *
+     * @ORM\Column(name="ImageFileName", type="string", nullable=true)
+     */
+    protected $imageFileName;    
+    public function getImageFileName()
+    {
+        return $this->imageFileName;
+    }
+    public function setImageFileName($imageFileName)
+    {
+        $this->imageFileName = $imageFileName;
+    }
+    
     
     public function getProfilePicture($large)
     {

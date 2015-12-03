@@ -59,13 +59,14 @@
                   <p class="how-many">Du kannst 3 Bilder hochladen (maximal 10MB, mindestens 1024 x 768px). Unterstützte Bildformate: jpg, png</p>
                   <span class="tutorial">tutorial</span>
               </div>
-              {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+              {{ form_start(form) }}
               <div class="row">
                   <div class="col-xs-12 border-bottom-white form-head describe">
                       <div class="form-container border-bottom-white">
                           <div class="row">
                               <div class="col-sm-12">
                                   <p class="form-heading-small margin-none">Beschreibe dein Angebot*</p>
+                                  <div class="err-msg">{{ form_errors(form) }}</div>
                               </div>
                           </div>
                       </div>
@@ -74,14 +75,14 @@
                               <div class="col-sm-12">
                                   {# <textarea placeholder="Maximal 500 Zeichen verfügbar"></textarea> #}
                                   {{ form_widget(form.description, { 'attr': { 'placeholder': 'Maximal 500 Zeichen verfügbar' } }) }}
-                                  {{ form_errors(form.description) }}
+                                  <div class="err-msg">{{ form_errors(form.description, { 'attr': { 'class': 'err-msg' } }) }}</div>
                                   <div class="chbox-holder">
                                       {# <input type="checkbox" id="c2hx"> #}
                                       {{ form_widget(form.make_sure) }}
-                                      {{ form_errors(form.make_sure) }}
                                       <label for="form_make_sure"><span></span>Bitte versichere, dass dein Equipment zum Zeitpunkt der Buchung funktionstüchtig und
       einsatzbereit sein wird.</label>
                                   </div>
+                                  <div class="err-msg">{{ form_errors(form.make_sure) }}</div>
                               </div>
                           </div>
                       </div>
@@ -99,24 +100,24 @@
                                     <div class="col-xs-8">
                                       {# <input type="text" placeholder="Strasse*" /> #}
                                         {{ form_widget(form.street, { 'attr': { 'placeholder': 'Strasse' } }) }}
-                                        {{ form_errors(form.street) }}
+                                        <div class="err-msg">{{ form_errors(form.street, { 'attr': { 'class': 'err-msg' } }) }}</div>
                                     </div>
                                     <div class="col-xs-4">
                                       {# <input type="text" placeholder="Hausnr.*" /> #}
                                         {{ form_widget(form.number, { 'attr': { 'placeholder': 'Hausnr.' } }) }}
-                                        {{ form_errors(form.number) }}
+                                        <div class="err-msg">{{ form_errors(form.number, { 'attr': { 'class': 'err-msg' } }) }}</div>
                                     </div>
                                   </div>
                                   <div class="row">
                                     <div class="col-xs-3">
                                       {# <input type="text" placeholder="Plz*" /> #}
                                         {{ form_widget(form.postcode, { 'attr': { 'placeholder': 'Plz' } }) }}
-                                        {{ form_errors(form.postcode) }}
+                                        <div class="err-msg">{{ form_errors(form.postcode, { 'attr': { 'class': 'err-msg' } }) }}</div>
                                     </div>
                                     <div class="col-xs-5">
                                       {# <input type="text" placeholder="Ort*" /> #}
                                         {{ form_widget(form.place, { 'attr': { 'placeholder': 'Ort' } }) }}
-                                        {{ form_errors(form.place) }}
+                                        <div class="err-msg">{{ form_errors(form.place, { 'attr': { 'class': 'err-msg' } }) }}</div>
                                     </div>
                                   </div>
                               </div>
@@ -125,9 +126,9 @@
                       <div class="chbox-holder alone-chbox">
                           {# <input type="checkbox" id="c2hxx"> #}
                           {{ form_widget(form.accept) }}
-                          {{ form_errors(form.accept) }}
                           <label for="form_accept"><span></span>Ich akzeptiere die <a href="#" data-toggle="modal" data-target=".allgemeine">Allgemeinen Geschäftsbedingungen</a></label>
                       </div>
+                      <div class="err-msg">{{ form_errors(form.accept) }}</div>
                       <input type="submit" class="yellow-button user-submit" value="Einstellungen speichern">
                   </div>
               </div>

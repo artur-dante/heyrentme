@@ -2,14 +2,18 @@
 
 namespace AppBundle\Controller;
 
-
-
+use AppBundle\Entity\Equipment;
+use AppBundle\Entity\Image;
+use AppBundle\Utils;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session;
-use AppBundle\Entity\Equipment;
-use AppBundle\Utils;
+use Symfony\Component\Validator\Constraints\Callback;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Regex;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use AppBundle\Form\EinstellungenType;
 
 class ProviderController extends BaseController {
@@ -33,7 +37,7 @@ class ProviderController extends BaseController {
             array_push($arr, array('id' => $s->getId(), 'name' => $s->getName()));
         }
         
-        return new \Symfony\Component\HttpFoundation\JsonResponse($arr);
+        return new JsonResponse($arr);
     }
     
     /**
@@ -44,6 +48,30 @@ class ProviderController extends BaseController {
         return $this->render('provider/profil.html.twig');
     }
 
+    /**
+     * @Route("user-image", name="user-image")
+     */
+    public function userImage(Request $request) {                
+        $file = $request->files->get('upl');
+        if ($file->isValid()) {            
+            $session = $request->getSession();
+            $eqFiles = $session->get('EquipmentAddFileArray');
+            if (count($eqFiles) < 3) {
+                $uuid = Utils::getUuid();
+                $path = sprintf("%s%s", $this->getParameter('image_storage_dir'), $this->getParameter('user_image_url'));
+                $name = sprintf("%s.%s", $uuid, $file->getClientOriginalExtension());
+                $fullPath = sprintf("%s%s", $path, $name);
+                
+                $f = $file->move($path, $name);
+                
+                $user = $this->getUser();
+                $user->setProfileImage($name);
+                
+            }
+        }
+        return new Response($status = 200);
+    }
+    
     /**
      * @Route("/provider/einstellungen", name="einstellungen")
      */
@@ -82,7 +110,7 @@ class ProviderController extends BaseController {
                 ->add('price', 'money')
                 ->add('deposit', 'money')
                 ->add('value', 'money')
-                ->add('priceBuy', 'money')
+                ->add('priceBuy', 'money', array('required' => false))
                 ->add('invoice', 'checkbox', array('required' => false))
                 ->add('industrial', 'checkbox', array('required' => false))
                 ->getForm();
@@ -129,16 +157,62 @@ class ProviderController extends BaseController {
         if ($request->getMethod() == "GET") {
             $session->set('EquipmentAddFileArray', array());
         }
+        else {
+            $this->fileCount = count($session->get('EquipmentAddFileArray'));
+        }
         
-        $form = $this->createFormBuilder()
-                ->add('description', 'textarea', array('max_length' => 500))
-                ->add('make_sure', 'checkbox')
-                ->add('street', 'text')
-                ->add('number', 'text')
-                ->add('postcode', 'text')
-                ->add('place', 'text')
-                ->add('accept', 'checkbox')
-                ->getForm();
+        // validation form
+        //<editor-fold>
+        $form = $this->createFormBuilder(null, array(
+                'constraints' => array(
+                    new Callback(array($this, 'validateImages'))
+                )
+            ))
+            ->add('description', 'textarea', array(
+                'constraints' => array(
+                    new NotBlank(),
+                    new Length(array('max' => 500))
+                )
+            ))
+            ->add('make_sure', 'checkbox', array(
+                'required' => false,
+                'constraints' => array(
+                    new Callback(array($this, 'validateMakeSure'))                    
+                )
+            ))
+            ->add('street', 'text', array(
+                'constraints' => array(
+                    new NotBlank(),
+                    new Length(array('max' => 128))
+                )
+            ))
+            ->add('number', 'text', array(
+                'constraints' => array(
+                    new NotBlank(),
+                    new Length(array('max' => 16))
+                )
+            ))
+            ->add('postcode', 'text', array(
+                'constraints' => array(
+                    new NotBlank(),
+                    new Length(array('max' => 4)),
+                    new Regex(array('pattern' => '/^\d{4}$/', 'message' => 'Please fill in a valid postal code'))
+                )
+            ))
+            ->add('place', 'text', array(
+                'constraints' => array(
+                    new NotBlank(),
+                    new Length(array('max' => 128))
+                )
+            ))
+            ->add('accept', 'checkbox', array(
+                'required' => false,
+                'constraints' => array(
+                    new Callback(array($this, 'validateAccept'))
+                )
+            ))
+            ->getForm();
+        //</editor-fold>
         
         $form->handleRequest($request);
         
@@ -146,7 +220,6 @@ class ProviderController extends BaseController {
             // update Equipment object
             $data = $form->getData();
             $eq = $this->getDoctrine()->getRepository('AppBundle:Equipment')->find($session->get('EquipmentAddId'));
-            //$eq = $this->getDoctrine()->getRepository('AppBundle:Equipment')->find(110);
             // map fields
             //<editor-fold>
             $eq->setDescription($data['description']);
@@ -160,29 +233,11 @@ class ProviderController extends BaseController {
             
             // store images
             $eqFiles = $session->get('EquipmentAddFileArray');
-            foreach ($eqFiles as $file) {
-                // copy file
-                $fullPath = sprintf("%sequipment\\%s.%s",
-                    $this->getParameter('image_storage_dir'),
-                    $file[0],
-                    $file[2]);
-                copy($file[3], $fullPath);
-                
-                // create object
-                $img = new \AppBundle\Entity\Image();
-                $img->setUuid($file[0]);
-                $img->setName($file[1]);
-                $img->setExtension($file[2]);
-                $img->setPath('equipment');
-                              
-                $em->persist($img);
-                $em->flush();
-                
-                $eq->addImage($img);
-                $em->flush();
-                
-                $session->remove('EquipmentAddFileArray');
-            }
+            $this->handleImages($eqFiles, $eq, $em);
+            
+            // clean up
+            $session->remove('EquipmentAddFileArray');            
+            $this->fileCount = null;
             
             return $this->redirectToRoute('profil');
         }
@@ -190,6 +245,96 @@ class ProviderController extends BaseController {
         return $this->render('provider\equipment_add_step2.html.twig', array(
             'form' => $form->createView()
         ));
+    }
+    private $fileCount = null;
+    public function validateAccept($value, ExecutionContextInterface $context) {
+        if (!$value) {
+            $context->buildViolation('You must check this box')->atPath('accept')->addViolation();
+        }            
+    }
+    public function validateMakeSure($value, ExecutionContextInterface $context) {
+        if (!$value) {
+            $context->buildViolation('You must check this box')->atPath('make_sure')->addViolation();
+        }            
+    }
+    public function validateImages($data, ExecutionContextInterface $context) {
+        if ($this->fileCount == null || $this->fileCount == 0) {
+            $context->buildViolation('Please upload at least one image')->addViolation();
+        }
+    }
+    private function handleImages($eqFiles, $eq, $em) {
+        foreach ($eqFiles as $file) {
+            // store the original, and image itself
+            $origFullPath = sprintf("%sequipment\\original\\%s.%s",
+                $this->getParameter('image_storage_dir'),
+                $file[0],
+                $file[2]);
+            $imgFullPath = sprintf("%sequipment\\%s.%s",
+                $this->getParameter('image_storage_dir'),
+                $file[0],
+                $file[2]);
+            rename($file[3], $origFullPath);
+            
+            // TODO: check image size
+            $imgInfo = getimagesize($origFullPath);
+            $ow = $imgInfo[0]; // original width
+            $oh = $imgInfo[1]; // original height
+            $r = $ow / $oh; // ratio
+            $nw = $ow; // new width
+            $nh = $oh; // new height
+            $scale = False;
+            
+            if ($r > 1) {
+                if ($ow > 1024) {
+                    $nw = 1024;
+                    $m = $nw / $ow; // multiplier
+                    $nh = $oh * $m;
+                    $scale = True;
+                }
+            }
+            else {
+                if ($oh > 768) {
+                    $nh = 768;
+                    $m = $nh / $oh; // multiplier
+                    $nw = $ow * $m;
+                    $scale = True;
+                }
+            }
+            
+            if ($scale) {
+                if ($file[2] == 'png') {
+                    $img = imagecreatefrompng($origFullPath);
+                }
+                else {
+                    $img = imagecreatefromjpeg($origFullPath);
+                }
+                $sc = imagescale($img, intval(round($nw)), intval(round($nh)), IMG_BICUBIC_FIXED);
+                if ($file[2] == 'png') {
+                    imagepng($sc, $imgFullPath);
+                }
+                else {
+                    imagejpeg($sc, $imgFullPath);
+                }
+            }
+            else {
+                copy($origFullPath, $imgFullPath);
+            }        
+
+            // create object
+            $img = new Image();
+            $img->setUuid($file[0]);
+            $img->setName($file[1]);
+            $img->setExtension($file[2]);
+            $img->setPath('equipment');
+            $img->setOriginalPath('equipment\\original');
+
+            $em->persist($img);
+            $em->flush();
+
+            $eq->addImage($img);
+            $em->flush();
+        }
+        
     }
     
     /**
@@ -213,7 +358,7 @@ class ProviderController extends BaseController {
                 $ef = array(
                     $uuid,
                     $file->getClientOriginalName(),
-                    $file->getClientOriginalExtension(),
+                    strtolower($file->getClientOriginalExtension()),
                     $fullPath
                 );
                 

@@ -2,7 +2,7 @@
 # Set parameters here that may be different on each deployment target of the app, e.g. development, staging, production.
 # http://symfony.com/doc/current/best_practices/configuration.html#infrastructure-related-configuration
 parameters:
-    database_host:     127.0.0.1
+    database_host:     192.168.9.6  #127.0.0.1
     database_port:     ~
     database_name:     symfony
     database_user:     root
@@ -24,4 +24,4 @@ parameters:
     facebook_client_secret: c801ab39b2606d9818641b2731ef3555
     mailer_fromemail: heyrentme@o2.pl
 
-    user_image_url: /user_images/
+    user_image_url: "user_images\\"

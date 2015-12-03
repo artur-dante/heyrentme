@@ -3,6 +3,14 @@
 {% block home_header %}{% endblock %}
 
 {% block body %}
+    <script>
+        $(function(){
+            $("#userImageUpload input").change(function(){
+                $("#userImageUpload form").submit();
+            });
+        });
+    </script>
+    
     {% include('provider/user_nav.html.twig') %}
   <section class="users container background-light-grey dashboard">
     <div class="row">
@@ -33,7 +41,14 @@
                                     <span class="user-upload-note">Schaffe Vertrauen und lade ein Profilbild hoch (max. 10MB, min. 250x250px)</span>
                                     <img src="{{ app.user.getProfilePicture(true) }}" alt=""/>                
                                     
-                                    <img src="/img/placeholder/user-upload.png" alt=""/>                                   
+                                    <div id="userImageUpload" class="btn btn-default btn-file" >
+                                        <form id="upload-once" method="post" action="{{ path('user-image') }}" enctype="multipart/form-data">                                                                                
+                                            <img src="/img/placeholder/user-upload.png" alt=""/>                                   
+                                            <input type="file" name='upl'>                                        
+                                        </form>
+                                    </div>
+                                    
+                                    
                                     
                                     <div>&nbsp;</div>
                                     <input type="submit" class="green-big-button step3-button submit-green" value="Einstellungen speichern >>">
