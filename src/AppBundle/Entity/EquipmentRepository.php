@@ -16,4 +16,14 @@ class EquipmentRepository extends \Doctrine\ORM\EntityRepository
         $query->setParameter('subcategoryId', $subcategoryId);
         return $query->getResult();        
     }
+    
+    public function clearFeatures($equipmentId) {
+        $sql = 'delete from AppBundle:EquipmentFeature ef where ef.equipment = :equipment';
+        $q = $this->getEntityManager()->createQuery($sql);
+        $q->setParameter(':equipment', $equipmentId);
+        $q->execute();
+    }
+    public function saveFeatures($equipmentId, $features) {
+        
+    }
 }

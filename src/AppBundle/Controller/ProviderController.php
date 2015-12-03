@@ -363,6 +363,35 @@ class ProviderController extends BaseController {
         $id = 118; // CRITICAL: remove this
         $eq = $this->getDoctrine()->getRepository('AppBundle:Equipment')->find($id);
         
+        // TODO: add server-side validation
+        if ($request->getMethod() == "POST") {
+            // parse params
+            $params = $request->request->all();
+            $features = array();
+            // first detect checkboxes and radios
+            foreach ($params as $key => $val) {
+                if (is_string($val) && strpos($key, 'section_') === 0) {
+                    $id = intval($val);
+                    $features[$id] = null;
+                }
+                else if (is_array($val) && strpos($key, 'section_') === 0) {
+                    foreach ($val as $v) {
+                        $id = intval($val);
+                        $features[$id] = null;
+                    }
+                }
+                
+            }          
+            // next, detect input[text]
+            foreach ($params as $key => $val) {
+                if (is_string($val) && strpos($key, 'text_') === 0) {
+                    $id = intval(str_replace('text_', '', $key));                    
+                    $features[$id] = $val;
+                }
+            }          
+            $f = $features;
+        }
+        
         return $this->render('provider\equipment_add_step3.html.twig', array(
             'subcategory' => $eq->getSubcategory(),
             'featureSectionRepo' => $this->getDoctrine()->getRepository('AppBundle:FeatureSection')
