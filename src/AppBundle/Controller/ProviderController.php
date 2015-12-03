@@ -360,9 +360,10 @@ class ProviderController extends BaseController {
     public function equipmentAdd3Action(Request $request) {
         $session = $request->getSession();
         //$id = $ $session->get('EquipmentAddId');
-        $id = 118; // CRITICAL: remove this
-        $eq = $this->getDoctrine()->getRepository('AppBundle:Equipment')->find($id);
+        $eqid = 118; // CRITICAL: remove this
+        $eq = $this->getDoctrine()->getRepository('AppBundle:Equipment')->find($eqid);
         
+        // TODO: make it editable (take features from database and prefill inputs)
         // TODO: add server-side validation
         if ($request->getMethod() == "POST") {
             // parse params
@@ -376,7 +377,7 @@ class ProviderController extends BaseController {
                 }
                 else if (is_array($val) && strpos($key, 'section_') === 0) {
                     foreach ($val as $v) {
-                        $id = intval($val);
+                        $id = intval($v);
                         $features[$id] = null;
                     }
                 }
@@ -389,7 +390,12 @@ class ProviderController extends BaseController {
                     $features[$id] = $val;
                 }
             }          
-            $f = $features;
+            
+            $this->getDoctrine()->getRepository('AppBundle:Equipment')->saveFeatures($eqid, $features);
+            
+            // clean up
+            $session->remove('EquipmentAddId');
+            return $this->redirectToRoute('equipment-add-4');
         }
         
         return $this->render('provider\equipment_add_step3.html.twig', array(
@@ -397,4 +403,15 @@ class ProviderController extends BaseController {
             'featureSectionRepo' => $this->getDoctrine()->getRepository('AppBundle:FeatureSection')
         ));
     }
+
+    /**
+     * @Route("/provider/equipment-add-4", name="equipment-add-4")
+     */
+    public function equipmentAdd4Action(Request $request) {
+        $session = $request->getSession();
+        if ($session->has('EquipmentAddId'))
+            $session->remove('EquipmentAddId');
+        
+        return $this->render('provider\equipment_add_step4.html.twig');
+    }    
 }

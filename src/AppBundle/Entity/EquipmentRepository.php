@@ -24,6 +24,16 @@ class EquipmentRepository extends \Doctrine\ORM\EntityRepository
         $q->execute();
     }
     public function saveFeatures($equipmentId, $features) {
-        
+        $this->clearFeatures($equipmentId);
+        $em = $this->getEntityManager();
+        foreach ($features as $id => $text) {
+            $ef = new EquipmentFeature();
+            $ef->setEquipment($em->getReference('AppBundle:Equipment', $equipmentId));
+            $ef->setFeature($em->getReference('AppBundle:Feature', $id));
+            $ef->setName($text);
+            $em->persist($ef);
+        }
+        $em->flush();
+        $em->clear();
     }
 }
