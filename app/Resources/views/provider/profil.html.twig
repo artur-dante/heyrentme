@@ -69,7 +69,7 @@
             </div>
         </div>
         <div class="col-md-3">
-            {{ render(controller('AppBundle:Provider:userNav2', { 'page': 'profil' })) }}
+            {{ include('provider/user_nav2.html.twig', { 'page': 'profil' }) }}
         </div>
     </div>
   </section>

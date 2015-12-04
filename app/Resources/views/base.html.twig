@@ -1,9 +1,9 @@
 {% block header %}
-    {{ render(controller('AppBundle:Common:header')) }}
+    {{ include('common/header.html.twig') }}
 {% endblock %}
 {% block paddings %}{% endblock %}
 {% block home_header %}
-    {{ include('common/home_header.html.twig') }}
+    {{ render(controller('AppBundle:Common:homeHeader')) }}
 {% endblock %}
 {% block body %}{% endblock %}
 {% block page_footer %}

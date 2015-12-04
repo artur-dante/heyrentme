@@ -14,48 +14,7 @@
                 <li><a href="{{ path('catchall', { 'content': equipment.urlPath }) }}" class="active-crumb">{{ equipment.Name }}</a></li>
             </ul>
             <ul class="col-xs-5 pull-right text-right kaup-select">
-                <li id="kaup-hidden">
-                    <p class="display-block"><a class="haup-link" href="#">Talente buchen / hey! bookme</a></p>
-                    <span id="close-haup" class="haup-close-icon"></span>
-                    <p>
-                        <img src="/rentme/img/categories/1.jpg" alt=""/>
-                        <a href="#">Haus & Garten</a>
-                    </p>
-                    <p>
-                        <img src="/rentme/img/categories/2.jpg" alt=""/>
-                        <a href="#">Freizeit & Events</a>
-                    </p>
-                    <p>
-                        <img src="/rentme/img/categories/3.jpg" alt=""/>
-                        <a href="#">lebenshilfe</a>
-                    </p>
-                    <p>
-                        <img src="/rentme/img/categories/4.jpg" alt=""/>
-                         <a href="#">Körper & Geist</a>
-                    </p>
-                    <p>
-                        <img src="/rentme/img/categories/5.jpg" alt=""/>
-                        <a href="#">office</a>
-                    </p>
-                    <span class="clearfix"></span>
-                    <p class="display-block"><a class="haup-link">Equipment mieten / hey! rentme</a></p>
-                    <p>
-                        <img src="/rentme/img/categories/6.jpg" alt=""/>
-                        <a href="#">Werkzeug</a>
-                    </p>
-                    <p>
-                        <img src="/rentme/img/categories/7.jpg" alt=""/>
-                         <a href="#">Sport-equipment</a>
-                    </p>
-                    <p>
-                        <img src="/rentme/img/categories/8.jpg" alt=""/>
-                        <a href="#">Kinderartikel</a>
-                    </p>
-                    <p>
-                        <img src="/rentme/img/categories/9.jpg" alt=""/>
-                        <a href="#">Technik</a>
-                    </p>
-                </li>
+                {{ render(controller('AppBundle:Common:categoryList')) }}
                 <li id="kategorie-select"><a class="active-crumb haup-ico" href="#">Hauptkategorien &nbsp;&nbsp;&nbsp;</a></li>
                 <li><a class="active-crumb" href="#">In dieser Kategorie anbieten</a></li>
             </ul>
@@ -155,9 +114,7 @@
                     <div class="col-md-8 col-xs-12 product-description" id="map-sibling">
                         <p class="no-top-margin text-padding">
                             <span class="text-bold mobile-hidden =">Beschreibung:</span><br class="mobile-hidden"><br class="mobile-hidden">
-                            Das ist eine Tischler Beschreibung consed dolore conse ex ex exerciduis at. Duipisl ilis acidunt inci exeriusto core dolummod eu feugait at wisisci bla consenibh enibh et ad tet autpate velesto coreetum nullumsandio odit nullaorem num volore.
-                            Tincip erostrud dolore magnis atum quisse
-                            d eugiam, sis nisit nullaorpero duis nim nit nonseni ssismolesto commy nullum nos adio odolorem iriusto ex esto diatet alisim ipisl il doluptate tat, corpero ex elenibh ea facidunt lummolor am inim nim ing eriliquat.
+                            {{ equipment.description }}
                         </p>
                     </div>
                     <div class="col-md-4 col-xs-12" id="googleMap">

@@ -1,12 +1,10 @@
-<ul class="col-xs-6 pull-right text-right kaup-select">
-    <li id="kaup-hidden">
-        <p class="display-block"><a class="haup-link">Equipment mieten / hey! rentme</a></p>
-        <span id="close-haup" class="haup-close-icon"></span>
-        {% for cat in categories %}
-            <p>
-                <a href="{{ path('catchall', { 'content': cat.Slug }) }}#categories"><img src="{{ image_url_prefix }}{{ cat.imageUrl }}" alt=""/></a>
-                <a href="{{ path('catchall', { 'content': cat.Slug }) }}#categories">{{ cat.Name }}</a>
-            </p>
-        {% endfor %}
-    </li>
-</ul>
+<li id="kaup-hidden">
+    <p class="display-block"><a class="haup-link">Equipment mieten / hey! rentme</a></p>
+    <span id="close-haup" class="haup-close-icon"></span>
+    {% for cat in categories %}
+        <p>
+            <a href="{{ path('catchall', { 'content': cat.slug }) }}#categories"><img src="{{ image_url_prefix }}{{ cat.imageUrl }}" alt=""/></a>
+            <a href="{{ path('catchall', { 'content': cat.slug }) }}#categories">{{ cat.Name }}</a>
+        </p>
+    {% endfor %}
+</li>

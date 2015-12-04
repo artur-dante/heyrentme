@@ -20,7 +20,9 @@
             -->
             <div class="search-form mobile-kategorie-form mobile-hidden">
                 <form method="post" accept-charset="utf-8" action="/heyrentme"><div style="display:none;"><input type="hidden" name="_method" value="POST"></div><select name="gender" class="selectpicker mobile-hidden" title="SUCHE"><option value="&lt;option data-content=&quot;&lt;span class=&quot;link-selected&quot; href=&quot;content&quot;&gt;OFFICE&lt;/span&gt;&quot;&gt;&lt;/option&gt;">BITE</option></select><select name="gender2" class="selectpickerspc"><option value="S">HAUPTKATEGORIEN</option><option value="T">HAUPTKATEGORIEN</option></select><input type="submit" class="desktop-hide" value="los geht´s!"></form>
-                {{ render(controller('AppBundle:Common:categoryList')) }}
+                <ul class="col-xs-6 pull-right text-right kaup-select">
+                    {{ render(controller('AppBundle:Common:categoryList')) }}
+                </ul>
             </div>
 
         </div>

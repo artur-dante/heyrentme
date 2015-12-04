@@ -18,16 +18,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use AppBundle\Form\EinstellungenType;
 
 class ProviderController extends BaseController {
-    
-    
-    public function userNav2Action(Request $request, $page) {
-        $cats = $this->getCategories($request);
-        return $this->render('provider/user_nav2.html.twig', array(
-            'categories' => $cats,
-            'page' => $page
-        ));
-    }
-    
+        
     /**
      * @Route("/provider/subcats/{id}", name="subcat")
      */

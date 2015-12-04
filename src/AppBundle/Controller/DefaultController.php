@@ -95,7 +95,8 @@ class DefaultController extends BaseController {
         if ($eq != null) {
             return $this->render('default/equipment.html.twig', array(
                 'equipment' => $eq,
-                'category' => $eq->getSubcategory()->getCategory()
+                'category' => $eq->getSubcategory()->getCategory(),
+                'categories' => $this->getCategories($request)
             ));
         }
         return null;

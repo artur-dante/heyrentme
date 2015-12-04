@@ -16,9 +16,9 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class CommonController extends BaseController {
     
-    public function headerAction() {
-        return $this->render('common/header.html.twig', array(
-            //
+    public function homeHeaderAction(Request $request) {
+        return $this->render('common/home_header.html.twig', array(
+            'categories' => $this->getCategories($request)
         ));
     }
 
