@@ -13,7 +13,6 @@ div.err-msg  ul  li {
     color: #c00;
 }
 
-
 #reg-modal .modal-dialog,#login .modal-dialog,#emailConfirmed .modal-dialog,#passwordReset .modal-dialog,
 #passwordRecovery .modal-dialog,#melden .modal-dialog{
     max-width:450px
@@ -147,4 +146,22 @@ img.profileImage {
 img.headerProfileImage {
   max-width: 50px;
   max-height: 50px;
+}
+
+
+.chbox-holder input[type="radio"] {
+  display: none;
+}
+.chbox-holder input[type="radio"] + label span {
+  display: inline-block;
+  width: 19px;
+  height: 19px;
+  margin: -1px 4px 0 0;
+  vertical-align: middle;
+  background: url('../img/check_radio_sheet.png') -38px top no-repeat;
+  cursor: pointer;
+}
+.chbox-holder input[type="radio"]:checked + label span {
+  background: url('../img/check_radio_sheet.png') -57px top no-repeat;
+
 }

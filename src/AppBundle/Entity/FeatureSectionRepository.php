@@ -17,7 +17,7 @@ class FeatureSectionRepository extends \Doctrine\ORM\EntityRepository
         return $q->getResult();
     }
     
-    public function getTextlessFeaturesSorted($featureSectionId, $freetext) {
+    public function getFeaturesSorted($featureSectionId, $freetext) {
         $sql = 'select f '.
                 'from AppBundle:Feature f '.
                 'where f.featureSection = :featureSection '.

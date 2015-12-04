@@ -11,4 +11,24 @@ namespace AppBundle\Entity;
 class EquipmentRepository extends \Doctrine\ORM\EntityRepository
 {
    
+    
+    public function clearFeatures($equipmentId) {
+        $sql = 'delete from AppBundle:EquipmentFeature ef where ef.equipment = :equipment';
+        $q = $this->getEntityManager()->createQuery($sql);
+        $q->setParameter(':equipment', $equipmentId);
+        $q->execute();
+    }
+    public function saveFeatures($equipmentId, $features) {
+        $this->clearFeatures($equipmentId);
+        $em = $this->getEntityManager();
+        foreach ($features as $id => $text) {
+            $ef = new EquipmentFeature();
+            $ef->setEquipment($em->getReference('AppBundle:Equipment', $equipmentId));
+            $ef->setFeature($em->getReference('AppBundle:Feature', $id));
+            $ef->setName($text);
+            $em->persist($ef);
+        }
+        $em->flush();
+        $em->clear();
+    }
 }

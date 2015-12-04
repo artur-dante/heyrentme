@@ -82,7 +82,6 @@ class Equipment
      */
     protected $user;
     
-    
     /**
      * 
      * @ORM\ManyToMany(targetEntity="Image")
@@ -92,6 +91,11 @@ class Equipment
      *  )
      */
     protected $images;
+    
+    /**
+     * @ORM\OneToMany(targetEntity="EquipmentFeature", mappedBy="equipment")
+     */
+    protected $features;
     
     public function getUrlPath() {
        $s = \AppBundle\Utils::slugify($this->getName());
@@ -508,5 +512,39 @@ class Equipment
     public function getAddrPlace()
     {
         return $this->addrPlace;
+    }
+
+    /**
+     * Add feature
+     *
+     * @param \AppBundle\Entity\EquipmentFeature $feature
+     *
+     * @return Equipment
+     */
+    public function addFeature(\AppBundle\Entity\EquipmentFeature $feature)
+    {
+        $this->features[] = $feature;
+
+        return $this;
+    }
+
+    /**
+     * Remove feature
+     *
+     * @param \AppBundle\Entity\EquipmentFeature $feature
+     */
+    public function removeFeature(\AppBundle\Entity\EquipmentFeature $feature)
+    {
+        $this->features->removeElement($feature);
+    }
+
+    /**
+     * Get features
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getFeatures()
+    {
+        return $this->features;
     }
 }
