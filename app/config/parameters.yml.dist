@@ -24,4 +24,4 @@ parameters:
     facebook_client_secret: c801ab39b2606d9818641b2731ef3555
     mailer_fromemail: heyrentme@o2.pl
 
-    user_image_url: "user_images\\"
+    user_images_dir: "user_images\\"

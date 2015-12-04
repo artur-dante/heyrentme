@@ -46,33 +46,111 @@ class ProviderController extends BaseController {
      * @Route("/provider/profil", name="profil")
      */
     public function profilAction(Request $request) {
-        return $this->render('provider/profil.html.twig');
-    }
+        
+        $session = $request->getSession();
+        if ($request->getMethod() == "GET") {
+            $session->set('UserAddFile', null);
+        }
+        else {
+            $this->fileCount = count($session->get('UserAddFile'));
+        }
+        
+        #$form = $this->createFormBuilder()->getForm();
+        $user = $this->getUser();
+        $form = $this->createFormBuilder(null)
+                ->add('aboutMyself', 'textarea', array('required' => false, 'max_length' => 255 , 'data' => $user->getAboutMyself() ))
+                ->getForm();
+        
+        $form->handleRequest($request);
+        
+        if ($form->isValid()) {
+            
+            $ef = $session->get('UserAddFile');                        
+            $em = $this->getDoctrine()->getManager();
+            
+            if ($ef != null){
+                $oldImg = $user->getImage();
+                if ($oldImg != null){
+                    $img = $this->getDoctrine()->getRepository('AppBundle:Image')->find($oldImg->getId());
+                    $oldImgPath = sprintf("%s%s%s.%s", $this->getParameter('image_storage_dir'), $this->getParameter('user_images_dir'),
+                                            $img->getUuid(), $img->getExtension());
+                    if(file_exists($oldImgPath)) {
+                        unlink($oldImgPath);
+                    }
 
+                    $em->remove($img);
+                    $user->setImage(null);
+                    $em->flush();
+                }
+
+                $fullpath = $ef[3];
+                $destinationPath = sprintf("%s%s%s", $this->getParameter('image_storage_dir'), $this->getParameter('user_images_dir'),
+                        basename($fullpath) );
+                rename($fullpath, $destinationPath);
+
+
+
+                $img = new Image();
+                $img->setUuid($ef[0]);
+                $img->setName($ef[1]);
+                $img->setExtension($ef[2]);
+                $img->setPath('user_images');            
+
+                $em->persist($img);
+                $em->flush();
+
+                $user->setImage($img);
+                $session->set('UserAddFile', null);
+            }
+            $aboutMyself = $form["aboutMyself"]->getData();
+            #if ( != null && $form["aboutMyself"] != ""){
+            #    $aboutMyself = $form["aboutMyself"];
+            #}
+            
+            $user->setAboutMyself($aboutMyself);
+            $em->flush();
+            
+            
+            
+        }
+                
+        return $this->render('provider/profil.html.twig', array( 'form'=> $form->createView() ) );
+    }
+   
     /**
      * @Route("user-image", name="user-image")
      */
     public function userImage(Request $request) {                
+        //$log = $this->get('monolog.logger.artur');
         $file = $request->files->get('upl');
-        if ($file->isValid()) {            
+        if ($file->isValid()) {
+            //$log->info("received a file: {$file->getClientOriginalName()} ({$file->getClientSize()} bytes)");    
             $session = $request->getSession();
-            $eqFiles = $session->get('EquipmentAddFileArray');
-            if (count($eqFiles) < 3) {
-                $uuid = Utils::getUuid();
-                $path = sprintf("%s%s", $this->getParameter('image_storage_dir'), $this->getParameter('user_image_url'));
-                $name = sprintf("%s.%s", $uuid, $file->getClientOriginalExtension());
-                $fullPath = sprintf("%s%s", $path, $name);
-                
-                $f = $file->move($path, $name);
-                
-                $user = $this->getUser();
-                $user->setProfileImage($name);
-                
-            }
+            $eqFiles = $session->get('UserAddFile');
+            
+            $uuid = Utils::getUuid();
+            $path = sprintf("%stemp\\", $this->getParameter('image_storage_dir'));
+            $name = sprintf("%s.%s", $uuid, $file->getClientOriginalExtension());
+            $fullPath = sprintf("%s%s", $path, $name);
+
+            $f = $file->move($path, $name);
+            
+            $ef = array(
+                $uuid,
+                $file->getClientOriginalName(),
+                strtolower($file->getClientOriginalExtension()),
+                $fullPath
+            );
+
+            #array_push($eqFiles, $ef);
+            //$log->info("\taccepted");
+            $session->set('UserAddFile', $ef);
+            
         }
         return new Response($status = 200);
     }
     
+    protected $formHelper = null;
     /**
      * @Route("/provider/einstellungen", name="einstellungen")
      */
@@ -81,27 +159,83 @@ class ProviderController extends BaseController {
         $user = $this->getUser();
         
         //$form = $this->createForm(EinstellungenType::class, $user);
-        $form = $this->createForm($this->get('form_einstellungen'), $user);
+        $form = $this->createFormBuilder(null)
+                ->add('password', 'password', array( 'required'=>false, 'constraints' => array(
+                            new Callback(array($this, 'validateOldPassword'))
+                        ) ))
+                ->add('newPassword', 'password', array( 'required'=>false, 'constraints' => array(
+                            new Callback(array($this, 'validateNewPassword'))
+                        ) ))
+                ->add('repeatedPassword', 'password', array('required' => false))
+                ->add('name', 'text', array('max_length' => 255 , 'data' => $user->getName() ))
+                ->add('surname', 'text', array('max_length' => 255 , 'data' => $user->getSurname() ))
+                ->add('phone', 'integer', array('required' => false, 'data' => $user->getPhone() ))
+                ->add('phonePrefix', 'integer', array('required' => false, 'data' => $user->getPhonePrefix() ))
+                ->add('iban', 'text', array('required' => false, 'data' => $user->getIban() ))
+                ->add('bic', 'text', array('required' => false, 'data' => $user->getBic() ))
+                ->getForm();
+        $this->formHelper = $form;        
+        $form->handleRequest($request);      
         
-        /*
-        $form = $this->createFormBuilder()
-                ->add('currentPassword', 'password')
-                ->add('newPassword', 'password')
-                ->add('repeatedPassword', 'password')
-                ->add('name', 'text')
-                ->add('surname', 'text')
-                
-                ->add('phone', 'integer')
-                ->add('phonePrefix', 'integer')
-                
-                ->add('iban', 'text')
-                ->add('bic', 'text')             
-                ->getForm();*/
-        
+        if ($form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $newPassword = $form['newPassword']->getData();
+            if ($newPassword != null && $newPassword != ""){
+                $encoder_service = $this->get('security.encoder_factory');
+                $encoder = $encoder_service->getEncoder($user);                            
+                $user->setPassword($encoder->encodePassword($newPassword, $user->getSalt()));
+            }
+            
+            $user->setName($form['name']->getData());
+            $user->setSurname($form['surname']->getData());
+            
+            $user->setPhone($form['phone']->getData());
+            $user->setPhonePrefix($form['phonePrefix']->getData());
+            
+            $user->setIban($form['iban']->getData());
+            $user->setBic($form['bic']->getData());
+            
+            $em->flush();
+        }
+      
         return $this->render('provider/einstellungen.html.twig', array(  
             'form' => $form->createView()
         ));
     }
+    
+    public function validateOldPassword($data, ExecutionContextInterface $context) {
+        if ($this->formHelper != null && $this->formHelper['newPassword']->getData() != null) {
+            $user = $this->getUser();            
+            
+            $encoder_service = $this->get('security.encoder_factory');
+            $encoder = $encoder_service->getEncoder($user);            
+            $providedOldPassword = $this->formHelper['password']->getData();
+            $encoded_pass = $encoder->encodePassword($providedOldPassword, $user->getSalt());
+            if ($encoded_pass != $user->getPassword()){
+                $context->buildViolation('Provided password is incorrect. Please enter your current password.')
+                        ->atPath('password')->addViolation();
+            }
+        }
+    }
+     
+    public function validateNewPassword($data, ExecutionContextInterface $context) {
+        if ($this->formHelper != null && $this->formHelper['newPassword']->getData() != null) {
+            $newPassword = $this->formHelper['newPassword']->getData();
+            $repeatedPassword = $this->formHelper['repeatedPassword']->getData();
+            
+            if ($newPassword != $repeatedPassword) {
+                $context->buildViolation('Repeated password and password doesn\'t mach.')
+                        ->atPath('repeatedPassword')->addViolation();
+            }
+            
+            if (strlen($newPassword) < 6 ){
+                $context->buildViolation('Password have to have at least 6 chars.')
+                        ->atPath('newPassword')->addViolation();
+            }            
+        }
+    }
+
+    
     /**
      * @Route("/provider/equipment-add-1/{subcategoryId}", name="equipment-add-1")
      */

@@ -10,10 +10,5 @@ namespace AppBundle\Entity;
  */
 class EquipmentRepository extends \Doctrine\ORM\EntityRepository
 {
-    public function getAllBySubcategory($subcategoryId) {
-        $sql = "select e from AppBundle:Equipment e where e.subcategory = :subcategoryId";
-        $query = $this->getEntityManager()->createQuery($sql);
-        $query->setParameter('subcategoryId', $subcategoryId);
-        return $query->getResult();        
-    }
+   
 }

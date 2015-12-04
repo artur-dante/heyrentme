@@ -10,4 +10,10 @@ namespace AppBundle\Entity;
  */
 class ImageRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function deleteById($id) {
+        $sql = "delete from AppBundle:Image i where i.id = :id";
+        $query = $this->getEntityManager()->createQuery($sql);
+        $query->setParameter('id', $id);
+        return $query->getResult();        
+    }
 }

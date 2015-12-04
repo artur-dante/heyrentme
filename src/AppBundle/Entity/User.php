@@ -140,6 +140,11 @@ class User extends BaseUser
         $this->repeatedPassword = $repeatedPassword;
     }
     
+      /**
+     * @var string
+     *
+     * @ORM\Column(name="phone", type="integer", nullable=true)
+     */
     protected $phone;    
     public function getPhone()
     {
@@ -150,6 +155,11 @@ class User extends BaseUser
         $this->phone = $phone;
     }
     
+      /**
+     * @var string
+     *
+     * @ORM\Column(name="phone_prefix", type="integer", nullable=true)
+     */
     protected $phonePrefix;    
     public function getPhonePrefix()
     {
@@ -160,6 +170,11 @@ class User extends BaseUser
         $this->phonePrefix = $phonePrefix;
     }
     
+      /**
+     * @var string
+     *
+     * @ORM\Column(name="iban", type="string", nullable=true)
+     */
     protected $iban;    
     public function getIban()
     {
@@ -170,6 +185,11 @@ class User extends BaseUser
         $this->iban = $iban;
     }
     
+      /**
+     * @var string
+     *
+     * @ORM\Column(name="bic", type="string", nullable=true)
+     */
     protected $bic;    
     public function getBic()
     {
@@ -180,32 +200,74 @@ class User extends BaseUser
         $this->bic = $bic;
     }
     
+    
+    
      /**
      * @var string
      *
-     * @ORM\Column(name="ImageFileName", type="string", nullable=true)
+     * @ORM\Column(name="about_myself", type="string", nullable=true, length=255)
+      * 
      */
-    protected $imageFileName;    
-    public function getImageFileName()
+    protected $aboutMyself;    
+    public function getAboutMyself()
     {
-        return $this->imageFileName;
+        return $this->aboutMyself;
     }
-    public function setImageFileName($imageFileName)
+    public function setAboutMyself($aboutMyself)
     {
-        $this->imageFileName = $imageFileName;
+        $this->aboutMyself = $aboutMyself;
     }
+    
+    
+    
+    
+    
+    
+    
+    /**
+     * @ORM\OneToOne(targetEntity="Image")
+     * @ORM\JoinColumn(name="image_id", referencedColumnName="id")
+     */
+    protected $image;
+    /**
+     * Set image
+     *
+     * @param \AppBundle\Entity\Image $image
+     *
+     * @return User
+     */
+    public function setImage(\AppBundle\Entity\Image $image = null)
+    {
+        $this->image = $image;
+
+        return $this;
+    }
+    /**
+     * Get image
+     *
+     * @return \AppBundle\Entity\Image
+     */
+    public function getImage()
+    {
+        return $this->image;
+    }
+    
+    
     
     
     public function getProfilePicture($large)
     {
         $imageUrl = "/img/placeholder/user-big.png";
-        if ($this->facebookID != null){
+        if ($this->image != null) {            
+            $imageUrl = sprintf("/db-img/%s", $this->image->getUrlPath());            
+        } else if ($this->facebookID != null){
             $imageUrl = 'http://graph.facebook.com/'. $this->facebookID .'/picture';
+            if ($large){
+                $imageUrl .= "?type=large";
+            }
         }         
         
-        if ($large){
-            $imageUrl .= "?type=large";
-        }
+        
         
         return $imageUrl;
     }

@@ -31,6 +31,15 @@
                                 {{ form_start(form, {'method': 'post', 'action': path('einstellungen'), 'attr': { 'class': 'user-profil-form', 'accept-charset': 'utf-8'}}) }}    
                                       
                                         {{ form_errors(form) }}
+                                        {{ form_errors(form.password) }}
+                                        {{ form_errors(form.newPassword) }}
+                                        {{ form_errors(form.repeatedPassword) }}
+                                        {{ form_errors(form.name) }}
+                                        {{ form_errors(form.surname) }}
+                                        {{ form_errors(form.phonePrefix) }}
+                                        {{ form_errors(form.phone) }}
+                                        {{ form_errors(form.iban) }}
+                                        {{ form_errors(form.bic) }}
                                         
                                         
                                         {{ form_widget(form.password, {'attr': {'placeholder': 'aktuelles passwort', 'id': 'actual-pass'}}) }}
