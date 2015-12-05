@@ -12,7 +12,11 @@
                 <p class="text-bold">Was möchtest du anbieten?</p>
                 <p class="delate-info">Hier kannst du entweder ein Equipment oder dein
                     Talent bzw. eine Dienstleistung anbieten! </p>
-                <a href="#" data-toggle="modal" data-target="#choose-category" class="button-black backgound-yellow text-black">Equipment Anbieten</a>
+                {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+                    <a href="#" data-toggle="modal" data-target="#choose-category" class="button-black backgound-yellow text-black">Equipment Anbieten</a>
+                {% else %}
+                    <a href="{{ path('rental') }}" class="button-black backgound-yellow text-black">Equipment Anbieten</a>
+                {% endif %}
                 <a href="#" class="button-black backgound-yellow text-black">Talent Anbieten</a>
             </div>
         </div>
