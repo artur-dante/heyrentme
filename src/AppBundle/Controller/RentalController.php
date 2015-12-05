@@ -2,7 +2,9 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Candidate;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Swift_Message;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\Length;
@@ -56,7 +58,34 @@ class RentalController extends BaseController {
         $form->handleRequest($request);
         
         if ($form->isValid()) {
+            $data = $form->getData();
+
+            // create Candidate object
+            $cand = new Candidate();
+            $cand->setSubcategory($subcategory);
+            $cand->setName($data['name']);
+            $cand->setEmail($data['email']);
+            $cand->setEquipment($data['equipment']);
             
+            // save to database
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($cand);
+            $em->flush();
+            
+            // send email
+            //<editor-fold>
+            
+            $from = array($this->getParameter('mailer_fromemail') => $this->getParameter('mailer_fromname'));
+            $name = "TestTESTtest";
+            $message = Swift_Message::newInstance()
+                ->setSubject('Willkomen bei')
+                ->setFrom($from)
+                ->setTo($cand->getEmail())
+                ->setBody($this->renderView('Emails/candidate.html.twig'), 'text/html');
+            $this->get('mailer')->send($message);
+            //</editor-fold>
+            
+            return $this->redirectToRoute('rentme');
         }
         
         return $this->render('rental/rental_detail.html.twig', array(

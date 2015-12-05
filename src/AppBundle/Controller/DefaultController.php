@@ -3,6 +3,7 @@
 namespace AppBundle\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Swift_Message;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -115,7 +116,7 @@ class DefaultController extends BaseController {
     public function Send()
     {
         $name = "TestTESTtest";
-        $message = \Swift_Message::newInstance()
+        $message = Swift_Message::newInstance()
         ->setSubject('Hello Email')
         ->setFrom('yaspen@tlen.pl')
         ->setTo('yaspen@tlen.pl')
