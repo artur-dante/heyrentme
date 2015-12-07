@@ -17,27 +17,32 @@ class DefaultController extends BaseController {
         return $this->render('default/index.html.twig');
     }
     
+     
     /**
-     * @Route("/rentme", name="rentme")
+     * @Route("/rentme/{token}", name="rentme")
      */
-    public function rentmeAction(Request $request, $category = null) {        
+    public function rentmeAction(Request $request, $category = null, $token=null) {      
         $catId = null;
         if ($category != null) {
             $catId = $category->getId();
         }
-        $subcats = $this->getSubcategories($request, $catId);
         
-        $confirmed = null;
-        if ($this->getRequest()->get('confirmed') != null){
-            $confirmed = 1;
+        $subcats = $this->getSubcategories($request, $category);        
+        
+        $confirmed= null;
+        $confParam = $request->query->get('confirmed');
+        if ($confParam != null){
+            $confirmed = true;
         }
-                
+        
         return $this->render('default/equipment_mieten.html.twig', array(
             'subcategories' => $subcats,
             'category' => $category,
+            'token' => $token,
             'confirmed' => $confirmed
         ));
     }
+    
         
     public function catchallAction(Request $request, $content) {
         /*

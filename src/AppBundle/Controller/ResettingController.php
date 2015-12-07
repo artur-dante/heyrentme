@@ -87,7 +87,7 @@ class ResettingController extends BaseResettingController
     }
     
     public function passwordChangedAction(){
-        $url = $this->generateUrl('fos_user_profile_show');
+        $url = $this->generateUrl('provider');
         $response = new Response(json_encode("Password_Changed;".$url));
         $response->headers->set('Content-Type', 'application/json');
         return $response;
