@@ -52,6 +52,11 @@ class Subcategory
     */
     protected $featureSections;
     
+    /** 
+     * @ORM\Column(type="string", length=8192)
+     */
+    protected $emailBody;
+    
     
     public function getImageUrl() {
         return $this->image != null ? $this->image->getUrlPath() : "";
@@ -272,5 +277,29 @@ class Subcategory
     public function getFeatureSections()
     {
         return $this->featureSections;
+    }
+
+    /**
+     * Set emailBody
+     *
+     * @param string $emailBody
+     *
+     * @return Subcategory
+     */
+    public function setEmailBody($emailBody)
+    {
+        $this->emailBody = $emailBody;
+
+        return $this;
+    }
+
+    /**
+     * Get emailBody
+     *
+     * @return string
+     */
+    public function getEmailBody()
+    {
+        return $this->emailBody;
     }
 }
