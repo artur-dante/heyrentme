@@ -121,7 +121,7 @@ class RegistrationController extends BaseRegistrationController
             $this->renderView(
                 // app/Resources/views/Emails/registration.html.twig
                 'Emails/registration_welcome.html.twig',
-                array('name' => $username)
+                array('name' => $username, 'mailer_image_url_prefix' => $this->getParameter('mailer_image_url_prefix'))
             ),
             'text/html'
         )
@@ -153,6 +153,7 @@ class RegistrationController extends BaseRegistrationController
         return $this->render('FOSUserBundle:Registration:emailconfirmed.html.twig', array(
             'user' => $user,
             'targetUrl' => "",
+            'confirmed' => 1
         ));
     }
 

@@ -196,38 +196,6 @@
     -->
   </div>
     
-  <script>
-    var getUrlParameter = function getUrlParameter(sParam) {
-    var sPageURL = decodeURIComponent(window.location.search.substring(1)),
-        sURLVariables = sPageURL.split('&'),
-        sParameterName,
-        i;
-
-    for (i = 0; i < sURLVariables.length; i++) {
-        sParameterName = sURLVariables[i].split('=');
-
-        if (sParameterName[0] === sParam) {
-            return sParameterName[1] === undefined ? true : sParameterName[1];
-        }
-    }
-};
-    
-    $(function(){
-        if (getUrlParameter("login")) {            
-            $("a[data-target='#login']")[0].click();
-        } else if (getUrlParameter("passwordReset")) {            
-            $("#passwordResetButton").click();
-        } else if (getUrlParameter("confirmed")) {  
-            $("#emailConfirmedButton").click();
-        } else if (getUrlParameter("register")) {
-            $("a[data-target='#reg-modal']")[0].click();
-        }
-        $("#emailConfirmed .close").unbind("click");
-        $("#emailConfirmed .close").click(function(e){
-            e.preventDefault();
-            location.href = "provider/profil";
-        });
-    });
-</script>
+  
   
 {% endblock %}

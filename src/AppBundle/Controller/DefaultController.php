@@ -25,10 +25,16 @@ class DefaultController extends BaseController {
             $catId = $category->getId();
         }
         $subcats = $this->getSubcategories($request, $catId);
+        
+        $confirmed = null;
+        if ($this->getRequest()->get('confirmed') != null){
+            $confirmed = 1;
+        }
                 
         return $this->render('default/equipment_mieten.html.twig', array(
             'subcategories' => $subcats,
-            'category' => $category
+            'category' => $category,
+            'confirmed' => $confirmed
         ));
     }
         
