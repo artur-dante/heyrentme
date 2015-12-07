@@ -6,7 +6,6 @@ use AppBundle\Entity\Equipment;
 use AppBundle\Entity\Image;
 use AppBundle\Utils;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Constraints\Callback;
@@ -18,20 +17,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use AppBundle\Form\EinstellungenType;
 
 class ProviderController extends BaseController {
-        
-    /**
-     * @Route("/provider/subcats/{id}", name="subcat")
-     */
-    public function subcategoriesAction(Request $request, $id) {
-        $subcats = $this->getSubcategories($request, $id);
-        $arr = array();
-        foreach ($subcats as $s) {
-            array_push($arr, array('id' => $s->getId(), 'name' => $s->getName()));
-        }
-        
-        return new JsonResponse($arr);
-    }
-    
+            
     /**
      * @Route("/provider", name="provider")
      * @Route("/provider/profil", name="profil")

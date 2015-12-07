@@ -6,6 +6,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Swift_Message;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class DefaultController extends BaseController {
     
@@ -103,6 +104,19 @@ class DefaultController extends BaseController {
         return null;
     }
 
+    /**
+     * @Route("/subcats/{id}", name="subcat")
+     */
+    public function subcategoriesAction(Request $request, $id) {
+        $subcats = $this->getSubcategories($request, $id);
+        $arr = array();
+        foreach ($subcats as $s) {
+            array_push($arr, array('id' => $s->getId(), 'name' => $s->getName()));
+        }
+        
+        return new JsonResponse($arr);
+    }
+    
     /**
      * @Route("/test", name="test")
      */
