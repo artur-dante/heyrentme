@@ -44,7 +44,14 @@
                 {% endif %}
             </ul>
             <ul class="col-xs-6 pull-right text-right kaup-select">
-                <li><a class="active-crumb" href="#">In dieser Kategorie anbieten</a></li>
+                <li>
+                {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}                    
+                    <a class="active-crumb" href="{{ path('equipment-add-1', { 'subcategoryId': subcategory.id }) }}">In dieser Kategorie anbieten</a>
+                {% else %}
+                    <a class="active-crumb" href="{{ path('rental-detail', { 'subcategoryId': subcategory.id }) }}">In dieser Kategorie anbieten</a>
+                {% endif %}
+                    
+                </li>
             </ul>
             <ul class="col-xs-4 pull-right text-right">
                 <li class="gallery-gallery"><a id="show-grid">
