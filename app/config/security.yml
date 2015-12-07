@@ -44,7 +44,7 @@ security:
                 provider: fos_userbundle
                 csrf_provider: security.csrf.token_manager
                 default_target_path: /loggedIn
-                always_use_default_target_path: false
+                always_use_default_target_path: true
 
             logout:       true
             anonymous:    true

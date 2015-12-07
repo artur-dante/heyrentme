@@ -11,7 +11,6 @@ $(function(){
 
             $.ajax(options).done(function (data) {
                 var $target = $("#formLogin");
-                
                                 
                 if (data.indexOf("User_Is_Logged") == -1){
                     var $newHtml = $(data);                
@@ -21,8 +20,8 @@ $(function(){
                     if (url != undefined && url != ""){
                         location.href = url;
                     } else {
-                        //location.reload();
-                        location.href = "provider/profil";
+                        location.reload();
+                        //location.href = "provider/profil";
                     }
                 }
                 
