@@ -1,7 +1,7 @@
   <nav class="user-nav">
     <div class="container relative">
         {% if app.user %}
-            <img src="{{ app.user.getProfilePicture(false) }}" class="headerProfileImage"  alt=""/>
+            <img src="{{ app.user.getProfilePicture(false, image_url_prefix) }}" class="headerProfileImage"  alt=""/>
             <p>{{ app.user.name }}</p>
             <a href="#" id="open-menu"><span class="down"></span></a>
             <ul class="dropdown-menu-span">

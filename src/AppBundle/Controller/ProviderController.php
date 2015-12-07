@@ -49,8 +49,14 @@ class ProviderController extends BaseController {
                 $oldImg = $user->getImage();
                 if ($oldImg != null){
                     $img = $this->getDoctrine()->getRepository('AppBundle:Image')->find($oldImg->getId());
-                    $oldImgPath = sprintf("%s%s%s.%s", $this->getParameter('image_storage_dir'), $this->getParameter('user_images_dir'),
-                                            $img->getUuid(), $img->getExtension());
+                    $oldImgPath = 
+                        $this->getParameter('image_storage_dir') .
+                        DIRECTORY_SEPARATOR . 
+                        'user' .
+                        DIRECTORY_SEPARATOR .
+                        $img->getUuid() .
+                        '.' .
+                        $img->getExtension();
                     if(file_exists($oldImgPath)) {
                         unlink($oldImgPath);
                     }
@@ -61,8 +67,12 @@ class ProviderController extends BaseController {
                 }
 
                 $fullpath = $ef[3];
-                $destinationPath = sprintf("%s%s%s", $this->getParameter('image_storage_dir'), $this->getParameter('user_images_dir'),
-                        basename($fullpath) );
+                $destinationPath = 
+                        $this->getParameter('image_storage_dir') .
+                        DIRECTORY_SEPARATOR .
+                        'user' .
+                        DIRECTORY_SEPARATOR .
+                        basename($fullpath);
                 rename($fullpath, $destinationPath);
 
 
@@ -71,7 +81,7 @@ class ProviderController extends BaseController {
                 $img->setUuid($ef[0]);
                 $img->setName($ef[1]);
                 $img->setExtension($ef[2]);
-                $img->setPath('user_images');            
+                $img->setPath('user');            
 
                 $em->persist($img);
                 $em->flush();
@@ -106,11 +116,15 @@ class ProviderController extends BaseController {
             $eqFiles = $session->get('UserAddFile');
             
             $uuid = Utils::getUuid();
-            $path = sprintf("%stemp\\", $this->getParameter('image_storage_dir'));
+            $path = 
+                $this->getParameter('image_storage_dir') .
+                DIRECTORY_SEPARATOR .
+                'temp' .
+                DIRECTORY_SEPARATOR;
             $name = sprintf("%s.%s", $uuid, $file->getClientOriginalExtension());
-            $fullPath = sprintf("%s%s", $path, $name);
+            $fullPath = $path . $name;
 
-            $f = $file->move($path, $name);
+            $file->move($path, $name);
             
             $ef = array(
                 $uuid,
@@ -119,8 +133,6 @@ class ProviderController extends BaseController {
                 $fullPath
             );
 
-            #array_push($eqFiles, $ef);
-            //$log->info("\taccepted");
             $session->set('UserAddFile', $ef);
             
         }

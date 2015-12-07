@@ -39,7 +39,7 @@
                                 <div class="offer user-upload">
                                     <p>Profilbild</p>
                                     <span class="user-upload-note">Schaffe Vertrauen und lade ein Profilbild hoch (max. 10MB, min. 250x250px)</span>
-                                    <img src="{{ app.user.getProfilePicture(true) }}" class="profileImage" alt=""/>                
+                                    <img src="{{ app.user.getProfilePicture(true, image_url_prefix) }}" class="profileImage" alt=""/>                
                                     
                                     <div id="userImageUpload" class="btn btn-default btn-file" >
                                         <form id="upload" class='imageUpload' method="post" action="{{ path('user-image') }}" enctype="multipart/form-data">                                                                                

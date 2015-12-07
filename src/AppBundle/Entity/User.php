@@ -255,20 +255,18 @@ class User extends BaseUser
     
     
     
-    public function getProfilePicture($large)
+    public function getProfilePicture($large, $imageUrlPrefix)
     {
         $imageUrl = "/img/placeholder/user-big.png";
         if ($this->image != null) {            
-            $imageUrl = sprintf("/db-img/%s", $this->image->getUrlPath());            
+            $imageUrl = sprintf("%s%s", $imageUrlPrefix, $this->image->getUrlPath());            
         } else if ($this->facebookID != null){
             $imageUrl = 'http://graph.facebook.com/'. $this->facebookID .'/picture';
             if ($large){
                 $imageUrl .= "?type=large";
             }
         }         
-        
-        
-        
+
         return $imageUrl;
     }
     
