@@ -417,16 +417,23 @@ class ProviderController extends BaseController {
     }
     private function handleImages($eqFiles, $eq, $em) {
         foreach ($eqFiles as $file) {
-            // store the original, and image itself
-            $origFullPath = sprintf("%sequipment\\original\\%s.%s",
-                $this->getParameter('image_storage_dir'),
-                $file[0],
-                $file[2]);
-            $imgFullPath = sprintf("%sequipment\\%s.%s",
-                $this->getParameter('image_storage_dir'),
-                $file[0],
-                $file[2]);
+            // store the original, and image itself            
+            $origFullPath = 
+                $this->getParameter('image_storage_dir') .
+                DIRECTORY_SEPARATOR .
+                'equipment' .
+                DIRECTORY_SEPARATOR .
+                'original' .
+                DIRECTORY_SEPARATOR .
+                $file[0] . '.' . $file[2];
+            $imgFullPath =
+                $this->getParameter('image_storage_dir') .
+                DIRECTORY_SEPARATOR .
+                'equipment' .
+                DIRECTORY_SEPARATOR .
+                $file[0] . '.' . $file[2];
             rename($file[3], $origFullPath);
+                
             
             // check image size
             $imgInfo = getimagesize($origFullPath);
@@ -480,7 +487,7 @@ class ProviderController extends BaseController {
             $img->setName($file[1]);
             $img->setExtension($file[2]);
             $img->setPath('equipment');
-            $img->setOriginalPath('equipment\\original');
+            $img->setOriginalPath('equipment' . DIRECTORY_SEPARATOR . 'original');
 
             $em->persist($img);
             $em->flush();
@@ -488,7 +495,6 @@ class ProviderController extends BaseController {
             $eq->addImage($img);
             $em->flush();
         }
-        
     }
     
     /**
@@ -503,9 +509,13 @@ class ProviderController extends BaseController {
             $eqFiles = $session->get('EquipmentAddFileArray');
             if (count($eqFiles) < 3) {
                 $uuid = Utils::getUuid();
-                $path = sprintf("%stemp\\", $this->getParameter('image_storage_dir'));
+                $path = 
+                    $this->getParameter('image_storage_dir') .
+                    DIRECTORY_SEPARATOR .
+                    'temp' .
+                    DIRECTORY_SEPARATOR;
                 $name = sprintf("%s.%s", $uuid, $file->getClientOriginalExtension());
-                $fullPath = sprintf("%s%s", $path, $name);
+                $fullPath = $path . $name;
                 
                 $f = $file->move($path, $name);
                 

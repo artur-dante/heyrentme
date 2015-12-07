@@ -47,7 +47,11 @@ class CategoryController extends BaseAdminController {
                 $uuid = Utils::getUuid();
                 $image_storage_dir = $this->getParameter('image_storage_dir');
                 
-                $destDir = sprintf("%scategory\\",$image_storage_dir);
+                $destDir = 
+                    $image_storage_dir .
+                    DIRECTORY_SEPARATOR .
+                    'category' .
+                    DIRECTORY_SEPARATOR;
                 $destFilename = sprintf("%s.%s", $uuid, $file->getClientOriginalExtension());
                 
                 $file->move($destDir, $destFilename);
@@ -119,7 +123,12 @@ class CategoryController extends BaseAdminController {
                 $uuid = Utils::getUuid();
                 $image_storage_dir = $this->getParameter('image_storage_dir');
                 
-                $destDir = sprintf("%scategory\\",$image_storage_dir);
+                //$destDir = sprintf("%scategory\\",$image_storage_dir);                
+                $destDir = 
+                        $image_storage_dir .
+                        DIRECTORY_SEPARATOR .
+                        'category' .
+                        DIRECTORY_SEPARATOR;
                 $destFilename = sprintf("%s.%s", $uuid, $file->getClientOriginalExtension());
                 
                 $file->move($destDir, $destFilename);

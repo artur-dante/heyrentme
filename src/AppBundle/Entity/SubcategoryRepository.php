@@ -78,10 +78,17 @@ class SubcategoryRepository extends \Doctrine\ORM\EntityRepository
     public function removeImage($subcategory, $image_storage_dir) {
         $oldImage = $subcategory->getImage();
         if ($oldImage != null) {
-            $fullPath = sprintf("%s%s\\%s",
+            /*$fullPath = sprintf("%s%s\\%s",
                 $image_storage_dir,
                 $oldImage->getPath(),
-                $oldImage->getName());
+                $oldImage->getName());*/
+            $fullPath = 
+                $image_storage_dir .
+                DIRECTORY_SEPARATOR .
+                $oldImage->getPath() .
+                DIRECTORY_SEPARATOR .
+                $oldImage->getUuid() . '.' . $oldImage->getExtension();
+            
             $fs = new Filesystem();
             $fs->remove($fullPath);
 
