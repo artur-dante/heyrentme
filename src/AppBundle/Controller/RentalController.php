@@ -73,15 +73,21 @@ class RentalController extends BaseController {
             $em->flush();
             
             // send email
-            //<editor-fold>
-            
+            //<editor-fold>            
+            $url = sprintf('%s%s?register', 
+                    $request->getSchemeAndHttpHost(),
+                    $this->get('router')->generate('rentme'));
+            $emailHtml = $this->renderView('Emails/candidate.html.twig', array(
+                'mailer_image_url_prefix' => $this->getParameter('mailer_image_url_prefix'),
+                'custom_message' => $subcategory->getEmailBody(),
+                'url' => $url
+            ));
             $from = array($this->getParameter('mailer_fromemail') => $this->getParameter('mailer_fromname'));
-            $name = "TestTESTtest";
             $message = Swift_Message::newInstance()
                 ->setSubject('Willkomen bei')
                 ->setFrom($from)
                 ->setTo($cand->getEmail())
-                ->setBody($this->renderView('Emails/candidate.html.twig'), 'text/html');
+                ->setBody($emailHtml, 'text/html');
             $this->get('mailer')->send($message);
             //</editor-fold>
             
