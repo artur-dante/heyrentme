@@ -219,7 +219,9 @@
             $("#passwordResetButton").click();
         } else if (getUrlParameter("confirmed")) {  
             $("#emailConfirmedButton").click();
-        }      
+        } else if (getUrlParameter("register")) {
+            $("a[data-target='#reg-modal']")[0].click();
+        }
         $("#emailConfirmed .close").unbind("click");
         $("#emailConfirmed .close").click(function(e){
             e.preventDefault();
