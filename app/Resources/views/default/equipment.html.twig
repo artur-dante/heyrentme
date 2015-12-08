@@ -52,10 +52,14 @@
             <span class="status">Letzer Status für dieses Angebot:</span>
             <p class="detail-notice">Das ist eine Statusmeldung. Mir geht es gut und ich fühle mich heute super wohl!</p>
             <div class="position-relative" id="media-container">
-              <img src="/img/cart.svg" alt="cart" class="cart">
-              <div class="discount discount-big">
-                <span>-20%</span>
-              </div>
+              {% if equipment.priceBuy %}
+                <img src="/img/cart.svg" alt="cart" class="cart">
+              {% endif %}
+              {% if equipment.discount %}
+                <div class="discount discount-big">
+                  <span>-{{ equipment.discount }}%</span>
+                </div>
+              {% endif %}
               <div id="media-content">
                     {% if equipment.images|length > 0 %}
                         <img src="{{ image_url_prefix }}{{ equipment.images[0].urlPath }}" alt=""/>
@@ -386,12 +390,12 @@
             </div>
             <div class="user-data">
                 <h3>Details:</h3>
-                <img src="/img/placeholder/ulli.png" alt="Ulli" class="user-avatar"/>
-                <p class="user-name">Ulli</p>
+                <img src="{{ equipment.user.profilePicture(true, image_url_prefix) }}" alt="Ulli" class="user-avatar"/>
+                <p class="user-name">{{ equipment.user.name }}</p>
                 <div class="user-data-tabs">
                   <div class="user-tab euro">
                     <p>
-                      15 € pro Tag
+                      {{ equipment.price }} € pro Tag
                     </p>
                   </div>
                   <div class="user-tab cal">
