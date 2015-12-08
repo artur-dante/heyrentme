@@ -10,6 +10,12 @@
           menubar: false/*,
           content_css: '/css/main.css'*/
       });
+        $(function() {
+            $("#form_title").keyup(updateSlug).blur(updateSlug);
+        });
+        function updateSlug() {
+            $("#form_slug").val(getSlug($("#form_title").val()));
+        }
   </script>
 {% endblock %}
 

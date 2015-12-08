@@ -65,7 +65,7 @@ class BlogController  extends BaseAdminController {
         if ($form->isValid()) {
             //check if there is file
             $file = $request->files->get('upl');
-            $date = new DateTime();            
+            //$date = new DateTime();            
             //$blog->setCreationDate($date);
             //$blog->setModificationDate($date);
             
@@ -89,9 +89,8 @@ class BlogController  extends BaseAdminController {
                 // create object
                 $img = new Image();
                 $img->setUuid($uuid);
-                $img->setName($destFilename);
+                $img->setName($file->getClientOriginalName());
                 $img->setExtension($file->getClientOriginalExtension());
-                $img->setOriginalPath($file->getClientOriginalName());
                 $img->setPath('blog');
                               
                 $em->persist($img);
@@ -197,9 +196,8 @@ class BlogController  extends BaseAdminController {
                 // create object
                 $img = new Image();
                 $img->setUuid($uuid);
-                $img->setName($destFilename);
+                $img->setName($file->getClientOriginalName());
                 $img->setExtension($file->getClientOriginalExtension());
-                $img->setOriginalPath($file->getClientOriginalName());
                 $img->setPath('blog');
                               
                 $em->persist($img);

@@ -10,7 +10,13 @@
           menubar: false/*,
           content_css: '/css/main.css'*/
       });
-  </script>
+        $(function() {
+            $("#form_title").keyup(updateSlug).blur(updateSlug);
+        });
+        function updateSlug() {
+            $("#form_slug").val(getSlug($("#form_title").val()));
+        }
+    </script>
 {% endblock %}
 
 {% block body %}
@@ -88,12 +94,4 @@
     </div>
 </div>            
         
-<script>
-    $(function() {
-        $("#form_title").keyup(updateSlug).blur(updateSlug);
-    });
-    function updateSlug() {
-        $("#form_slug").val(getSlug($("#form_title").val()));
-    }
-</script>
 {% endblock %}
