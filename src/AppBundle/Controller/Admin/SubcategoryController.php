@@ -53,7 +53,12 @@ class SubcategoryController extends BaseAdminController {
                 $uuid = Utils::getUuid();
                 $image_storage_dir = $this->getParameter('image_storage_dir');
                 
-                $destDir = sprintf("%ssubcategory\\",$image_storage_dir);
+                //$destDir = sprintf("%ssubcategory\\",$image_storage_dir);
+                $destDir = 
+                    $image_storage_dir .
+                    DIRECTORY_SEPARATOR .
+                    'subcategory' .
+                    DIRECTORY_SEPARATOR;
                 $destFilename = sprintf("%s.%s", $uuid, $file->getClientOriginalExtension());
                 
                 $file->move($destDir, $destFilename);
@@ -129,7 +134,12 @@ class SubcategoryController extends BaseAdminController {
                 $uuid = Utils::getUuid();
                 $image_storage_dir = $this->getParameter('image_storage_dir');
                 
-                $destDir = sprintf("%scategory\\",$image_storage_dir);
+                //$destDir = sprintf("%scategory\\",$image_storage_dir);
+                $destDir = 
+                        $image_storage_dir .
+                        DIRECTORY_SEPARATOR .
+                        'subcategory' .
+                        DIRECTORY_SEPARATOR;
                 $destFilename = sprintf("%s.%s", $uuid, $file->getClientOriginalExtension());
                 
                 $file->move($destDir, $destFilename);
