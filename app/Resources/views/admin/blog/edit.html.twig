@@ -18,7 +18,16 @@
           <label for="form_name" class="control-label col-xs-2">Title</label>
           <div class="col-xs-10">
             {{ form_errors(form.title) }}
-            {{ form_widget(form.title, { 'attr': { 'class': 'text-box single-line', 'placeholder': 'Input title' }}) }}
+            {{ form_widget(form.title, { 'attr': { 'class': 'text-box single-line', 'placeholder': 'Title' }}) }}
+          </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group">
+          <label for="form_slug" class="control-label col-xs-2">Slug</label>
+          <div class="col-xs-10">
+            {{ form_errors(form.slug) }}
+            {{ form_widget(form.slug, { 'attr': { 'class': 'text-box single-line', 'placeholder': 'Slug' }}) }}
           </div>
         </div>
     </div>
@@ -27,7 +36,7 @@
           <label for="form_slug" class="control-label col-xs-2">Content</label>
           <div class="col-xs-10">
           {{ form_errors(form.content) }}
-          {{ form_widget(form.content, { 'attr': { 'class': 'text-area blogarea', 'placeholder': 'Input content' }}) }}
+          {{ form_widget(form.content, { 'attr': { 'class': 'text-area blogarea', 'placeholder': 'Content' }}) }}
           </div>
         </div>
     </div>
@@ -36,7 +45,7 @@
           <label for="form_position" class="control-label col-xs-2">Position</label>
           <div class="col-xs-10">
           {{ form_errors(form.position) }}
-          {{ form_widget(form.position, { 'attr': { 'class': 'text-box single-line', 'placeholder': 'Input position' }}) }}
+          {{ form_widget(form.position, { 'attr': { 'class': 'text-box single-line', 'placeholder': 'Position' }}) }}
           </div>
         </div>
     </div>

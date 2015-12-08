@@ -5,11 +5,12 @@
         <img src="/img/blog-rwd.jpg" alt="rent me heading." class="img-responsive max-1600 min-320"/>
         <div class="container rent-heading help-heading blog-heading mobile-blog-heading">
             <div class="row">
-                <div class="col-md-8 text-white">
-                    <h1>Die 10 besten Mountainbike
-                        Strecken in Österreich</h1><br>
-                    <a href="#" class="button-black backgound-yellow text-black">artikel lesen</a>
-                </div>
+                {% if posts|length > 0 %}
+                    <div class="col-md-8 text-white">
+                        <h1>{{ posts[0].title }}</h1><br>
+                        <a href="{{ path('blog', { 'slug': posts[0].slug }) }}" class="button-black backgound-yellow text-black">artikel lesen</a>
+                    </div>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -21,8 +22,8 @@
     <div class="container background-white rent-container no-border-bottom">
         <nav class="crumbs">
             <ul class="col-xs-8">
-                <li><a href="#">hey! TSC</a></li>
-                <li><a href="{{ path('blog')}}" class="active-crumb">Blog</a></li>
+                <li><a href="{{ path('homepage') }}">hey! TSC</a></li>
+                <li><a href="{{ path('blog') }}" class="active-crumb">Blog</a></li>
             </ul>
             <ul class="col-xs-4 pull-right text-right">
                 <!-- <li id="kategorie-select"><a class="active-crumb"  href="#">Blog Kategorien &#9660;</a></li> -->
@@ -36,7 +37,7 @@
         <div class="row">
           
             {% for post in posts %}
-                <a class="text-black" href="{{ path('blog_detail', { 'title' : post.title, 'id' : post.id }) }}">
+                <a class="text-black" href="{{ path('blog_detail', { 'slug' : post.slug }) }}">
                     <div class="col-sm-4">
                         <div class="blog-img-container">
                             <img src="{{ image_url_prefix }}{{ post.imageUrl }}" alt="placeholder" class="blogimg"/>

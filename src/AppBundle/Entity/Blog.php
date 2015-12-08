@@ -2,10 +2,11 @@
 
 namespace AppBundle\Entity;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="AppBundle\Entity\BlogRepository")
+ * @ORM\Entity(repositoryClass="BlogRepository")
  * @ORM\Table(name="blog")
  */
 class Blog
@@ -18,9 +19,14 @@ class Blog
     protected $id;
     
     /**
-     * @ORM\Column(type="string", length=256)
+     * @ORM\Column(type="string", length=128)
      */
-    protected $title;    
+    protected $title;  
+    
+    /**
+     * @ORM\Column(type="string", length=128)
+     */
+    protected $slug;
     /**
      * @ORM\Column(type="integer")
      */
@@ -34,11 +40,11 @@ class Blog
     /**
      * @ORM\Column(type="datetime")
      */
-    protected $creation_date;    
+    protected $createdAt;    
     /**
      * @ORM\Column(type="datetime")
      */
-    protected $modification_date;    
+    protected $modifiedAt;    
 
     /**
      * @ORM\OneToOne(targetEntity="Image")
@@ -85,32 +91,6 @@ class Blog
     {
         return $this->content;
     }
-
-    public function getCreationDate()
-    {
-        return $this->creation_date;
-    }
-    
-    public function setCreationDate($creation_date)
-    {
-        $this->creation_date = $creation_date;
-
-        return $this;
-    }
-    
-    public function getModificationDate()
-    {
-        return $this->modification_date;
-    }
-    
-    public function setModificationDate($modification_date)
-    {
-        $this->modification_date = $modification_date;
-
-        return $this;
-    }
-
-
    
     public function setPosition($position)
     {
@@ -125,7 +105,7 @@ class Blog
     }
     
     
-    public function setImage(\AppBundle\Entity\Image $image = null)
+    public function setImage(Image $image = null)
     {
         $this->image = $image;
 
@@ -142,4 +122,76 @@ class Blog
         
     }
 
+
+    /**
+     * Set createdAt
+     *
+     * @param DateTime $createdAt
+     *
+     * @return Blog
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * Get createdAt
+     *
+     * @return DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * Set modifiedAt
+     *
+     * @param DateTime $modifiedAt
+     *
+     * @return Blog
+     */
+    public function setModifiedAt($modifiedAt)
+    {
+        $this->modifiedAt = $modifiedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get modifiedAt
+     *
+     * @return DateTime
+     */
+    public function getModifiedAt()
+    {
+        return $this->modifiedAt;
+    }
+
+    /**
+     * Set slug
+     *
+     * @param string $slug
+     *
+     * @return Blog
+     */
+    public function setSlug($slug)
+    {
+        $this->slug = $slug;
+
+        return $this;
+    }
+
+    /**
+     * Get slug
+     *
+     * @return string
+     */
+    public function getSlug()
+    {
+        return $this->slug;
+    }
 }

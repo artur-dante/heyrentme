@@ -4,9 +4,9 @@
   <section class="detail-page container left-right-border background-light-gray">
     <nav class="crumbs">
         <ul class="col-xs-8">
-            <li><a href="#">hey! TSC</a></li>
+            <li><a href="{{ path('homepage') }}">hey! TSC</a></li>
             <li><a href="{{ path('blog') }}">Blog</a></li>
-            <li><a href="{{ path('blog_detail', { 'title': post.title, 'id': post.id }) }}" class="active-crumb">{{ post.title }}</a></li>
+            <li><a href="{{ path('blog_detail', { 'slug': post.slug }) }}" class="active-crumb">{{ post.title }}</a></li>
         </ul>
     </nav>
     <span class="clearfix"></span>
@@ -18,10 +18,10 @@
                 <div class="col-md-10 col-sm-7 col-xs-7"><h1>{{ post.title }}</h1></div>
                 <div class="col-md-2 col-sm-5 col-xs-5 detail-controls">
                     {% if prevPost != null %}
-                        <a href="{{ path('blog_detail', { 'title': prevPost.title, 'id': prevPost.id }) }}"><span class="left-icon"></span></a>
+                        <a href="{{ path('blog_detail', { 'slug': prevPost.slug }) }}"><span class="left-icon"></span></a>
                     {% endif %}
                     {% if nextPost != null %}
-                        <a href="{{ path('blog_detail', { 'title':  nextPost.title, 'id': nextPost.id }) }}"><span class="right-icon"></span></a>
+                        <a href="{{ path('blog_detail', { 'slug':  nextPost.slug }) }}"><span class="right-icon"></span></a>
                     {% endif %}
                 </div>
             </div>
@@ -47,52 +47,22 @@
             </div>
         </div>
         <div class="col-sm-4 right-side">
-            <div class="user-info">
-                <img src="/img/placeholder/info.jpg" alt="info"/>
-                <div class="row">
-                    <div class="col-xs-9">
-                        <p>Die 10 besten mountainbike
-                            strecken in österreich</p>
+            {% for p in posts|slice(0, 4) %}
+                <a href="{{ path('blog_detail', { 'slug': p.slug }) }}">
+                <div class="user-info">
+                    <img src="{{ image_url_prefix }}{{ p.imageUrl }}" alt="info"/>
+                    <div class="row">
+                        <div class="col-xs-9">
+                            <p>{{ p.title }}</p>
+                        </div>
+                        <div class="col-xs-3 grey-info">
+                            INFO
+                        </div>
                     </div>
-                    <div class="col-xs-3 grey-info">
-                        INFO
-                    </div>
-                </div>
-                <img src="/img/info-icon.svg" alt="info-icon" class="icon-info"/>
-              </div>
-            <div class="user-info">
-                <img src="/img/placeholder/blog4.jpg" alt="info"/>
-                 <div class="row">
-                    <div class="col-xs-9">
-                        <p>5 wege deinen reifen
-                            zu wechseln!</p>
-                    </div>
-                    <div class="col-xs-3 grey-info">
-                        INFO
-                    </div>
-                </div>
-                <img src="/img/info-icon.svg" alt="info-icon" class="icon-info"/>
-              </div>
-            <div class="user-info">
-                <img src="/img/placeholder/blog5.jpg" alt="info"/>
-                <div class="row">
-                    <div class="col-xs-9">
-                    </div>
-                </div>
-            </div>
-            <div class="user-info">
-                <img src="/img/placeholder/blog6.jpg" alt="info"/>
-                <div class="row">
-                    <div class="col-xs-9">
-                        <p>günstige ersatzteile
-                            für fahrräder</p>
-                    </div>
-                    <div class="col-xs-3 grey-info">
-                        INFO
-                    </div>
-                </div>
-                <img src="/img/info-icon.svg" alt="info-icon" class="icon-info"/>
-              </div>
+                    <img src="/img/info-icon.svg" alt="info-icon" class="icon-info"/>
+                  </div>
+                </a>
+            {% endfor %}
         </div>
         <!-- End of right side -->
     </div>

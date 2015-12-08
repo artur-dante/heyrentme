@@ -1,11 +1,18 @@
 <?php
 namespace AppBundle\Controller\Admin;
 
-use Symfony\Component\HttpFoundation\Request;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Component\HttpFoundation\Response;
-use AppBundle\Utils;
 use AppBundle\Entity\Blog;
+use AppBundle\Entity\Image;
+use AppBundle\Utils;
+use DateTime;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Validator\Constraints\Callback;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Type;
+use Symfony\Component\Validator\ExecutionContextInterface;
 
 class BlogController  extends BaseAdminController {
     /**
@@ -23,10 +30,34 @@ class BlogController  extends BaseAdminController {
     public function newAction(Request $request) {
         $blog = new Blog();
         
-        $form = $this->createFormBuilder($blog)
-                ->add('title', 'text')
-                ->add('content', 'textarea')
-                ->add('position', 'text', array('required' => false))
+        $form = $this->createFormBuilder($blog, array(
+                    'constraints' => array(
+                        new Callback(array($this, 'validateSlug'))
+                    )
+                ))
+                ->add('title', 'text', array(
+                    'constraints' => array(
+                        new NotBlank(),
+                        new Length(array('max' => 128))
+                    )
+                ))
+                ->add('slug', 'text', array(
+                    'constraints' => array(
+                        new NotBlank(),
+                        new Length(array('max' => 128))
+                    )
+                ))
+                ->add('content', 'textarea', array(
+                    'constraints' => array(
+                        new NotBlank()
+                    )
+                ))
+                ->add('position', 'integer', array(
+                    'required' => false,
+                    'constraints' => array(
+                        new Type(array('type' => 'integer'))
+                    )
+                ))
                 ->getForm();
         //when the form is posted this method prefills entity with data from form
         $form->handleRequest($request);
@@ -34,9 +65,9 @@ class BlogController  extends BaseAdminController {
         if ($form->isValid()) {
             //check if there is file
             $file = $request->files->get('upl');
-            $date = new \DateTime();            
-            $blog->setCreationDate($date);
-            $blog->setModificationDate($date);
+            $date = new DateTime();            
+            //$blog->setCreationDate($date);
+            //$blog->setModificationDate($date);
             
             $em = $this->getDoctrine()->getManager();
             
@@ -56,7 +87,7 @@ class BlogController  extends BaseAdminController {
                 $file->move($destDir, $destFilename);
                 
                 // create object
-                $img = new \AppBundle\Entity\Image();
+                $img = new Image();
                 $img->setUuid($uuid);
                 $img->setName($destFilename);
                 $img->setExtension($file->getClientOriginalExtension());
@@ -82,6 +113,12 @@ class BlogController  extends BaseAdminController {
             'form' => $form->createView()
         ));
     }
+    public function validateSlug($blog, ExecutionContextInterface $context) {
+        $unique = $this->getDoctrine()->getRepository('AppBundle:Blog')->isSlugUnique($blog->getSlug(), $blog->getId());
+        if (!$unique) {
+            $context->buildViolation('The slug is not unique')->addViolation();
+        }
+    }
     
     /**
      * 
@@ -94,11 +131,35 @@ class BlogController  extends BaseAdminController {
             throw $this->createNotFoundException('No blog post found for id '.$id);
         }
         
-        $form = $this->createFormBuilder($blog)
+        $form = $this->createFormBuilder($blog, array(
+                    'constraints' => array(
+                        new Callback(array($this, 'validateSlug'))
+                    )
+                ))
                 ->add('id', 'hidden')
-                ->add('title', 'text')
-                ->add('content', 'textarea')                
-                ->add('position', 'text', array('required' => false))
+                ->add('title', 'text', array(
+                    'constraints' => array(
+                        new NotBlank(),
+                        new Length(array('max' => 128))
+                    )
+                ))
+                ->add('slug', 'text', array(
+                    'constraints' => array(
+                        new NotBlank(),
+                        new Length(array('max' => 128))
+                    )
+                ))
+                ->add('content', 'textarea', array(
+                    'constraints' => array(
+                        new NotBlank()
+                    )
+                ))                
+                ->add('position', 'integer', array(
+                    'required' => false,
+                    'constraints' => array(
+                        new Type(array('type' => 'integer'))
+                    )
+                ))
                 ->getForm();
 
        
@@ -107,7 +168,7 @@ class BlogController  extends BaseAdminController {
         
         if ($form->isValid()) {
              
-            $blog->setModificationDate(new \DateTime());
+            //$blog->setModificationDate(new \DateTime());
             //check if there is file
             $file = $request->files->get('upl');
             
@@ -134,7 +195,7 @@ class BlogController  extends BaseAdminController {
                 $file->move($destDir, $destFilename);
                 
                 // create object
-                $img = new \AppBundle\Entity\Image();
+                $img = new Image();
                 $img->setUuid($uuid);
                 $img->setName($destFilename);
                 $img->setExtension($file->getClientOriginalExtension());
@@ -205,7 +266,7 @@ class BlogController  extends BaseAdminController {
             if ($i > 0) {
                 $rowsStr .= ", ";
             }
-            $rowsStr .= sprintf($rowsTemplate, $row->getId(), $row->getId(), $row->getTitle(), $row->getCreationDate()->format('Y-m-d H:i:s'), $row->getModificationDate()->format('Y-m-d H:i:s'), $row->getPosition() );
+            $rowsStr .= sprintf($rowsTemplate, $row->getId(), $row->getId(), $row->getTitle(), $row->getCreatedAt()->format('Y-m-d H:i'), $row->getModifiedAt()->format('Y-m-d H:i'), $row->getPosition() );
             $i .=1;
         }
         

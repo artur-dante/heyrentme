@@ -21,10 +21,11 @@ class BlogController extends BaseController {
     }
     
     /**
-     * @Route("/blog/detail/{title}/{id}", name="blog_detail")
+     * @Route("/blog/{slug}", name="blog_detail")
      */
-    public function detailAction(Request $request, $title, $id) {
-        $post = $this->getDoctrine()->getRepository('AppBundle:Blog')->find($id);
+    public function detailAction(Request $request, $slug) {
+        $post = $this->getDoctrine()->getRepository('AppBundle:Blog')->getBySlug($slug);
+        $posts = $this->getDoctrine()->getRepository('AppBundle:Blog')->getAllOrderedByPosition();
        
         $nextPost = $this->getDoctrine()->getRepository('AppBundle:Blog')->getByPosition($post->getPosition() + 1);
         $prevPost = $this->getDoctrine()->getRepository('AppBundle:Blog')->getByPosition($post->getPosition() - 1);
@@ -32,6 +33,7 @@ class BlogController extends BaseController {
         
         return $this->render('blog/blog_detail.html.twig', array(
             'post' => $post,
+            'posts' => $posts,
             'nextPost' => $nextPost,
             'prevPost' => $prevPost
         ));
