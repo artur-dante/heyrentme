@@ -1,4 +1,18 @@
 {% extends 'admin/admin.base.html.twig' %}
+
+{% block header %}
+    {{ parent() }}
+    <script src="//cdn.tinymce.com/4/tinymce.min.js"></script>
+  <script>
+      tinymce.init({ 
+          selector:'textarea',
+          width: 600,
+          menubar: false/*,
+          content_css: '/css/main.css'*/
+      });
+  </script>
+{% endblock %}
+
 {% block body %}
 <h1>Blog post add</h1>
 
