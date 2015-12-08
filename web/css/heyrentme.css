@@ -165,3 +165,12 @@ img.headerProfileImage {
   background: url('../img/check_radio_sheet.png') -57px top no-repeat;
 
 }
+
+.blog-container > .row div img.blogimg {
+    max-width: 300px;
+    max-height: 300px;
+}
+.blog-img-container {
+    width: 300px;
+    height: 300px;
+}

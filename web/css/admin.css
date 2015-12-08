@@ -1357,3 +1357,13 @@ a.g-menu-item, a.soptclass, a.clearsearchclass {
 .ui-jqdialog .searchFilter .delete-rule:hover {
   background-color: #d02a25;
 }
+
+.blogarea {
+    width: 400px;
+    height: 100px;
+}
+
+.blogimg{
+    max-width: 250px;
+    max-height: 250px;
+}
