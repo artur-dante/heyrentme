@@ -1,13 +1,7 @@
 <script>
-    $(function(){
-       var page = "{{ pageName }}";       
-       $(".leftmenu").each(function(){       
-            if($(this).attr("id")== page){
-                $(this).addClass("active-link");
-            }           
-       });
-    });
+    var page = "{{ pageName }}";
 </script>
+<script src="/js/leftmenu.js"></script>
 <div class="col-sm-3 sidebar mobile-hidden">
     <nav>
         <ul>
