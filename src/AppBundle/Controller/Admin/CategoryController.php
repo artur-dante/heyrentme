@@ -41,6 +41,7 @@ class CategoryController extends BaseAdminController {
                 ))
                 ->add('slug', 'text', array(
                     'constraints' => array(
+                        // TODO: check for uniqueness of slug (category + subcategory; copy from blog)
                         new NotBlank(),
                         new Length(array('max' => 256)),
                         new Regex(array(
@@ -130,6 +131,7 @@ class CategoryController extends BaseAdminController {
                 ))
                 ->add('slug', 'text', array(
                     'constraints' => array(
+                        // TODO: check for uniqueness of slug (category + subcategory; copy from blog)
                         new NotBlank(),
                         new Length(array('max' => 256)),
                         new Regex(array(
