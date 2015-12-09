@@ -5,7 +5,13 @@
             <div class="fb-follow" data-href="https://www.facebook.com/heyTSC" data-layout="button_count" data-show-faces="false"></div>
         </div>
         <nav class="pull-right">
-            <a href="/heyrentme">Equipment mieten</a>            <a href="/pages/heybook">Talente buchen</a>            <a href="{{ path('blog') }}">Blog</a>            <a href="/pages/equipment_mieten">Hilfe &amp; FAQ</a>            <a href="/kundeninfos">AGBs</a>            <a href="/kontakt">Kontakt</a>            <a class="footer-sign" id="footer-toggle">+</a>
+            <a href="/heyrentme">Equipment mieten</a>            
+            <a href="/pages/heybook">Talente buchen</a>            
+            <a href="{{ path('blog') }}">Blog</a>            
+            <a href="{{ path("hilfe_faq_euipment_mieten") }}">Hilfe &amp; FAQ</a>            
+            <a href="{{ path("kundeninfos_agb") }}">AGBs</a>            
+            <a href="/kontakt">Kontakt</a>            
+            <a class="footer-sign" id="footer-toggle">+</a>
         </nav>
     </div>
     <div class="container-fluid" id="full-footer">
@@ -13,23 +19,23 @@
         <div class="row">
             <div class="col-md-3">
                 <ul class="border-right">
-                    <li class="footer-desc"><a href="/pages/equipment_mieten">Hilfe &amp; FAQ</a> </li>
-                    <li><a href="/pages/equipment_mieten">Hilfe / Equipment mieten</a></li>
-                    <li><a href="/pages/equipment_anbieten">Hilfe / Equipment vermieten</a></li>
-                    <li><a href="/pages/talente_buchen">Hilfe / Talente buchen</a></li>
-                    <li><a href="/pages/talente_anbieten">Hilfe / Talente anbieten</a></li>
-                    <li><a href="/faq">FAQ Equipment</a></li>
-                    <li><a href="/pages/faq_anbieten">FAQ Talente</a></li>
+                    <li class="footer-desc"><a href="{{ path("hilfe_faq_euipment_mieten") }}">Hilfe &amp; FAQ</a> </li>
+                    <li><a href="{{ path("hilfe_faq_euipment_mieten") }}">Hilfe / Equipment mieten</a></li>
+                    <li><a href="{{ path("hilfe_faq_euipment_anbieten") }}">Hilfe / Equipment anbieten</a></li>
+                    <li><a href="{{ path("hilfe_faq_talente_buchen") }}">Hilfe / Talente buchen</a></li>
+                    <li><a href="{{ path("hilfe_faq_faq_anbieter") }}">Hilfe / Talente anbieten</a></li>
+                    <li><a href="{{ path("hilfe_faq_faq_anbieter") }}">FAQ Nutzer</a></li>
+                    <li><a href="{{ path("hilfe_faq_faq_nutzer") }}">FAQ Anbieter</a></li>
                 </ul>
             </div>
             <div class="col-md-3">
                 <ul class="border-right">
-                    <li class="footer-desc"><a href="/kundeninfos">Kundeninfos</a> </li>
-                    <li><a href="/kundeninfos">AGBs</a></li>
-                    <li><a href="/datenschutz">Datenschutz</a></li>
-                    <li><a href="/presse">Presse</a></li>
-                    <li><a href="/kontakt">Kontakt</a></li>
-                    <li><a href="/presse">Impressum</a></li>
+                    <li class="footer-desc"><a href="{{ path("kundeninfos_agb") }}">Kundeninfos</a> </li>
+                    <li><a href="{{ path("kundeninfos_agb") }}">AGBs</a></li>
+                    <li><a href="{{ path("kundeninfos_datenschutz") }}">Datenschutz</a></li>
+                    <li><a href="{{ path("kundeninfos_presse") }}">Presse</a></li>
+                    <li><a href="{{ path("kundeninfos_kontakt") }}">Kontakt</a></li>
+                    <li><a href="{{ path("kundeninfos_impressum") }}">Impressum</a></li>
                 </ul>
             </div>
             <div class="col-md-2">
