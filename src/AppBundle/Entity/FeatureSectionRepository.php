@@ -28,4 +28,36 @@ class FeatureSectionRepository extends \Doctrine\ORM\EntityRepository
         $q->setParameter(':freetext', $freetext);
         return $q->getResult();
     }
+    public function getGridOverview($sortColumn, $sortDirection, $pageSize, $page) {
+        $qb = $this->getEntityManager()->createQueryBuilder();
+        // build query
+        $qb->select(array('fs', 's'))
+            ->from('AppBundle:FeatureSection', 'fs')
+            ->join('fs.subcategory', 's');
+        // sort by
+        if (!empty($sortColumn)) {
+            if (!empty($sortDirection)) {
+                $qb->orderBy($sortColumn, $sortDirection);
+            }
+            else {
+                $qb->orderBy($sortColumn);
+            }
+        }
+
+        $q = $qb->getQuery();
+        // page and page size
+        if (!empty($pageSize)) {
+            $q->setMaxResults($pageSize);
+        }
+        if (!empty($page) && $page != 1) {
+            $q->setFirstResult(($page - 1) * $pageSize);
+        }
+        return $q->getResult();        
+    }
+    public function countAll() {
+        return $this->createQueryBuilder('fs')
+            ->select('count(fs.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 }
