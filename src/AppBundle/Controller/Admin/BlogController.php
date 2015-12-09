@@ -4,13 +4,13 @@ namespace AppBundle\Controller\Admin;
 use AppBundle\Entity\Blog;
 use AppBundle\Entity\Image;
 use AppBundle\Utils;
-use DateTime;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\Type;
 use Symfony\Component\Validator\ExecutionContextInterface;
 
@@ -44,10 +44,16 @@ class BlogController  extends BaseAdminController {
                 ->add('slug', 'text', array(
                     'constraints' => array(
                         new NotBlank(),
-                        new Length(array('max' => 128))
+                        new Length(array('max' => 128)),
+                        new Regex(array(
+                            'pattern' => '/^[a-z][-a-z0-9]*$/',
+                            'htmlPattern' => '/^[a-z][-a-z0-9]*$/',
+                            'message' => 'This is not a valid slug'
+                        ))
                     )
                 ))
                 ->add('content', 'textarea', array(
+                    'required' => false,
                     'constraints' => array(
                         new NotBlank()
                     )
@@ -145,10 +151,16 @@ class BlogController  extends BaseAdminController {
                 ->add('slug', 'text', array(
                     'constraints' => array(
                         new NotBlank(),
-                        new Length(array('max' => 128))
+                        new Length(array('max' => 128)),
+                        new Regex(array(
+                            'pattern' => '/^[a-z][-a-z0-9]*$/',
+                            'htmlPattern' => '/^[a-z][-a-z0-9]*$/',
+                            'message' => 'This is not a valid slug'
+                        ))
                     )
                 ))
                 ->add('content', 'textarea', array(
+                    'required' => false,
                     'constraints' => array(
                         new NotBlank()
                     )

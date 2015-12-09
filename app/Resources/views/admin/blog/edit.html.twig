@@ -29,7 +29,7 @@
 </div>        
 {{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
 <div class="form-horizontal">
-    {{ form_errors(form) }}
+    <div class="err-msg">{{ form_errors(form) }}</div>
     
     {{ form_widget(form.id) }}
 
@@ -37,7 +37,7 @@
         <div class="form-group">
           <label for="form_name" class="control-label col-xs-2">Title</label>
           <div class="col-xs-10">
-            {{ form_errors(form.title) }}
+              <div class="err-msg">{{ form_errors(form.title) }}</div>
             {{ form_widget(form.title, { 'attr': { 'class': 'text-box single-line', 'placeholder': 'Title' }}) }}
           </div>
         </div>
@@ -46,7 +46,7 @@
         <div class="form-group">
           <label for="form_slug" class="control-label col-xs-2">Slug</label>
           <div class="col-xs-10">
-            {{ form_errors(form.slug) }}
+              <div class="err-msg">{{ form_errors(form.slug) }}</div>
             {{ form_widget(form.slug, { 'attr': { 'class': 'text-box single-line', 'placeholder': 'Slug' }}) }}
           </div>
         </div>
@@ -55,7 +55,7 @@
         <div class="form-group">
           <label for="form_slug" class="control-label col-xs-2">Content</label>
           <div class="col-xs-10">
-          {{ form_errors(form.content) }}
+              <div class="err-msg">{{ form_errors(form.content) }}</div>
           {{ form_widget(form.content, { 'attr': { 'class': 'text-area blogarea', 'placeholder': 'Content' }}) }}
           </div>
         </div>
@@ -64,7 +64,7 @@
         <div class="form-group">
           <label for="form_position" class="control-label col-xs-2">Position</label>
           <div class="col-xs-10">
-          {{ form_errors(form.position) }}
+              <div class="err-msg">{{ form_errors(form.position) }}</div>
           {{ form_widget(form.position, { 'attr': { 'class': 'text-box single-line', 'placeholder': 'Position' }}) }}
           </div>
         </div>
