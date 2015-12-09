@@ -25,28 +25,34 @@ class StaticController extends BaseController {
     
     
     /**
-     * @Route("/hilfeFaqEuipmentMieten", name="hilfe_faq_euipment_mieten")
+     * @Route("/hilfe-faq/equipment-mieten", name="hilfe_faq_euipment_mieten")
+     * @Route("/hilfe-faq/")
+     * @Route("/hilfe-faq")
+     * @Route("/hilfe/")
+     * @Route("/hilfe")
+     * @Route("/faq/")
+     * @Route("/faq")
      */
     public function hilfeFaqEuipmentMietenAction(Request $request) {               
         return $this->render('static/faq/hilfe_faq_euipment_mieten.html.twig');
     }
     
     /**
-     * @Route("/hilfeFaqEuipmentAnbieten", name="hilfe_faq_euipment_anbieten")
+     * @Route("/hilfe-faq/equipment-anbieten", name="hilfe_faq_euipment_anbieten")
      */
     public function hilfeFaqEuipmentAnbietenAction(Request $request) {               
         return $this->render('static/faq/hilfe_faq_euipment_anbieten.html.twig');
     }
     
     /**
-     * @Route("/hilfeFaqTalenteBuchen", name="hilfe_faq_talente_buchen")
+     * @Route("/hilfe-faq/talente-buchen", name="hilfe_faq_talente_buchen")
      */
     public function hilfeFaqTalenteBuchenAction(Request $request) {               
         return $this->render('static/faq/hilfe_faq_talente_buchen.html.twig');
     }
     
     /**
-     * @Route("/hilfeFaqTalenteAnbieten", name="hilfe_faq_talente_anbieten")
+     * @Route("/hilfe-faq/talente-anbieten", name="hilfe_faq_talente_anbieten")
      */
     public function hilfeFaqTalenteAnbietenAction(Request $request) {               
         return $this->render('static/faq/hilfe_faq_talente_anbieten.html.twig');
@@ -54,14 +60,14 @@ class StaticController extends BaseController {
     
     
     /**
-     * @Route("/hilfeFaqFaqAnbieter", name="hilfe_faq_faq_anbieter")
+     * @Route("/hilfe-faq/faq-anbieter", name="hilfe_faq_faq_anbieter")
      */
     public function hilfeFaqFaqAnbieter(Request $request) {               
         return $this->render('static/faq/hilfe_faq_faq_anbieter.html.twig');
     }
     
     /**
-     * @Route("/hilfeFaqFaqNutzer", name="hilfe_faq_faq_nutzer")
+     * @Route("/hilfe-faq/faq-nutzer", name="hilfe_faq_faq_nutzer")
      */
     public function hilfeFaqFaqNutzer(Request $request) {               
         return $this->render('static/faq/hilfe_faq_faq_nutzer.html.twig');
@@ -84,35 +90,37 @@ class StaticController extends BaseController {
     
     
     /**
-     * @Route("/kundeninfosAgb", name="kundeninfos_agb")
+     * @Route("/kundeninfos/agb", name="kundeninfos_agb")
+     * @Route("/kundeninfos")
+     * @Route("/kundeninfos/")
      */
     public function kundeninfosAgbAction(Request $request) {               
         return $this->render('static/clientInfo/kundeninfos_agb.html.twig');
     }
     
     /**
-     * @Route("/kundeninfosDatenschutz", name="kundeninfos_datenschutz")
+     * @Route("/kundeninfos/datenschutz", name="kundeninfos_datenschutz")
      */
     public function kundeninfosDatenschutzAction(Request $request) {               
         return $this->render('static/clientInfo/kundeninfos_datenschutz.html.twig');
     }
     
     /**
-     * @Route("/kundeninfosPresse", name="kundeninfos_presse")
+     * @Route("/kundeninfos/presse", name="kundeninfos_presse")
      */
     public function kundeninfosPresseAgbAction(Request $request) {               
         return $this->render('static/clientInfo/kundeninfos_presse.html.twig');
     }
     
     /**
-     * @Route("/kundeninfosKontakt", name="kundeninfos_kontakt")
+     * @Route("/kundeninfos/kontakt", name="kundeninfos_kontakt")
      */
     public function kundeninfosKontaktAction(Request $request) {               
         return $this->render('static/clientInfo/kundeninfos_kontakt.html.twig');
     }
     
     /**
-     * @Route("/kundeninfosImpressum", name="kundeninfos_impressum")
+     * @Route("/kundeninfos/impressum", name="kundeninfos_impressum")
      */
     public function kundeninfosImpressumAction(Request $request) {               
         return $this->render('static/clientInfo/kundeninfos_impressum.html.twig');
