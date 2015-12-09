@@ -10,7 +10,7 @@
     <script src="//cdn.tinymce.com/4/tinymce.min.js"></script>
   <script>
       tinymce.init({ 
-          selector:'textarea',
+          selector: 'textarea.rich-text-edit',
           width: 600,
           menubar: false/*,
           content_css: '/css/main.css'*/
@@ -56,7 +56,7 @@
           <label for="form_slug" class="control-label col-xs-2">Content</label>
           <div class="col-xs-10">
               <div class="err-msg">{{ form_errors(form.content) }}</div>
-          {{ form_widget(form.content, { 'attr': { 'class': 'text-area blogarea', 'placeholder': 'Content' }}) }}
+          {{ form_widget(form.content, { 'attr': { 'class': 'rich-text-edit', 'placeholder': 'Content' }}) }}
           </div>
         </div>
     </div>
