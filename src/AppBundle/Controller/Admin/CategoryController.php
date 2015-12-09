@@ -2,11 +2,16 @@
 
 namespace AppBundle\Controller\Admin;
 
-use Symfony\Component\HttpFoundation\Request;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Component\HttpFoundation\Response;
-use AppBundle\Utils;
 use AppBundle\Entity\Category;
+use AppBundle\Entity\Image;
+use AppBundle\Utils;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Regex;
+use Symfony\Component\Validator\Constraints\Type;
 
 
 
@@ -28,9 +33,29 @@ class CategoryController extends BaseAdminController {
         $category = new Category();
         
         $form = $this->createFormBuilder($category)
-                ->add('name', 'text')
-                ->add('slug', 'text')
-                ->add('position', 'text', array('required' => false))
+                ->add('name', 'text', array(
+                    'constraints' => array(
+                        new NotBlank(),
+                        new Length(array('max' => 256))
+                    )
+                ))
+                ->add('slug', 'text', array(
+                    'constraints' => array(
+                        new NotBlank(),
+                        new Length(array('max' => 256)),
+                        new Regex(array(
+                            'pattern' => '/^[a-z][-a-z0-9]*$/',
+                            'htmlPattern' => '/^[a-z][-a-z0-9]*$/',
+                            'message' => 'This is not a valid slug'
+                        ))
+                    )
+                ))
+                ->add('position', 'integer', array(
+                    'required' => false,
+                    'constraints' => array(
+                        new Type(array('type' => 'integer'))
+                    )
+                ))
                 ->getForm();
         //when the form is posted this method prefills entity with data from form
         $form->handleRequest($request);
@@ -57,7 +82,7 @@ class CategoryController extends BaseAdminController {
                 $file->move($destDir, $destFilename);
                 
                 // create object
-                $img = new \AppBundle\Entity\Image();
+                $img = new Image();
                 $img->setUuid($uuid);
                 $img->setName($destFilename);
                 $img->setExtension($file->getClientOriginalExtension());
@@ -97,9 +122,29 @@ class CategoryController extends BaseAdminController {
         
         $form = $this->createFormBuilder($category)
                 ->add('id', 'hidden')
-                ->add('name', 'text')
-                ->add('slug', 'text')
-                ->add('position', 'text', array('required' => false))
+                ->add('name', 'text', array(
+                    'constraints' => array(
+                        new NotBlank(),
+                        new Length(array('max' => 256))
+                    )
+                ))
+                ->add('slug', 'text', array(
+                    'constraints' => array(
+                        new NotBlank(),
+                        new Length(array('max' => 256)),
+                        new Regex(array(
+                            'pattern' => '/^[a-z][-a-z0-9]*$/',
+                            'htmlPattern' => '/^[a-z][-a-z0-9]*$/',
+                            'message' => 'This is not a valid slug'
+                        ))
+                    )
+                ))
+                ->add('position', 'integer', array(
+                    'required' => false,
+                    'constraints' => array(
+                        new Type(array('type' => 'integer'))
+                    )
+                ))
                 ->getForm();
 
        
@@ -134,7 +179,7 @@ class CategoryController extends BaseAdminController {
                 $file->move($destDir, $destFilename);
                 
                 // create object
-                $img = new \AppBundle\Entity\Image();
+                $img = new Image();
                 $img->setUuid($uuid);
                 $img->setName($destFilename);
                 $img->setExtension($file->getClientOriginalExtension());

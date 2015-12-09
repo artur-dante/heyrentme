@@ -1,4 +1,17 @@
 {% extends 'admin/admin.base.html.twig' %}
+
+{% block header %}
+    {{ parent() }}
+  <script>
+        $(function() {
+            $("#form_name").keyup(updateSlug).blur(updateSlug);
+        });
+        function updateSlug() {
+            $("#form_slug").val(getSlug($("#form_name").val()));
+        }
+    </script>
+{% endblock %}
+
 {% block body %}
 <h1>Category add</h1>
 

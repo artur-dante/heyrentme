@@ -1,4 +1,17 @@
 {% extends 'admin/admin.base.html.twig' %}
+
+{% block header %}
+    {{ parent() }}
+  <script>
+        $(function() {
+            $("#form_name").keyup(updateSlug).blur(updateSlug);
+        });
+        function updateSlug() {
+            $("#form_slug").val(getSlug($("#form_name").val()));
+        }
+    </script>
+{% endblock %}
+
 {% block body %}
 <h1>Category edit</h1>
 
@@ -9,7 +22,7 @@
 </div>        
 {{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
 <div class="form-horizontal">
-    {{ form_errors(form) }}
+    <div class="err-msg">{{ form_errors(form) }}</div>
     
     {{ form_widget(form.id) }}
 
@@ -17,7 +30,7 @@
         <div class="form-group">
           <label for="form_name" class="control-label col-xs-2">Name</label>
           <div class="col-xs-10">
-            {{ form_errors(form.name) }}
+              <div class="err-msg">{{ form_errors(form.name) }}</div>
             {{ form_widget(form.name, { 'attr': { 'class': 'text-box single-line', 'placeholder': 'Input name' }}) }}
           </div>
         </div>
@@ -26,7 +39,7 @@
         <div class="form-group">
           <label for="form_slug" class="control-label col-xs-2">Slug</label>
           <div class="col-xs-10">
-          {{ form_errors(form.slug) }}
+              <div class="err-msg">{{ form_errors(form.slug) }}</div>
           {{ form_widget(form.slug, { 'attr': { 'class': 'text-box single-line', 'placeholder': 'Input slug' }}) }}
           </div>
         </div>
@@ -35,19 +48,24 @@
         <div class="form-group">
           <label for="form_position" class="control-label col-xs-2">Position</label>
           <div class="col-xs-10">
-          {{ form_errors(form.position) }}
+              <div class="err-msg">{{ form_errors(form.position) }}</div>
           {{ form_widget(form.position, { 'attr': { 'class': 'text-box single-line', 'placeholder': 'Input position' }}) }}
           </div>
         </div>
     </div>
     
     <div class="row">
-        <img src="{{ image_url_prefix }}{{ category.imageUrl }}" alt=""/>
         <div class="form-group">
           <label for="form_upl" class="control-label col-xs-2">Change category image</label>
           <div class="col-xs-10">
             <input type="file" name="upl"/>
           </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-xs-2">Current image</label>
+            <div class="col-xs-10">
+                <img src="{{ image_url_prefix }}{{ category.imageUrl }}" class="blogimg" alt=""/>
+            </div>
         </div>
     </div>
           
