@@ -22,6 +22,7 @@ class FeatureSectionController extends BaseAdminController {
      * @Route("/admin/feature-section", name="admin_feature_section_list")
      */
     public function indexAction() {
+        
         return $this->render('admin/featureSection/index.html.twig');
     }
     
@@ -242,16 +243,17 @@ class FeatureSectionController extends BaseAdminController {
     /**
      * @Route("/admin/feature-section/jsondata", name="admin_feature_section_jsondata")
      */
-    public function JsonData(Request $request)
-    {  
+    public function JsonData(Request $request) {  
         $sortColumn = $request->get('sidx');
         $sortDirection = $request->get('sord');
         $pageSize = $request->get('rows');
         $page = $request->get('page');
+        $fSubcategory = $request->get('s_position');
+        $fName = $request->get('fs_name');
         $callback = $request->get('callback');
         
         $repo = $this->getDoctrine()->getRepository('AppBundle:FeatureSection');
-        $dataRows = $repo->getGridOverview($sortColumn, $sortDirection, $pageSize, $page);
+        $dataRows = $repo->getGridOverview($sortColumn, $sortDirection, $pageSize, $page, $fSubcategory, $fName);
         $rowsCount = $repo->countAll();
         $pagesCount = ceil($rowsCount / $pageSize);
         
@@ -261,10 +263,11 @@ class FeatureSectionController extends BaseAdminController {
             $row = array();
             $row['id'] = $dataRow->getId();
             $cell = array();
-            $cell[0] = $dataRow->getName();
-            $subcat = $dataRow->getSubcategory();
-            $cell[1] = $subcat->getId();
-            $cell[2] = $subcat->getName();
+            $i = 0;
+            $cell[$i++] = '';
+            $cell[$i++] = $dataRow->getSubcategory()->getName();
+            $cell[$i++] = $dataRow->getName();
+            $cell[$i++] = $dataRow->getPosition();
             $row['cell'] = $cell;
             array_push($rows, $row);
         }

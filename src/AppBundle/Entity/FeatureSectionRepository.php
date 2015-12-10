@@ -28,12 +28,19 @@ class FeatureSectionRepository extends \Doctrine\ORM\EntityRepository
         $q->setParameter(':freetext', $freetext);
         return $q->getResult();
     }
-    public function getGridOverview($sortColumn, $sortDirection, $pageSize, $page) {
+    public function getGridOverview($sortColumn, $sortDirection, $pageSize, $page, $fSubcategory, $fName) {
         $qb = $this->getEntityManager()->createQueryBuilder();
         // build query
         $qb->select(array('fs', 's'))
             ->from('AppBundle:FeatureSection', 'fs')
             ->join('fs.subcategory', 's');
+        // where
+        if (!empty($fSubcategory)) {
+            $qb->andWhere($qb->expr()->like('s.name', ':sname'));
+        }
+        if (!empty($fName)) {
+            $qb->andWhere($qb->expr()->like('fs.name', ':fsname'));
+        }
         // sort by
         if (!empty($sortColumn)) {
             if (!empty($sortDirection)) {
@@ -45,6 +52,13 @@ class FeatureSectionRepository extends \Doctrine\ORM\EntityRepository
         }
 
         $q = $qb->getQuery();
+        // set params
+        if (!empty($fSubcategory)) {
+            $q->setParameter(':sname', "%{$fSubcategory}%");
+        }
+        if (!empty($fName)) {
+            $q->setParameter(':fsname', "%{$fName}%");
+        }
         // page and page size
         if (!empty($pageSize)) {
             $q->setMaxResults($pageSize);
