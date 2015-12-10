@@ -51,12 +51,7 @@ class Blog
      * @ORM\JoinColumn(name="image_id", referencedColumnName="id")
      */
     protected $image;
-    
-    public function getImageUrl() {
-        return $this->image != null ? $this->image->getUrlPath() : "";
-    }
-    
-    
+        
     public function setId($id)
     {
         return $this;

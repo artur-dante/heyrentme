@@ -34,9 +34,11 @@
                 <a class="social pin" href="#"></a>
             </div>
             <div class="position-relative">
-                {% if post.imageUrl != null %}
-                    <img src="{{ image_url_prefix }}{{ post.imageUrl }}" alt="post" class="product-user"/>
-                    <p class="author">Foto: Rene Samusek</p>
+                {% if post.image %}
+                    <img src="{{ post.image.urlPath(image_url_prefix) }}" alt="{{ post.title }}" class="product-user"/>
+                {% else %}
+                    {# TODO: change default blog photo #}
+                    <img src="/img/placeholder/blog2.jpg" alt="{{ post.title }}" class="product-user"/>
                 {% endif %}
             </div>
             <!-- LEFT side ends -->
@@ -50,7 +52,12 @@
             {% for p in posts|slice(0, 4) %}
                 <a href="{{ path('blog_detail', { 'slug': p.slug }) }}">
                 <div class="user-info">
-                    <img src="{{ image_url_prefix }}{{ p.imageUrl }}" alt="info"/>
+                    {% if p.image %}
+                        <img src="{{ p.image.urlPath(image_url_prefix) }}" alt="{{ p.title }}"/>
+                    {% else %}
+                        {# TODO: change default blog photo #}
+                        <img src="/img/placeholder/blog2.jpg" alt="{{ p.title }}"/>
+                    {% endif %}
                     <div class="row">
                         <div class="col-xs-9">
                             <p>{{ p.title }}</p>
