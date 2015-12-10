@@ -37,15 +37,16 @@ class BlogRepository extends EntityRepository
     
     public function getAll($sortColumn, $sortDirection, $pageSize, $page) {
         $sql = "SELECT c FROM AppBundle:Blog c";
-        
-        if ($sortColumn != null && $sortColumn != ""){
-            $sql .= " ORDER BY c." . $sortColumn;
-        }
-        if ($sortDirection != null && $sortDirection != ""){
-            $sql .= " " . $sortDirection;
-        }
-        
         $query = $this->getEntityManager()->createQuery($sql);
+        
+        if (!empty($sortColumn)) {
+            if (!empty($sortDirection)) {
+                $query->orderBy($sortColumn, $sortDirection);
+            }
+            else {
+                $query->orderBy($sortColumn);
+            }
+        }
         
         if ($pageSize != null && $pageSize != ""){
             $query->setMaxResults($pageSize);
