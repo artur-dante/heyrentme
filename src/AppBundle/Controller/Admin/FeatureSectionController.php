@@ -2,41 +2,42 @@
 
 namespace AppBundle\Controller\Admin;
 
+use AppBundle\Entity\FeatureSection;
 use AppBundle\Entity\Image;
-use AppBundle\Entity\Subcategory;
 use AppBundle\Utils;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\Type;
 
-class SubcategoryController extends BaseAdminController {
+
+
+class FeatureSectionController extends BaseAdminController {
     
     /**
      * 
-     * @Route("/admin/subcategory/{categoryID}", name="admin_subcategory_list")
+     * @Route("/admin/feature-section", name="admin_feature_section_list")
      */
-    public function indexAction($categoryID) {
-        return $this->render('admin/subcategory/index.html.twig', array(
-            'category' => $this->getDoctrine()->getManager()->getReference('AppBundle:Category', $categoryID)
-        ));
+    public function indexAction() {
+        return $this->render('admin/featureSection/index.html.twig');
     }
     
     /**
      * 
-     * @Route("/admin/subcategory/new/{categoryID}", name="admin_subcategory_new")
+     * @Route("/admin/feature-section/new/{subcategoryId}", name="admin_feature_section_new")
      */
-    public function newAction(Request $request, $categoryID) {
-        $subcategory = new Subcategory();
-        $category = $this->getDoctrine()->getManager()->getReference('AppBundle:Category', $categoryID);
-        $form = $this->createFormBuilder($subcategory)
-                ->add('category', 'entity', array(
-                  'class' => 'AppBundle:Category',
+    public function newAction(Request $request, $subcategoryId) {
+        $featureSection = new FeatureSection();
+        $subcategory = 
+        
+        $form = $this->createFormBuilder($featureSection)
+                ->add('subcategory', 'entity', array(
+                  'class' => 'AppBundle:Subcategory',
                   'property' => 'name',
-                  'data' => $category
+                  'data' => $subcategory
                   ))
                 ->add('name', 'text', array(
                     'constraints' => array(
@@ -54,12 +55,6 @@ class SubcategoryController extends BaseAdminController {
                             'htmlPattern' => '/^[a-z][-a-z0-9]*$/',
                             'message' => 'This is not a valid slug'
                         ))
-                    )
-                ))
-                ->add('emailBody', 'textarea', array(
-                    'required' => false,
-                    'constraints' => array(
-                        new NotBlank()
                     )
                 ))
                 ->add('position', 'integer', array(
@@ -84,11 +79,10 @@ class SubcategoryController extends BaseAdminController {
                 $uuid = Utils::getUuid();
                 $image_storage_dir = $this->getParameter('image_storage_dir');
                 
-                //$destDir = sprintf("%ssubcategory\\",$image_storage_dir);
                 $destDir = 
                     $image_storage_dir .
                     DIRECTORY_SEPARATOR .
-                    'subcategory' .
+                    'category' .
                     DIRECTORY_SEPARATOR;
                 $destFilename = sprintf("%s.%s", $uuid, $file->getClientOriginalExtension());
                 
@@ -100,46 +94,41 @@ class SubcategoryController extends BaseAdminController {
                 $img->setName($destFilename);
                 $img->setExtension($file->getClientOriginalExtension());
                 $img->setOriginalPath($file->getClientOriginalName());
-                $img->setPath('subcategory');
+                $img->setPath('category');
                               
                 $em->persist($img);
                 $em->flush();
                 
-                $subcategory->setImage($img);
+                $featureSection->setImage($img);
             }
             
             // save to db
-            $em->persist($subcategory);
+            
+            $em->persist($featureSection);
             $em->flush();
 
-            return $this->redirectToRoute("admin_subcategory_list", array( 'categoryID' => $categoryID ));
+            return $this->redirectToRoute("admin_feature_section_list");
         }
         
         
-        return $this->render('admin/subcategory/new.html.twig', array(
-            'form' => $form->createView(),
-            'category' => $category
+        return $this->render('admin/featureSection/new.html.twig', array(
+            'form' => $form->createView()
         ));
     }
     
     /**
      * 
-     * @Route("/admin/subcategory/edit/{id}", name="admin_subcategory_edit")
+     * @Route("/admin/feature-section/edit/{id}", name="admin_feature_section_edit")
      */
     public function editAction(Request $request, $id) {
-        $subcategory = $this->getDoctrine()->getRepository('AppBundle:Subcategory')->find($id);
-        if (!$subcategory) {
-            throw $this->createNotFoundException('No subcategory found for id '.$id);
+        $featureSection = $this->getDoctrine()->getRepository('AppBundle:Category')->find($id);
+
+        if (!$featureSection) {
+            throw $this->createNotFoundException('No category found for id '.$id);
         }
-        $category = $subcategory->getCategory();
         
-        $form = $this->createFormBuilder($subcategory)
+        $form = $this->createFormBuilder($featureSection)
                 ->add('id', 'hidden')
-                ->add('category', 'entity', array(
-                  'class' => 'AppBundle:Category',
-                  'property' => 'name',
-                  'data' => $category
-                  ))
                 ->add('name', 'text', array(
                     'constraints' => array(
                         new NotBlank(),
@@ -156,12 +145,6 @@ class SubcategoryController extends BaseAdminController {
                             'htmlPattern' => '/^[a-z][-a-z0-9]*$/',
                             'message' => 'This is not a valid slug'
                         ))
-                    )
-                ))
-                ->add('emailBody', 'textarea', array(
-                    'required' => false,
-                    'constraints' => array(
-                        new NotBlank()
                     )
                 ))
                 ->add('position', 'integer', array(
@@ -177,6 +160,7 @@ class SubcategoryController extends BaseAdminController {
         $form->handleRequest($request);
         
         if ($form->isValid()) {
+            
             //check if there is file
             $file = $request->files->get('upl');
             
@@ -185,18 +169,18 @@ class SubcategoryController extends BaseAdminController {
             if ($file != null && $file->isValid()) {
                 
                 //remove old Image (both file from filesystem and entity from db)
-                $this->getDoctrine()->getRepository('AppBundle:Subcategory')->removeImage($subcategory, $this->getParameter('image_storage_dir'));
+                $this->getDoctrine()->getRepository('AppBundle:Category')->removeImage($featureSection, $this->getParameter('image_storage_dir'));
                 
                 
                 // save file
                 $uuid = Utils::getUuid();
                 $image_storage_dir = $this->getParameter('image_storage_dir');
                 
-                //$destDir = sprintf("%scategory\\",$image_storage_dir);
+                //$destDir = sprintf("%scategory\\",$image_storage_dir);                
                 $destDir = 
                         $image_storage_dir .
                         DIRECTORY_SEPARATOR .
-                        'subcategory' .
+                        'category' .
                         DIRECTORY_SEPARATOR;
                 $destFilename = sprintf("%s.%s", $uuid, $file->getClientOriginalExtension());
                 
@@ -213,89 +197,87 @@ class SubcategoryController extends BaseAdminController {
                 $em->persist($img);
                 $em->flush();
                 
-                $subcategory->setImage($img);
+                $featureSection->setImage($img);
             }            
             
-            
             // save to db
-            $em->persist($subcategory);
+
+            $em->persist($featureSection);
             $em->flush();
 
-            return $this->redirectToRoute("admin_subcategory_list", array( 'categoryID' => $category->getId() ));
+            return $this->redirectToRoute("admin_feature_section_list");
         }
         
         
-        return $this->render('admin/subcategory/edit.html.twig', array(
+        return $this->render('admin/featureSection/edit.html.twig', array(
             'form' => $form->createView(),
-            'category' => $category,
-            'subcategory' => $subcategory
+            'category' => $featureSection
         ));
     }
     
     /**
      * 
-     * @Route("/admin/subcategory/delete/{id}", name="admin_subcategory_delete")
+     * @Route("/admin/feature-section/delete/{id}", name="admin_feature_section_delete")
      */
     public function deleteAction(Request $request, $id) {
-        $subcategory = $this->getDoctrine()->getRepository('AppBundle:Subcategory')->find($id);
+        $featureSection = $this->getDoctrine()->getRepository('AppBundle:Category')->find($id);
 
-        if (!$subcategory) {
-            throw $this->createNotFoundException('No subcategory found for id '.$id);
-        
+        if (!$featureSection) {
+            throw $this->createNotFoundException('No category found for id '.$id);
         }
+        
         //remove old Image (both file from filesystem and entity from db)
-        $this->getDoctrine()->getRepository('AppBundle:Subcategory')->removeImage($subcategory, $this->getParameter('image_storage_dir'));
+        $this->getDoctrine()->getRepository('AppBundle:Category')->removeImage($featureSection, $this->getParameter('image_storage_dir'));
         
-        
-        $category = $subcategory->getCategory();
+        //remove subcategories
+        $this->getDoctrine()->getRepository('AppBundle:Category')->removeSubcategoriesFromCategory($featureSection);
         
         $em = $this->getDoctrine()->getManager();
-        $em->remove($subcategory);
+        $em->remove($featureSection);
         $em->flush();
-        return $this->redirectToRoute("admin_subcategory_list", array( 'categoryID' => $category->getId() ));
+        return $this->redirectToRoute("admin_feature_section_list");
     }
     
     
     /**
-     * @Route("/admin/subcategory/jsondata/{categoryID}", name="admin_subcategory_jsondata")
+     * @Route("/admin/feature-section/jsondata", name="admin_feature_section_jsondata")
      */
-    public function JsonData($categoryID)
+    public function JsonData(Request $request)
     {  
-        $sortColumn = $_GET["sidx"];
-        $sortDirection = $_GET["sord"];
-        $pageSize = $_GET["rows"];
-        $page = $_GET["page"];
-        $method = $_GET["callback"];
+        $sortColumn = $request->get('sidx');
+        $sortDirection = $request->get('sord');
+        $pageSize = $request->get('rows');
+        $page = $request->get('page');
+        $callback = $request->get('callback');
         
-        $rows = $this->GetData($categoryID, $sortColumn, $sortDirection, $pageSize, $page);
-        $rowsCount = $this->getDoctrine()->getRepository('AppBundle:Subcategory')->countAllByCategoryId($categoryID);
-        $pagesCount =   ceil($rowsCount/$pageSize);
+        $repo = $this->getDoctrine()->getRepository('AppBundle:FeatureSection');
+        $dataRows = $repo->getGridOverview($sortColumn, $sortDirection, $pageSize, $page);
+        $rowsCount = $repo->countAll();
+        $pagesCount = ceil($rowsCount / $pageSize);
         
-        $rowsStr = "";
-        $rowsTemplate = '{ "id": %s, "cell": [null, "%s", "%s", "%s", "%s", "%s" ] }';
-        $i = 0;
-        foreach($rows as $row){
-            if ($i > 0) {
-                $rowsStr .= ", ";
-            }
-            $rowsStr .= sprintf($rowsTemplate, $row->getId(), $row->getId(), $row->getCategory()->getName(), $row->getName(), $row->getSlug(), $row->getPosition() );
-            $i .=1;
+        $rows = array(); // rows as json result
+        
+        foreach ($dataRows as $dataRow) { // build single row
+            $row = array();
+            $row['id'] = $dataRow->getId();
+            $cell = array();
+            $cell[0] = $dataRow->getName();
+            $subcat = $dataRow->getSubcategory();
+            $cell[1] = $subcat->getId();
+            $cell[2] = $subcat->getName();
+            $row['cell'] = $cell;
+            array_push($rows, $row);
         }
         
-        $json = sprintf('{ "records":%s,"page":%s ,"total":%s ,"rows": [ %s ] }', $rowsCount, $page, $pagesCount, $rowsStr );
+        $result = array( // main result object as json
+            'records' => $rowsCount,
+            'page' => $page,
+            'total' => $pagesCount,
+            'rows' => $rows
+        );        
         
-        $response = new Response();
-        $response->setContent('/**/'.$method.'('. $json .')');
-        $response->headers->set('Content-Type', 'text/javascript');
-        return $response;
-       
-    }
-    
-    public function GetData($categoryID, $sortColumn, $sortDirection, $pageSize, $page)
-    {
-        $cats = $this->getDoctrine()->getRepository('AppBundle:Subcategory')->getAllByCategoryId($categoryID, $sortColumn, $sortDirection, $pageSize, $page);
-        return $cats;
-    }
-
-
+        $resp = new JsonResponse($result, JsonResponse::HTTP_OK);
+        $resp->setCallback($callback);
+        return $resp;
+    }    
 }
