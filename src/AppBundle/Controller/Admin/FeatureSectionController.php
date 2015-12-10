@@ -169,7 +169,7 @@ class FeatureSectionController extends BaseAdminController {
             if ($file != null && $file->isValid()) {
                 
                 //remove old Image (both file from filesystem and entity from db)
-                $this->getDoctrine()->getRepository('AppBundle:Category')->removeImage($featureSection, $this->getParameter('image_storage_dir'));
+                $this->getDoctrine()->getRepository('AppBundle:Image')->removeImage($featureSection, $this->getParameter('image_storage_dir'));
                 
                 
                 // save file
@@ -227,7 +227,7 @@ class FeatureSectionController extends BaseAdminController {
         }
         
         //remove old Image (both file from filesystem and entity from db)
-        $this->getDoctrine()->getRepository('AppBundle:Category')->removeImage($featureSection, $this->getParameter('image_storage_dir'));
+        $this->getDoctrine()->getRepository('AppBundle:Image')->removeImage($featureSection, $this->getParameter('image_storage_dir'));
         
         //remove subcategories
         $this->getDoctrine()->getRepository('AppBundle:Category')->removeSubcategoriesFromCategory($featureSection);

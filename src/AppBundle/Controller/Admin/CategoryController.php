@@ -12,7 +12,7 @@ use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\Type;
-
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 
 class CategoryController extends BaseAdminController {
@@ -163,7 +163,7 @@ class CategoryController extends BaseAdminController {
             if ($file != null && $file->isValid()) {
                 
                 //remove old Image (both file from filesystem and entity from db)
-                $this->getDoctrine()->getRepository('AppBundle:Category')->removeImage($category, $this->getParameter('image_storage_dir'));
+                $this->getDoctrine()->getRepository('AppBundle:Image')->removeImage($category, $this->getParameter('image_storage_dir'));
                 
                 
                 // save file
@@ -221,7 +221,7 @@ class CategoryController extends BaseAdminController {
         }
         
         //remove old Image (both file from filesystem and entity from db)
-        $this->getDoctrine()->getRepository('AppBundle:Category')->removeImage($category, $this->getParameter('image_storage_dir'));
+        $this->getDoctrine()->getRepository('AppBundle:Image')->removeImage($category, $this->getParameter('image_storage_dir'));
         
         //remove subcategories
         $this->getDoctrine()->getRepository('AppBundle:Category')->removeSubcategoriesFromCategory($category);
@@ -236,13 +236,53 @@ class CategoryController extends BaseAdminController {
     /**
      * @Route("/admin/category/jsondata", name="admin_category_jsondata")
      */
-    public function JsonData()
+    public function JsonData(Request $request)
     {  
-        $sortColumn = $_GET["sidx"];
-        $sortDirection = $_GET["sord"];
-        $pageSize = $_GET["rows"];
-        $page = $_GET["page"];
-        $method = $_GET["callback"];
+        $sortColumn = $request->get('sidx');
+        $sortDirection = $request->get('sord');
+        $pageSize = $request->get('rows');
+        $page = $request->get('page');
+        $callback = $request->get('callback');
+        
+        
+        
+        $repo = $this->getDoctrine()->getRepository('AppBundle:Category');
+        $dataRows = $repo->getGridOverview($sortColumn, $sortDirection, $pageSize, $page);
+        $rowsCount = $repo->countAll();
+        $pagesCount = ceil($rowsCount / $pageSize);
+        
+        $rows = array(); // rows as json result
+        
+        foreach ($dataRows as $dataRow) { // build single row
+            $row = array();
+            $row['id'] = $dataRow->getId();
+            $cell = array();            
+            $cell[0] = null;
+            $cell[1] = $dataRow->getId();
+            $cell[2] = $dataRow->getName();
+            $cell[3] = $dataRow->getSlug();
+            $cell[4] = $dataRow->getPosition();
+            $row['cell'] = $cell;
+            array_push($rows, $row);
+        }
+        
+        $result = array( // main result object as json
+            'records' => $rowsCount,
+            'page' => $page,
+            'total' => $pagesCount,
+            'rows' => $rows
+        );        
+        
+        $resp = new JsonResponse($result, JsonResponse::HTTP_OK);
+        $resp->setCallback($callback);
+        return $resp;
+        
+        
+        
+        
+        
+        
+        /*
         
         $rows = $this->GetData($sortColumn, $sortDirection, $pageSize, $page);
         $rowsCount = $this->getDoctrine()->getRepository('AppBundle:Category')->countAll();
@@ -262,17 +302,17 @@ class CategoryController extends BaseAdminController {
         $json = sprintf('{ "records":%s,"page":%s ,"total":%s ,"rows": [ %s ] }', $rowsCount, $page, $pagesCount, $rowsStr );
         
         $response = new Response();
-        $response->setContent('/**/'.$method.'('. $json .')');
+        $response->setContent('/**//*'.$method.'('. $json .')');
         $response->headers->set('Content-Type', 'text/javascript');
         return $response;
-       
+       */
     }
-    
+    /*
     public function GetData($sortColumn, $sortDirection, $pageSize, $page)
     {
         $cats = $this->getDoctrine()->getRepository('AppBundle:Category')->getAll($sortColumn, $sortDirection, $pageSize, $page);
         return $cats;
-    }
+    }*/
 
 
 }

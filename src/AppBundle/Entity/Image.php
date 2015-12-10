@@ -38,8 +38,8 @@ class Image
      */
     protected $originalPath;
     
-    public function getUrlPath() {
-        return "{$this->getPath()}/{$this->getUuid()}.{$this->getExtension()}";
+    public function getUrlPath($image_url_prefix) {
+        return "{$image_url_prefix}{$this->getPath()}/{$this->getUuid()}.{$this->getExtension()}";
     }
     /**
      * Get id

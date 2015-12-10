@@ -52,11 +52,6 @@ class Blog
      */
     protected $image;
     
-    public function getImageUrl() {
-        return $this->image != null ? $this->image->getUrlPath() : "";
-    }
-    
-    
     public function setId($id)
     {
         return $this;

@@ -48,9 +48,9 @@ if( $('#jqgrid').length > 0 ) {
                 datatype: 'jsonp',
                 colModel:[
                         { name:' ', width:180, fixed:true, editable:false, sortable:false, formatter:rowActions },
-                        { name:'Id', index:'id', width:1, editable:false, sortable:false, hidden: true },
-                        { name:'Name', index:'name', width: 200, editable:false, sortable:true },
-                        { name:'Subcategory', index:'subcategory', width: 100, editable:false, sortable:true }
+                        { name:'Id', index:'s.id', width:1, editable:false, sortable:false, hidden: true },
+                        { name:'Name', index:'s.name', width: 200, editable:false, sortable:true },
+                        { name:'Subcategory', index:'fs.subcategory', width: 100, editable:false, sortable:true }
                 ],
                 height: 300,
                 rowNum: 10,

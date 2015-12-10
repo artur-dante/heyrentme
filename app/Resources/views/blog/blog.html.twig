@@ -40,7 +40,7 @@
                 <a class="text-black" href="{{ path('blog_detail', { 'slug' : post.slug }) }}">
                     <div class="col-sm-4">
                         <div class="blog-img-container">
-                            <img src="{{ image_url_prefix }}{{ post.imageUrl }}" alt="placeholder" class="blogimg"/>
+                            <img src="{{ post.image.urlPath(image_url_prefix) }}" alt="placeholder" class="blogimg"/>
                         </div>
                         <div class="product-info">
                             <div class="row">

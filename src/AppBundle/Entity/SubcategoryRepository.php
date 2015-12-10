@@ -51,55 +51,31 @@ class SubcategoryRepository extends \Doctrine\ORM\EntityRepository
             ->getSingleScalarResult();
     }
     
-    public function getAllByCategoryId($categoryID, $sortColumn, $sortDirection, $pageSize, $page) {
-        $sql = "SELECT sc FROM AppBundle:Subcategory sc WHERE sc.category = :categoryID";
-        
-        
-        if ($sortColumn != null && $sortColumn != ""){
-            $sql .= " ORDER BY sc." . $sortColumn;
+    public function getGridOverview($categoryID, $sortColumn, $sortDirection, $pageSize, $page) {
+        $qb = $this->getEntityManager()->createQueryBuilder();
+        // build query
+        $qb->select('sc')
+            ->from('AppBundle:Subcategory', 'sc')
+            ->where('sc.category = :categoryID')
+            ->setParameter('categoryID', $categoryID);
+        // sort by
+        if (!empty($sortColumn)) {
+            if (!empty($sortDirection)) {
+                $qb->orderBy($sortColumn, $sortDirection);
+            }
+            else {
+                $qb->orderBy($sortColumn);
+            }
         }
-        if ($sortDirection != null && $sortDirection != ""){
-            $sql .= " " . $sortDirection;
-        }
-        
-        $query = $this->getEntityManager()->createQuery($sql);
-        $query->setParameter('categoryID', $categoryID);
 
-        
-        if ($pageSize != null && $pageSize != ""){
-            $query->setMaxResults($pageSize);
+        $q = $qb->getQuery();
+        // page and page size
+        if (!empty($pageSize)) {
+            $q->setMaxResults($pageSize);
         }
-        if ($page != null && $page != "" && $page != 1){            
-            $query->setFirstResult(($page - 1) * $pageSize);
+        if (!empty($page) && $page != 1) {
+            $q->setFirstResult(($page - 1) * $pageSize);
         }
-        
-        return $query->getResult();
+        return $q->getResult();        
     }
-    public function removeImage($subcategory, $image_storage_dir) {
-        $oldImage = $subcategory->getImage();
-        if ($oldImage != null) {
-            /*$fullPath = sprintf("%s%s\\%s",
-                $image_storage_dir,
-                $oldImage->getPath(),
-                $oldImage->getName());*/
-            $fullPath = 
-                $image_storage_dir .
-                DIRECTORY_SEPARATOR .
-                $oldImage->getPath() .
-                DIRECTORY_SEPARATOR .
-                $oldImage->getUuid() . '.' . $oldImage->getExtension();
-            
-            $fs = new Filesystem();
-            $fs->remove($fullPath);
-
-            $em = $this->getEntityManager();
-
-            $subcategory->setImage(null); 
-            $em->remove($oldImage);
-            $em->flush();
-        }
-        
-        return $subcategory;
-    }
-
 }

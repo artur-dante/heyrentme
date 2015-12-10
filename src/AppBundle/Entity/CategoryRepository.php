@@ -25,53 +25,30 @@ class CategoryRepository extends \Doctrine\ORM\EntityRepository
             ->getSingleScalarResult();
     }
     
-    public function getAll($sortColumn, $sortDirection, $pageSize, $page) {
-        $sql = "SELECT c FROM AppBundle:Category c";
-        
-        if ($sortColumn != null && $sortColumn != ""){
-            $sql .= " ORDER BY c." . $sortColumn;
+    public function getGridOverview($sortColumn, $sortDirection, $pageSize, $page) {
+        $qb = $this->getEntityManager()->createQueryBuilder();
+        // build query
+        $qb->select('c')
+            ->from('AppBundle:Category', 'c');
+        // sort by
+        if (!empty($sortColumn)) {
+            if (!empty($sortDirection)) {
+                $qb->orderBy($sortColumn, $sortDirection);
+            }
+            else {
+                $qb->orderBy($sortColumn);
+            }
         }
-        if ($sortDirection != null && $sortDirection != ""){
-            $sql .= " " . $sortDirection;
-        }
-        
-        $query = $this->getEntityManager()->createQuery($sql);
-        
-        if ($pageSize != null && $pageSize != ""){
-            $query->setMaxResults($pageSize);
-        }
-        if ($page != null && $page != "" && $page != 1){            
-            $query->setFirstResult(($page - 1) * $pageSize);
-        }
-        
-        return $query->getResult();
-    }
-    
-    public function removeImage($category, $image_storage_dir) {
-        $oldImage = $category->getImage();
-        if ($oldImage != null) {
-            /*$fullPath = sprintf("%s%s\\%s",
-                $image_storage_dir,
-                $oldImage->getPath(),
-                $oldImage->getName());*/
-            $fullPath = 
-                $image_storage_dir .
-                    DIRECTORY_SEPARATOR .
-                    $oldImage->getPath() .
-                    DIRECTORY_SEPARATOR .
-                    $oldImage->getUuid() . '.' . $oldImage->getExtension();
-            
-            $fs = new Filesystem();
-            $fs->remove($fullPath);
 
-            $em = $this->getEntityManager();
-
-            $category->setImage(null); 
-            $em->remove($oldImage);
-            $em->flush();
+        $q = $qb->getQuery();
+        // page and page size
+        if (!empty($pageSize)) {
+            $q->setMaxResults($pageSize);
         }
-        
-        return $category;
+        if (!empty($page) && $page != 1) {
+            $q->setFirstResult(($page - 1) * $pageSize);
+        }
+        return $q->getResult();        
     }
     
     public function removeSubcategoriesFromCategory($category) {

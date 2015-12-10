@@ -35,7 +35,7 @@
             </div>
             <div class="position-relative">
                 {% if post.imageUrl != null %}
-                    <img src="{{ image_url_prefix }}{{ post.imageUrl }}" alt="post" class="product-user"/>
+                    <img src="{{ post.image.urlPath(image_url_prefix) }}" alt="post" class="product-user"/>
                     <p class="author">Foto: Rene Samusek</p>
                 {% endif %}
             </div>
@@ -50,7 +50,7 @@
             {% for p in posts|slice(0, 4) %}
                 <a href="{{ path('blog_detail', { 'slug': p.slug }) }}">
                 <div class="user-info">
-                    <img src="{{ image_url_prefix }}{{ p.imageUrl }}" alt="info"/>
+                    <img src="{{ p.image.urlPath(image_url_prefix) }}" alt="info"/>
                     <div class="row">
                         <div class="col-xs-9">
                             <p>{{ p.title }}</p>

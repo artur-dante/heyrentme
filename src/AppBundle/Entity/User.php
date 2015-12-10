@@ -259,7 +259,7 @@ class User extends BaseUser
     {
         $imageUrl = "/img/placeholder/user-big.png";
         if ($this->image != null) {            
-            $imageUrl = sprintf("%s%s", $imageUrlPrefix, $this->image->getUrlPath());            
+            $imageUrl = $this->image->getUrlPath($imageUrlPrefix);            
         } else if ($this->facebookID != null){
             $imageUrl = 'http://graph.facebook.com/'. $this->facebookID .'/picture';
             if ($large){

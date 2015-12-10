@@ -13,6 +13,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\Type;
 use Symfony\Component\Validator\ExecutionContextInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class BlogController  extends BaseAdminController {
     /**
@@ -188,7 +189,7 @@ class BlogController  extends BaseAdminController {
             if ($file != null && $file->isValid()) {
                 
                 //remove old Image (both file from filesystem and entity from db)
-                $this->getDoctrine()->getRepository('AppBundle:Blog')->removeImage($blog, $this->getParameter('image_storage_dir'));
+                $this->getDoctrine()->getRepository('AppBundle:Image')->removeImage($blog, $this->getParameter('image_storage_dir'));
                 
                 
                 // save file
@@ -245,7 +246,7 @@ class BlogController  extends BaseAdminController {
         }
         
         //remove old Image (both file from filesystem and entity from db)
-        $this->getDoctrine()->getRepository('AppBundle:Blog')->removeImage($blog, $this->getParameter('image_storage_dir'));
+        $this->getDoctrine()->getRepository('AppBundle:Image')->removeImage($blog, $this->getParameter('image_storage_dir'));
                 
         $em = $this->getDoctrine()->getManager();
         $em->remove($blog);
@@ -257,41 +258,46 @@ class BlogController  extends BaseAdminController {
     /**
      * @Route("/admin/blog/jsondata", name="admin_blog_jsondata")
      */
-    public function JsonData()
+    public function JsonData(Request $request)
     {  
-        $sortColumn = $_GET["sidx"];
-        $sortDirection = $_GET["sord"];
-        $pageSize = $_GET["rows"];
-        $page = $_GET["page"];
-        $method = $_GET["callback"];
+        $sortColumn = $request->get('sidx');
+        $sortDirection = $request->get('sord');
+        $pageSize = $request->get('rows');
+        $page = $request->get('page');
+        $callback = $request->get('callback');
         
-        $rows = $this->GetData($sortColumn, $sortDirection, $pageSize, $page);
-        $rowsCount = $this->getDoctrine()->getRepository('AppBundle:Blog')->countAll();
-        $pagesCount =   ceil($rowsCount/$pageSize);
         
-        $rowsStr = "";
-        $rowsTemplate = '{ "id": %s, "cell": [null, "%s", "%s", "%s", "%s", "%s" ] }';
-        $i = 0;
-        foreach($rows as $row){
-            if ($i > 0) {
-                $rowsStr .= ", ";
-            }
-            $rowsStr .= sprintf($rowsTemplate, $row->getId(), $row->getId(), $row->getTitle(), $row->getCreatedAt()->format('Y-m-d H:i'), $row->getModifiedAt()->format('Y-m-d H:i'), $row->getPosition() );
-            $i .=1;
+        $repo = $this->getDoctrine()->getRepository('AppBundle:Blog');        
+        $dataRows = $repo->getGridOverview($sortColumn, $sortDirection, $pageSize, $page);
+        $rowsCount = $repo->countAll();
+        $pagesCount = ceil($rowsCount / $pageSize);
+        
+        $rows = array(); // rows as json result        
+        foreach ($dataRows as $dataRow) { // build single row
+            $row = array();
+            $row['id'] = $dataRow->getId();
+            $cell = array();
+            $cell[0] = null;
+            $cell[1] = $dataRow->getId();
+            $cell[2] = $dataRow->getTitle();
+            $cell[3] = $dataRow->getCreatedAt()->format('Y-m-d H:i');
+            $cell[4] = $dataRow->getModifiedAt()->format('Y-m-d H:i');
+            $cell[5] = $dataRow->getPosition();
+            
+            $row['cell'] = $cell;
+            array_push($rows, $row);
         }
         
-        $json = sprintf('{ "records":%s,"page":%s ,"total":%s ,"rows": [ %s ] }', $rowsCount, $page, $pagesCount, $rowsStr );
+        $result = array( // main result object as json
+            'records' => $rowsCount,
+            'page' => $page,
+            'total' => $pagesCount,
+            'rows' => $rows
+        );        
         
-        $response = new Response();
-        $response->setContent('/**/'.$method.'('. $json .')');
-        $response->headers->set('Content-Type', 'text/javascript');
-        return $response;
-       
-    }
-    
-    public function GetData($sortColumn, $sortDirection, $pageSize, $page)
-    {
-        $posts = $this->getDoctrine()->getRepository('AppBundle:Blog')->getAll($sortColumn, $sortDirection, $pageSize, $page);
-        return $posts;
+        $resp = new JsonResponse($result, JsonResponse::HTTP_OK);
+        $resp->setCallback($callback);
+        return $resp;
+        
     }
 }

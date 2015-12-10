@@ -92,7 +92,7 @@
         <div class="form-group">
             <label class="control-label col-xs-2">Current image</label>
             <div class="col-xs-10">
-                <img src="{{ image_url_prefix }}{{ subcategory.imageUrl }}" alt="" class="thumb"/>
+                <img src="{{ subcategory.image.urlPath(image_url_prefix) }}" alt="" class="thumb"/>
             </div>
         </div>
 </div>
