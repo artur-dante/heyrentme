@@ -23,7 +23,9 @@ class FeatureController extends BaseAdminController {
      */
     public function indexAction($featureSectionId) {
         
-        return $this->render('admin/feature/index.html.twig');
+        return $this->render('admin/feature/index.html.twig', array(
+            'featureSectionId' => $featureSectionId
+        ));
     }
     
     /**
@@ -34,12 +36,9 @@ class FeatureController extends BaseAdminController {
         $feature = new Feature();
         $featureSection = $this->getDoctrine()->getRepository('AppBundle:FeatureSection')->find($featureSectionId);
         
+        $feature->setFeatureSection($featureSection);
+        
         $form = $this->createFormBuilder($feature)
-                ->add('featureSection', 'hidden', array(
-                  'class' => 'AppBundle:FeatureSection',
-                  'property' => 'name',
-                  'data' => $featureSection
-                  ))
                 ->add('name', 'text', array(
                     'constraints' => array(
                         new NotBlank(),
@@ -73,12 +72,13 @@ class FeatureController extends BaseAdminController {
             $em->persist($feature);
             $em->flush();
 
-            return $this->redirectToRoute("admin_feature_list");
+            return $this->redirect($this->generateUrl('admin_feature_list', array( 'featureSectionId' => $featureSectionId )));
         }
         
         
         return $this->render('admin/feature/new.html.twig', array(
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'featureSectionId' => $featureSectionId
         ));
     }
     
@@ -95,11 +95,6 @@ class FeatureController extends BaseAdminController {
         
         $form = $this->createFormBuilder($feature)
                 ->add('id', 'hidden')
-                ->add('featureSection', 'hidden', array(
-                  'class' => 'AppBundle:FeatureSection',
-                  'property' => 'name',
-                  'data' => $feature->getFeatureSection()
-                  ))
                 ->add('name', 'text', array(
                     'constraints' => array(
                         new NotBlank(),
@@ -112,7 +107,7 @@ class FeatureController extends BaseAdminController {
                         new Length(array('max' => 128))
                     )
                 ))
-                ->add('exclusive', 'checkbox', array(
+                ->add('freetext', 'checkbox', array(
                     'required' => false
                 ))
                 ->add('position', 'integer', array(
@@ -133,13 +128,14 @@ class FeatureController extends BaseAdminController {
             $em->persist($feature);
             $em->flush();
 
-            return $this->redirectToRoute("admin_feature_list");
+            return $this->redirect($this->generateUrl('admin_feature_list', array( 'featureSectionId' => $feature->getFeatureSection()->getId() )));
         }
         
         
         return $this->render('admin/feature/edit.html.twig', array(
             'form' => $form->createView(),
-            'feature' => $feature
+            'feature' => $feature,
+            'featureSectionId' =>  $feature->getFeatureSection()->getId()
         ));
     }
     
@@ -149,7 +145,9 @@ class FeatureController extends BaseAdminController {
      */
     public function deleteAction(Request $request, $id) {
         $feature = $this->getDoctrine()->getRepository('AppBundle:Feature')->find($id);
-
+        
+        $featureSectionId =  $feature->getFeatureSection()->getId();
+        
         if (!$feature) {
             throw $this->createNotFoundException('No feature found for id '.$id);
         }
@@ -157,24 +155,23 @@ class FeatureController extends BaseAdminController {
         $em = $this->getDoctrine()->getManager();
         $em->remove($feature);
         $em->flush();
-        return $this->redirectToRoute("admin_feature_list");
+       // return $this->redirectToRoute("admin_feature_list");
+        return $this->redirect($this->generateUrl('admin_feature_list', array( 'featureSectionId' => $featureSectionId )));
     }
     
     
     /**
-     * @Route("/admin/feature/jsondata", name="admin_feature_jsondata")
+     * @Route("/admin/feature/jsondata/{featureSectionId}", name="admin_feature_jsondata")
      */
-    public function JsonData(Request $request) {  
+    public function JsonData(Request $request, $featureSectionId) {  
         $sortColumn = $request->get('sidx');
         $sortDirection = $request->get('sord');
         $pageSize = $request->get('rows');
-        $page = $request->get('page');
-        $fSubcategory = $request->get('s_position');
-        $fName = $request->get('fs_name');
+        $page = $request->get('page');                
         $callback = $request->get('callback');
         
         $repo = $this->getDoctrine()->getRepository('AppBundle:Feature');
-        $dataRows = $repo->getGridOverview($sortColumn, $sortDirection, $pageSize, $page, $fSubcategory, $fName);
+        $dataRows = $repo->getGridOverview($sortColumn, $sortDirection, $pageSize, $page, $featureSectionId);
         $rowsCount = $repo->countAll();
         $pagesCount = ceil($rowsCount / $pageSize);
         
@@ -188,7 +185,8 @@ class FeatureController extends BaseAdminController {
             $cell[$i++] = '';
             $cell[$i++] = $dataRow->getFeatureSection()->getName();
             $cell[$i++] = $dataRow->getName();
-            $cell[$i++] = $dataRow->getExclusive();
+            $cell[$i++] = $dataRow->getShortName();
+            $cell[$i++] = $dataRow->getFreetext();
             $cell[$i++] = $dataRow->getPosition();
             $row['cell'] = $cell;
             array_push($rows, $row);

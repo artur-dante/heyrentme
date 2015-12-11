@@ -2,13 +2,14 @@
 
 {% block breadcrumb %}
     {{ parent() }}
-    <li><a href="{{ path('admin_feature_section_list') }}" class="active-crumb">Feature section</a></li>
+    <li><a href="{{ path('admin_feature_section_list') }}" >Feature section</a></li>
+    <li><a href="{{ path('admin_feature_list', { 'featureSectionId': featureSectionId }) }}" class="active-crumb">Feature</a></li>
 {% endblock %}
 
 {% block body %}
-<h1>Feature section</h1>
+<h1>Feature</h1>
 
-<a class="button-black backgound-yellow text-black" href="{{ path('admin_feature_section_new') }}">New feature section</a>
+<a class="button-black backgound-yellow text-black" href="{{ path('admin_feature_new', { 'featureSectionId': featureSectionId }) }}">New feature</a>
 
 <br/>
 <br/>
@@ -34,15 +35,15 @@ $(document).ready(function(){
 
 
 function rowActions(cellvalue, options, cellobject) {
-      return   "<a title='Edit'             href='feature/edit/"   +  options.rowId + "'><u>Edit</u></a>  "+
-  	       "<a title='Delete'           href='feature/delete/" +  options.rowId + "' onclick=\"return confirm('Are you sure to delete?')\"><u>Delete</u></a>";
+      return   "<a title='Edit'             href='edit/"   +  options.rowId + "'><u>Edit</u></a>  "+
+  	       "<a title='Delete'           href='delete/" +  options.rowId + "' onclick=\"return confirm('Are you sure to delete?')\"><u>Delete</u></a>";
   }
 
 var $grid = $('#jqgrid');
 
 if($grid.length > 0 ) {
         $grid.jqGrid({
-                url: '{{ path('admin_feature_jsondata') }}',
+                url: '{{ path('admin_feature_jsondata', { 'featureSectionId': featureSectionId }) }}',
                 mtype: 'GET',
                 datatype: 'jsonp',
                 colModel:[
@@ -57,10 +58,10 @@ if($grid.length > 0 ) {
                 rowNum: 50,
                 rowList: [50, 100, 200],
                 pager: 'jqgrid-pager',
-                sortname: 'fs.position',
+                sortname: 'f.position',
                 viewrecords: false,
                 sortorder: "asc",
-                caption: "Feature sections",
+                caption: "Features",
                 multiselect: false
         });
         

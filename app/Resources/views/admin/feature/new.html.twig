@@ -7,6 +7,7 @@
 {% block breadcrumb %}
     {{ parent() }}
     <li><a href="{{ path('admin_feature_section_list') }}" >Feature section</a></li>    
+    <li><a href="{{ path('admin_feature_list', { 'featureSectionId': featureSectionId }) }}" >Feature</a></li>        
 {% endblock %}
 
 {% block body %}
@@ -26,19 +27,20 @@
     </div>
     <div class="row">
         <div class="form-group">
-          <label for="form_subcategory" class="control-label col-xs-2">Subcategory</label>
+          <label for="form_shortName" class="control-label col-xs-2">Short name</label>
           <div class="col-xs-10">
-              <div class="err-msg">{{ form_errors(form.subcategory) }}</div>
-                {{ form_widget(form.subcategory, { 'attr': { 'class': 'select-box single-line' }}) }}
+            <div class="err-msg">{{ form_errors(form.shortName) }}</div>
+            {{ form_widget(form.shortName, { 'attr': { 'class': 'text-box single-line', 'placeholder': 'Input short name' }}) }}
           </div>
         </div>
     </div>
+    
     <div class="row">
         <div class="form-group">
-          <label for="form_exclusive" class="control-label col-xs-2">Exclusive</label>
+          <label for="form_freetext" class="control-label col-xs-2">Freetext</label>
           <div class="col-xs-10">
-              <div class="err-msg">{{ form_errors(form.exclusive) }}</div>
-          {{ form_widget(form.exclusive, { 'attr': { 'class': 'check-box single-line' }}) }}
+              <div class="err-msg">{{ form_errors(form.freetext) }}</div>
+          {{ form_widget(form.freetext, { 'attr': { 'class': 'check-box single-line' }}) }}
           </div>
         </div>
     </div>
@@ -57,7 +59,7 @@
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
                 <input type="submit" class="button-black backgound-yellow text-black" value="Add">
-                <a class="button-black backgound-yellow text-black" href="{{ path('admin_feature_section_list') }}">Cancel</a>
+                <a class="button-black backgound-yellow text-black" href="{{ path('admin_feature_list', { 'featureSectionId': featureSectionId }) }}">Cancel</a>
             </div>
         </div>
     </div>
