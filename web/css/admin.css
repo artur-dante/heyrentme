@@ -46,3 +46,12 @@ nav.crumbs {
 .ui-jqgrid .ui-jqgrid-sortable {
     height: auto;
 }
+.text-box {
+    width: 400px;
+}
+.text-box.short {
+    width: 120px;
+}
+.select-box {
+    width: 400px;
+}
