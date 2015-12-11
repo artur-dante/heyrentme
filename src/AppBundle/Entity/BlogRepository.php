@@ -35,54 +35,30 @@ class BlogRepository extends EntityRepository
             ->getSingleScalarResult();
     }
     
-    public function getAll($sortColumn, $sortDirection, $pageSize, $page) {
-        $sql = "SELECT c FROM AppBundle:Blog c";
-        $query = $this->getEntityManager()->createQuery($sql);
-        
+    public function getGridOverview($sortColumn, $sortDirection, $pageSize, $page) {
+        $qb = $this->getEntityManager()->createQueryBuilder();
+        // build query
+        $qb->select('b')
+            ->from('AppBundle:Blog', 'b');
+        // sort by
         if (!empty($sortColumn)) {
             if (!empty($sortDirection)) {
-                $query->orderBy($sortColumn, $sortDirection);
+                $qb->orderBy($sortColumn, $sortDirection);
             }
             else {
-                $query->orderBy($sortColumn);
+                $qb->orderBy($sortColumn);
             }
         }
-        
-        if ($pageSize != null && $pageSize != ""){
-            $query->setMaxResults($pageSize);
-        }
-        if ($page != null && $page != "" && $page != 1){            
-            $query->setFirstResult(($page - 1) * $pageSize);
-        }
-        
-        return $query->getResult();
-    }
-    
-    public function removeImage($blog, $image_storage_dir) {
-        $oldImage = $blog->getImage();
-        if ($oldImage != null) {
-            /*$fullPath = sprintf("%s%s\\%s",
-                $image_storage_dir,
-                $oldImage->getPath(),
-                $oldImage->getName());*/
-            $fullPath = 
-                $image_storage_dir .
-                    DIRECTORY_SEPARATOR .
-                    $oldImage->getPath() .
-                    DIRECTORY_SEPARATOR .
-                    $oldImage->getUuid() . '.' . $oldImage->getExtension();
-            
-            $fs = new Filesystem();
-            $fs->remove($fullPath);
 
-            $em = $this->getEntityManager();
-
-            $blog->setImage(null); 
-            $em->remove($oldImage);
-            $em->flush();
+        $q = $qb->getQuery();
+        // page and page size
+        if (!empty($pageSize)) {
+            $q->setMaxResults($pageSize);
         }
-        
-        return $blog;
+        if (!empty($page) && $page != 1) {
+            $q->setFirstResult(($page - 1) * $pageSize);
+        }
+        return $q->getResult();        
     }
     
     public function isSlugUnique($slug, $blogId = null) {

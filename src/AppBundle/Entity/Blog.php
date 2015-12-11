@@ -51,7 +51,7 @@ class Blog
      * @ORM\JoinColumn(name="image_id", referencedColumnName="id")
      */
     protected $image;
-        
+
     public function setId($id)
     {
         return $this;

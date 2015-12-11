@@ -62,7 +62,7 @@
               {% endif %}
               <div id="media-content">
                     {% if equipment.images|length > 0 %}
-                        <img src="{{ image_url_prefix }}{{ equipment.images[0].urlPath }}" alt=""/>
+                        <img src="{{ equipment.images[0].urlPath(image_url_prefix) }}" alt=""/>
                     {% else %}
                         <img src="/img/equipment-default.jpg" alt=""/>
                     {% endif %}
@@ -71,7 +71,7 @@
               <iframe id="player"></iframe>
               <div class="media-list" id="media-list">
                     {% for img in equipment.images %}
-                        <span class="media-img"><img src="{{ image_url_prefix }}{{ img.urlPath }}" alt=""/></span>
+                        <span class="media-img"><img src="{{ img.urlPath(image_url_prefix) }}" alt=""/></span>
                     {% endfor %}
                     {#
                         <span><a class="videos-ico" id="3"></a><img src="/img/placeholder/video2.jpg" id="3" alt=""/>   </span>

@@ -52,7 +52,7 @@
                         <div class="categories-names">
                             <a href="{{ path('catchall', { 'content': cat.slug }) }}"><h3>{{ cat.Name }}</h3></a>
                         </div>
-                        <a href="{{ path('catchall', { 'content': cat.slug }) }}"><img src="{{ image_url_prefix }}{{ cat.imageUrl }}" alt="{{ cat.Name }}"/></a>
+                        <a href="{{ path('catchall', { 'content': cat.slug }) }}"><img src="{{ cat.image.urlPath(image_url_prefix) }}" alt="{{ cat.Name }}"/></a>
                     </div>
                 {% endfor %}
                   </div>

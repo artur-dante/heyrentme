@@ -73,7 +73,10 @@ class ProviderController extends BaseController {
                         'user' .
                         DIRECTORY_SEPARATOR .
                         basename($fullpath);
-                rename($fullpath, $destinationPath);
+                
+                if (file_exists($fullpath)){
+                    rename($fullpath, $destinationPath);
+                }
 
 
 

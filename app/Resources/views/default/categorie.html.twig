@@ -81,7 +81,7 @@
         <a class="text-black" href="{{ path('catchall', { 'content': eq.urlPath }) }}">
             <div class="col-md-4">
                 {% if eq.images|length > 0 %}
-                    <img src="{{ image_url_prefix }}{{ eq.images[0].urlPath }}" alt="placeholder"/>
+                    <img src="{{ eq.images[0].urlPath(image_url_prefix) }}" alt="placeholder"/>
                 {% else %}
                     <img src="/img/equipment-default.jpg" alt="placeholder"/>
                 {% endif %}

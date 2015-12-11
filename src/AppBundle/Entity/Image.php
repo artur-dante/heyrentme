@@ -38,9 +38,8 @@ class Image
      */
     protected $originalPath;
     
-    public function getUrlPath($imageUrlPrefix = '') {
-        //TODO: remove default value for $imageUrlPrefix when the "path-to-images" is refactored
-        return "{$imageUrlPrefix}{$this->getPath()}/{$this->getUuid()}.{$this->getExtension()}";
+    public function getUrlPath($image_url_prefix) {
+        return "{$image_url_prefix}{$this->getPath()}/{$this->getUuid()}.{$this->getExtension()}";
     }
     /**
      * Get id

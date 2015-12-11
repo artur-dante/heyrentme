@@ -1,6 +1,8 @@
 <?php
 
 namespace AppBundle\Entity;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 
 /**
  * ImageRepository
@@ -15,5 +17,33 @@ class ImageRepository extends \Doctrine\ORM\EntityRepository
         $query = $this->getEntityManager()->createQuery($sql);
         $query->setParameter('id', $id);
         return $query->getResult();        
+    }
+    
+    public function removeImage($object, $image_storage_dir) {
+        $oldImage = $object->getImage();
+        if ($oldImage != null) {
+            /*$fullPath = sprintf("%s%s\\%s",
+                $image_storage_dir,
+                $oldImage->getPath(),
+                $oldImage->getName());*/
+            $fullPath = 
+                $image_storage_dir .
+                    DIRECTORY_SEPARATOR .
+                    $oldImage->getPath() .
+                    DIRECTORY_SEPARATOR .
+                    $oldImage->getUuid() . '.' . $oldImage->getExtension();
+            
+            $fs = new Filesystem();
+            if (file_exists($fullPath)){
+                $fs->remove($fullPath);
+            }
+            $em = $this->getEntityManager();
+
+            $object->setImage(null); 
+            $em->remove($oldImage);
+            $em->flush();
+        }
+        
+        return $object;
     }
 }

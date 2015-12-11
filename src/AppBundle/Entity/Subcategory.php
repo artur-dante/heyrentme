@@ -58,10 +58,6 @@ class Subcategory
     protected $emailBody;
     
     
-    public function getImageUrl() {
-        return $this->image != null ? $this->image->getUrlPath() : "";
-    }
-    
     /**
      * Set id
      *
