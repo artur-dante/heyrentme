@@ -31,11 +31,8 @@
             <span id="categories"></span>
             <nav class="crumbs">
                 <ul class="col-xs-8">
-                    <li><a href="/">hey! VIENNA</a></li>
-                    <li><a href="{{ path('rentme') }}" {% if not category %}class="active-crumb"{% endif %}>hey! rentme</a></li>
-                    {% if category %}
-                        <li><a href="{{ path('catchall', { 'content': category.Slug }) }}#categories" class="active-crumb">{{ category.Name }}</a></li>
-                    {% endif %}
+                    <li><a href="{{ path('start-page') }}">hey! VIENNA</a></li>
+                    <li><a href="{{ path('rentme') }}" class="active-crumb">hey! rentme</a></li>
                 </ul>
             </nav>
             {{ render(controller('AppBundle:Common:categoryList', { 'mobile': true })) }}
@@ -50,7 +47,7 @@
         </div>
         <div class="container categories-container pages-categories">
           <div class="row">
-                {% for cat in subcategories %}
+                {% for cat in categories %}
                     <div class="col-sm-4">
                         <div class="categories-names">
                             <a href="{{ path('catchall', { 'content': cat.slug }) }}"><h3>{{ cat.Name }}</h3></a>

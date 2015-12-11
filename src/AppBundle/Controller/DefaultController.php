@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 class DefaultController extends BaseController {
     
     /**
-     * @Route("/", name="homepage")
+     * @Route("/", name="start-page")
      */
     public function indexAction(Request $request) {
         return $this->render('default/index.html.twig');
@@ -21,13 +21,8 @@ class DefaultController extends BaseController {
     /**
      * @Route("/rentme/{token}", name="rentme")
      */
-    public function rentmeAction(Request $request, $category = null, $token=null) {      
-        $catId = null;
-        if ($category != null) {
-            $catId = $category->getId();
-        }
-        
-        $subcats = $this->getSubcategories($request, $category);        
+    public function rentmeAction(Request $request, $token=null) {      
+        $cats = $this->getCategories($request);
         
         $confirmed= null;
         $confParam = $request->query->get('confirmed');
@@ -36,8 +31,7 @@ class DefaultController extends BaseController {
         }
         
         return $this->render('default/equipment_mieten.html.twig', array(
-            'subcategories' => $subcats,
-            'category' => $category,
+            'categories' => $cats,
             'token' => $token,
             'confirmed' => $confirmed
         ));
@@ -50,6 +44,8 @@ class DefaultController extends BaseController {
          * - Category
          * - Subcategory
          * - Offered item
+         * 
+         * 2015-12-10: Subcategory gets suspended until further notice.
          */
         
         // Category
@@ -57,11 +53,13 @@ class DefaultController extends BaseController {
         if ($result != null) {
             return $result;
         }
+        /* suspended
         // Subcategory
         $result = $this->processSubcategory($request, $content);
         if ($result != null) {
             return $result;
-        }        
+        }
+        */      
         // Equipment
         $result = $this->processEquipment($request, $content);
         if ($result != null) {
@@ -75,11 +73,11 @@ class DefaultController extends BaseController {
         $cat = $this->getCategoryBySlug($request, $content);
         
         if ($cat != null) {
-            $subcats = $this->getSubcategories($request, $cat->getId());
+            $equipments = $this->getDoctrine()->getRepository('AppBundle:Equipment')->getAll($cat->getId());
             
-            return $this->render('default/equipment_mieten.html.twig', array(
-                'subcategories' => $subcats,
-                'category' => $cat
+            return $this->render('default/categorie.html.twig', array(
+                'category' => $cat,
+                'equipments' => $equipments
             ));
         }
         return null;
