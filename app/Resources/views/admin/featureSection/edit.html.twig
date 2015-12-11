@@ -21,19 +21,19 @@
 
     <div class="row">
         <div class="form-group">
-          <label for="form_name" class="control-label col-xs-2">Name</label>
+          <label for="form_subcategory" class="control-label col-xs-2">Subcategory</label>
           <div class="col-xs-10">
-              <div class="err-msg">{{ form_errors(form.name) }}</div>
-            {{ form_widget(form.name, { 'attr': { 'class': 'text-box single-line', 'placeholder': 'Input name' }}) }}
+              <div class="err-msg">{{ form_errors(form.subcategory) }}</div>
+          {{ form_widget(form.subcategory, { 'attr': { 'class': 'select-box single-line' }}) }}
           </div>
         </div>
     </div>
     <div class="row">
         <div class="form-group">
-          <label for="form_subcategory" class="control-label col-xs-2">Slug</label>
+          <label for="form_name" class="control-label col-xs-2">Name</label>
           <div class="col-xs-10">
-              <div class="err-msg">{{ form_errors(form.subcategory) }}</div>
-          {{ form_widget(form.subcategory, { 'attr': { 'class': 'select-box single-line' }}) }}
+              <div class="err-msg">{{ form_errors(form.name) }}</div>
+            {{ form_widget(form.name, { 'attr': { 'class': 'text-box single-line', 'placeholder': 'name' }}) }}
           </div>
         </div>
     </div>
@@ -52,7 +52,7 @@
           <label for="form_position" class="control-label col-xs-2">Position</label>
           <div class="col-xs-10">
               <div class="err-msg">{{ form_errors(form.position) }}</div>
-          {{ form_widget(form.position, { 'attr': { 'class': 'text-box single-line', 'placeholder': 'Input position' }}) }}
+          {{ form_widget(form.position, { 'attr': { 'class': 'text-box single-line short', 'placeholder': 'position' }}) }}
           </div>
         </div>
     </div>
