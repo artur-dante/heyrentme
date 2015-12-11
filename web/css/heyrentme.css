@@ -174,3 +174,13 @@ img.headerProfileImage {
     width: 300px;
     height: 300px;
 }
+
+.select-box {
+    width: 184px;
+    margin-top:3px;
+}
+
+
+.check-box {
+    margin-top:3px;
+}

@@ -36,7 +36,10 @@ class SubcategoryRepository extends \Doctrine\ORM\EntityRepository
         }
     }
     
-
+    public function getAllOrderedByName() {
+        $q = "select s from AppBundle:Subcategory s order by s.name asc";
+        return $this->getEntityManager()->createQuery($q)->getResult();
+    }
     public function getAllOrderedByPosition() {
         $q = "select s from AppBundle:Subcategory s join s.category c order by c.position asc, s.position asc";
         return $this->getEntityManager()->createQuery($q)->getResult();

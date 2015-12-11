@@ -12,4 +12,50 @@ namespace AppBundle\Entity;
  */
 class FeatureRepository extends EntityRepository
 {
+    public function getGridOverview($sortColumn, $sortDirection, $pageSize, $page, $fSubcategory, $fName) {
+        $qb = $this->getEntityManager()->createQueryBuilder();
+        // build query
+        $qb->select(array('fs', 's'))
+            ->from('AppBundle:FeatureSection', 'fs')
+            ->join('fs.subcategory', 's');
+        // where
+        if (!empty($fSubcategory)) {
+            $qb->andWhere($qb->expr()->like('s.name', ':sname'));
+        }
+        if (!empty($fName)) {
+            $qb->andWhere($qb->expr()->like('fs.name', ':fsname'));
+        }
+        // sort by
+        if (!empty($sortColumn)) {
+            if (!empty($sortDirection)) {
+                $qb->orderBy($sortColumn, $sortDirection);
+            }
+            else {
+                $qb->orderBy($sortColumn);
+            }
+        }
+
+        $q = $qb->getQuery();
+        // set params
+        if (!empty($fSubcategory)) {
+            $q->setParameter(':sname', "%{$fSubcategory}%");
+        }
+        if (!empty($fName)) {
+            $q->setParameter(':fsname', "%{$fName}%");
+        }
+        // page and page size
+        if (!empty($pageSize)) {
+            $q->setMaxResults($pageSize);
+        }
+        if (!empty($page) && $page != 1) {
+            $q->setFirstResult(($page - 1) * $pageSize);
+        }
+        return $q->getResult();        
+    }
+    public function countAll() {
+        return $this->createQueryBuilder('fs')
+            ->select('count(fs.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }  
 }

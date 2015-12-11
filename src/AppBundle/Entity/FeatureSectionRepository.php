@@ -73,5 +73,5 @@ class FeatureSectionRepository extends \Doctrine\ORM\EntityRepository
             ->select('count(fs.id)')
             ->getQuery()
             ->getSingleScalarResult();
-    }
+    }    
 }

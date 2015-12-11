@@ -20,8 +20,12 @@ class Feature
      * @ORM\Column(type="string", length=128)
      */
     protected $name;
+     /**
+     * @ORM\Column(type="string", length=128)
+     */
+    protected $short_name;
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="boolean")
      */
     protected $freetext;
     /**
@@ -68,6 +72,23 @@ class Feature
         return $this->name;
     }
 
+    public function setShortName($shortname)
+    {
+        $this->short_name = $shortname;
+
+        return $this;
+    }
+
+    /**
+     * Get name
+     *
+     * @return string
+     */
+    public function getShortName()
+    {
+        return $this->short_name;
+    }
+    
     /**
      * Set freetext
      *

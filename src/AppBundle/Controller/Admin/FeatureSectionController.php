@@ -28,11 +28,11 @@ class FeatureSectionController extends BaseAdminController {
     
     /**
      * 
-     * @Route("/admin/feature-section/new/{subcategoryId}", name="admin_feature_section_new")
+     * @Route("/admin/feature-section/new/", name="admin_feature_section_new")
      */
-    public function newAction(Request $request, $subcategoryId) {
+    public function newAction(Request $request) {
         $featureSection = new FeatureSection();
-        $subcategory = 
+        $subcategory = $this->getDoctrine()->getRepository('AppBundle:Subcategory')->getAllOrderedByName();
         
         $form = $this->createFormBuilder($featureSection)
                 ->add('subcategory', 'entity', array(
@@ -46,17 +46,8 @@ class FeatureSectionController extends BaseAdminController {
                         new Length(array('max' => 256))
                     )
                 ))
-                ->add('slug', 'text', array(
-                    'constraints' => array(
-                        // TODO: check for uniqueness of slug (category + subcategory; copy from blog)
-                        new NotBlank(),
-                        new Length(array('max' => 256)),
-                        new Regex(array(
-                            'pattern' => '/^[a-z][-a-z0-9]*$/',
-                            'htmlPattern' => '/^[a-z][-a-z0-9]*$/',
-                            'message' => 'This is not a valid slug'
-                        ))
-                    )
+                ->add('exclusive', 'checkbox', array(
+                    'required' => false
                 ))
                 ->add('position', 'integer', array(
                     'required' => false,
@@ -70,41 +61,9 @@ class FeatureSectionController extends BaseAdminController {
         
         if ($form->isValid()) {
             //check if there is file
-            $file = $request->files->get('upl');
-            
             $em = $this->getDoctrine()->getManager();
             
-            if ($file != null && $file->isValid()) {
-                
-                // save file
-                $uuid = Utils::getUuid();
-                $image_storage_dir = $this->getParameter('image_storage_dir');
-                
-                $destDir = 
-                    $image_storage_dir .
-                    DIRECTORY_SEPARATOR .
-                    'category' .
-                    DIRECTORY_SEPARATOR;
-                $destFilename = sprintf("%s.%s", $uuid, $file->getClientOriginalExtension());
-                
-                $file->move($destDir, $destFilename);
-                
-                // create object
-                $img = new Image();
-                $img->setUuid($uuid);
-                $img->setName($destFilename);
-                $img->setExtension($file->getClientOriginalExtension());
-                $img->setOriginalPath($file->getClientOriginalName());
-                $img->setPath('category');
-                              
-                $em->persist($img);
-                $em->flush();
-                
-                $featureSection->setImage($img);
-            }
-            
             // save to db
-            
             $em->persist($featureSection);
             $em->flush();
 
@@ -122,31 +81,26 @@ class FeatureSectionController extends BaseAdminController {
      * @Route("/admin/feature-section/edit/{id}", name="admin_feature_section_edit")
      */
     public function editAction(Request $request, $id) {
-        $featureSection = $this->getDoctrine()->getRepository('AppBundle:Category')->find($id);
+        $featureSection = $this->getDoctrine()->getRepository('AppBundle:FeatureSection')->find($id);
 
         if (!$featureSection) {
-            throw $this->createNotFoundException('No category found for id '.$id);
+            throw $this->createNotFoundException('No feature section found for id '.$id);
         }
         
         $form = $this->createFormBuilder($featureSection)
                 ->add('id', 'hidden')
+                ->add('subcategory', 'entity', array(
+                  'class' => 'AppBundle:Subcategory',
+                  'property' => 'name'
+                  ))
                 ->add('name', 'text', array(
                     'constraints' => array(
                         new NotBlank(),
                         new Length(array('max' => 256))
                     )
                 ))
-                ->add('slug', 'text', array(
-                    'constraints' => array(
-                        // TODO: check for uniqueness of slug (category + subcategory; copy from blog)
-                        new NotBlank(),
-                        new Length(array('max' => 256)),
-                        new Regex(array(
-                            'pattern' => '/^[a-z][-a-z0-9]*$/',
-                            'htmlPattern' => '/^[a-z][-a-z0-9]*$/',
-                            'message' => 'This is not a valid slug'
-                        ))
-                    )
+                ->add('exclusive', 'checkbox', array(
+                    'required' => false
                 ))
                 ->add('position', 'integer', array(
                     'required' => false,
@@ -162,47 +116,7 @@ class FeatureSectionController extends BaseAdminController {
         
         if ($form->isValid()) {
             
-            //check if there is file
-            $file = $request->files->get('upl');
-            
             $em = $this->getDoctrine()->getManager();
-            
-            if ($file != null && $file->isValid()) {
-                
-                //remove old Image (both file from filesystem and entity from db)
-                $this->getDoctrine()->getRepository('AppBundle:Image')->removeImage($featureSection, $this->getParameter('image_storage_dir'));
-                
-                
-                // save file
-                $uuid = Utils::getUuid();
-                $image_storage_dir = $this->getParameter('image_storage_dir');
-                
-                //$destDir = sprintf("%scategory\\",$image_storage_dir);                
-                $destDir = 
-                        $image_storage_dir .
-                        DIRECTORY_SEPARATOR .
-                        'category' .
-                        DIRECTORY_SEPARATOR;
-                $destFilename = sprintf("%s.%s", $uuid, $file->getClientOriginalExtension());
-                
-                $file->move($destDir, $destFilename);
-                
-                // create object
-                $img = new Image();
-                $img->setUuid($uuid);
-                $img->setName($destFilename);
-                $img->setExtension($file->getClientOriginalExtension());
-                $img->setOriginalPath($file->getClientOriginalName());
-                $img->setPath('category');
-                              
-                $em->persist($img);
-                $em->flush();
-                
-                $featureSection->setImage($img);
-            }            
-            
-            // save to db
-
             $em->persist($featureSection);
             $em->flush();
 
@@ -212,7 +126,7 @@ class FeatureSectionController extends BaseAdminController {
         
         return $this->render('admin/featureSection/edit.html.twig', array(
             'form' => $form->createView(),
-            'category' => $featureSection
+            'featureSection' => $featureSection
         ));
     }
     
@@ -221,18 +135,12 @@ class FeatureSectionController extends BaseAdminController {
      * @Route("/admin/feature-section/delete/{id}", name="admin_feature_section_delete")
      */
     public function deleteAction(Request $request, $id) {
-        $featureSection = $this->getDoctrine()->getRepository('AppBundle:Category')->find($id);
+        $featureSection = $this->getDoctrine()->getRepository('AppBundle:FeatureSection')->find($id);
 
         if (!$featureSection) {
-            throw $this->createNotFoundException('No category found for id '.$id);
+            throw $this->createNotFoundException('No feature section found for id '.$id);
         }
-        
-        //remove old Image (both file from filesystem and entity from db)
-        $this->getDoctrine()->getRepository('AppBundle:Image')->removeImage($featureSection, $this->getParameter('image_storage_dir'));
-        
-        //remove subcategories
-        $this->getDoctrine()->getRepository('AppBundle:Category')->removeSubcategoriesFromCategory($featureSection);
-        
+               
         $em = $this->getDoctrine()->getManager();
         $em->remove($featureSection);
         $em->flush();
@@ -248,7 +156,7 @@ class FeatureSectionController extends BaseAdminController {
         $sortDirection = $request->get('sord');
         $pageSize = $request->get('rows');
         $page = $request->get('page');
-        $fSubcategory = $request->get('s_position');
+        $fSubcategory = $request->get('s_name');
         $fName = $request->get('fs_name');
         $callback = $request->get('callback');
         
@@ -267,6 +175,7 @@ class FeatureSectionController extends BaseAdminController {
             $cell[$i++] = '';
             $cell[$i++] = $dataRow->getSubcategory()->getName();
             $cell[$i++] = $dataRow->getName();
+            $cell[$i++] = $dataRow->getExclusive();
             $cell[$i++] = $dataRow->getPosition();
             $row['cell'] = $cell;
             array_push($rows, $row);

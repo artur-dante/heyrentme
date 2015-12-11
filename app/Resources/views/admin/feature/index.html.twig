@@ -34,24 +34,24 @@ $(document).ready(function(){
 
 
 function rowActions(cellvalue, options, cellobject) {
-      return   "<a title='Features'    href='feature/"     +  options.rowId + "'><u>Features</u></a>  "+  
-               "<a title='Edit'             href='feature-section/edit/"   +  options.rowId + "'><u>Edit</u></a>  "+
-  	       "<a title='Delete'           href='feature-section/delete/" +  options.rowId + "' onclick=\"return confirm('Are you sure to delete?')\"><u>Delete</u></a>";
+      return   "<a title='Edit'             href='feature/edit/"   +  options.rowId + "'><u>Edit</u></a>  "+
+  	       "<a title='Delete'           href='feature/delete/" +  options.rowId + "' onclick=\"return confirm('Are you sure to delete?')\"><u>Delete</u></a>";
   }
 
 var $grid = $('#jqgrid');
 
 if($grid.length > 0 ) {
         $grid.jqGrid({
-                url: '{{ path('admin_feature_section_jsondata') }}',
+                url: '{{ path('admin_feature_jsondata') }}',
                 mtype: 'GET',
                 datatype: 'jsonp',
                 colModel:[
                         { name:' ', width:180, fixed:true, editable:false, sortable:false, formatter:rowActions, search: false },
-                        { name:'Subcategory', index:'s.name', width: 200, editable:false, sortable:true },
-                        { name:'Name', index:'fs.name', width: 400, editable:false, sortable:true },
-                        { name:'exclusive', index:'fs.exclusive', width: 100, editable:false, sortable:true, search: false },
-                        { name:'Position', index:'fs.position', width: 100, editable:false, sortable:true, search: false }
+                        { name:'FeatureSection', index:'fs.name', width: 200, editable:false, sortable:true, search: false },
+                        { name:'Name', index:'f.name', width: 400, editable:false, sortable:true, search: false },
+                        { name:'ShortName', index:'f.short_name', width: 400, editable:false, sortable:true, search: false },
+                        { name:'Freetext', index:'f.freetext', width: 100, editable:false, sortable:true, search: false },
+                        { name:'Position', index:'f.position', width: 100, editable:false, sortable:true, search: false }
                 ],
                 height: 300,
                 rowNum: 50,
@@ -63,11 +63,7 @@ if($grid.length > 0 ) {
                 caption: "Feature sections",
                 multiselect: false
         });
-        $grid.jqGrid('filterToolbar', {
-            stringResult: false,
-            searchOnEnter: false,
-            defaultSearch: 'cn'
-        });
+        
 }
 
 }); // end ready function

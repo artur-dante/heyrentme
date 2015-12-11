@@ -21,7 +21,7 @@ class FeatureSection
      */
     protected $name;
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="boolean")
      */
     protected $exclusive;
     /**
@@ -49,6 +49,12 @@ class FeatureSection
     public function getId()
     {
         return $this->id;
+    }
+    
+    public function setId($id)
+    {
+        $this->id = $id;
+        return $this;
     }
 
     /**
@@ -92,7 +98,7 @@ class FeatureSection
     /**
      * Get exclusive
      *
-     * @return integer
+     * @return boolean
      */
     public function getExclusive()
     {
