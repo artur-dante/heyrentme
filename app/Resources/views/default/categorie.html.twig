@@ -45,12 +45,7 @@
             </ul>
             <ul class="col-xs-6 pull-right text-right kaup-select">
                 <li>
-                {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}                    
-                    <a class="active-crumb" href="{{ path('equipment-add-1', { 'subcategoryId': category.id }) }}">In dieser Kategorie anbieten</a>
-                {% else %}
-                    <a class="active-crumb" href="{{ path('rental-detail', { 'subcategoryId': category.id }) }}">In dieser Kategorie anbieten</a>
-                {% endif %}
-                    
+                    <a class="active-crumb" href="javascript:anbieten({% if category %}{{ category.id }}{% endif %})">In dieser Kategorie anbieten</a>                    
                 </li>
             </ul>
             <ul class="col-xs-4 pull-right text-right">

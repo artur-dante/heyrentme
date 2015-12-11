@@ -51,9 +51,9 @@
     <div class="container  background-white rent-container bg-white">
         <nav class="crumbs">
             <ul class="col-xs-8">
-                <li><a href="/pages">hey! TSC</a></li>
-                <li><a href="/heyrentme">hey! rentme</a></li>
-                <li><a href="/vermietung">Anbieten / Vermieten</a></li>
+                <li><a href="{{ path('start-page') }}">hey! TSC</a></li>
+                <li><a href="{{ path('rentme') }}">hey! rentme</a></li>
+                <li><a href="{{ path('rental') }}">Anbieten / Vermieten</a></li>
                 <li><a class="active-crumb" href="#">{{ subcategory.name }}</a></li>
             </ul>
         </nav>

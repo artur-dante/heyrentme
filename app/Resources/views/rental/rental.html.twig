@@ -67,7 +67,7 @@
                       <div class="categories-names">
                           <h3>{{ subcat.name }}</h3>
                       </div>
-                      <a href="{{ path(route, { 'subcategoryId': subcat.id }) }}"><img src="{{ image_url_prefix }}{{ subcat.image.urlPath }}" alt="{{ subcat.name }}"/></a>
+                      <a href="{{ path(route, { 'subcategoryId': subcat.id }) }}"><img src="{{ subcat.image.urlPath(image_url_prefix) }}" alt="{{ subcat.name }}"/></a>
                   </div>
                 </a>
             {% endfor %}

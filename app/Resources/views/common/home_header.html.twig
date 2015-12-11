@@ -42,7 +42,7 @@
                   </select>
                 </div>
                 <div>
-                  <a href="#" id="equipment-add" class="button-black backgound-yellow text-black" disabled="disabled">Weiter</a>
+                  <a href="#" id="weiter" class="button-black backgound-yellow text-black" disabled="disabled">Weiter</a>
                 </div>
             </div>
         </div>
@@ -50,7 +50,7 @@
 </div>
 <script>
     $(function() {
-        $("equipment-add").attr('disabled', 'disabled');
+        $("weiter").attr('disabled', 'disabled');
         
         $("#category").change(function() {
             var id = $("#category").val();
@@ -75,19 +75,39 @@
         });
         
         $("#subcategory").change(function() {
-            var butt = $('#equipment-add');
+            var butt = $('#weiter');
             if ($("#subcategory").is(":selected"))
                 butt.removeAttr('disabled');
             else
                 butt.attr('disabled', 'disabled');
         });
         
-        $("#equipment-add").click(function() {
+        $("#weiter").click(weiterClick);
+    });
+    
+    function anbieten(categoryId) {
+        // preselect current category
+        if (typeof categoryId === 'number') {
+            var $sel = $('#category');
+            $sel.val(categoryId.toString()).selectpicker('refresh');
+            $sel.change();
+            $('#weiter').attr('diabled', 'disabled');
+        }
+        $("#choose-category").modal();
+    }
+    {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+        function weiterClick() {
             var id = $("#subcategory").val();
             var url = '{{ path('equipment-add-1', { 'subcategoryId': 'SUBCAT_ID' }) }}'.replace('SUBCAT_ID', id);
             window.location = url;
-        });
-    });
+        }
+    {% else %}
+        function weiterClick() {
+            var id = $("#subcategory").val();
+            var url = '{{ path('rental-detail', { 'subcategoryId': 'SUBCAT_ID' }) }}'.replace('SUBCAT_ID', id);
+            window.location = url;
+        }
+    {% endif %}
 </script>
 
     <header class="home-header" id="pages-header">
