@@ -3,8 +3,8 @@
     <span id="close-haup" class="haup-close-icon"></span>
     {% for cat in categories %}
         <p>
-            <a href="{{ path('catchall', { 'content': cat.slug }) }}#categories"><img src="{{ cat.image.urlPath(image_url_prefix) }}" alt=""/></a>
-            <a href="{{ path('catchall', { 'content': cat.slug }) }}#categories">{{ cat.Name }}</a>
+            <a href="{{ path('catchall', { 'content': cat.slug }) }}#categories"><img src="{{ cat.imageUrl }}" alt=""/></a>
+            <a href="{{ path('catchall', { 'content': cat.slug }) }}#categories">{{ cat.name }}</a>
         </p>
     {% endfor %}
 </li>
