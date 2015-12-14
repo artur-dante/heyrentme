@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Utils\SearchState;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -69,13 +70,17 @@ class DefaultController extends BaseController {
     
     private function processCategory(Request $request, $content) {
         $cat = $this->getCategoryBySlug($request, $content);
+        $ss = $this->getSearchState($request);
+        $ss->getSearchParams()->setCategoryId($cat['id']);
+        $request->getSession()->set('SearchState', $ss);
         
         if ($cat != null) {
-            $equipments = $this->getDoctrine()->getRepository('AppBundle:Equipment')->getAll($cat['id']);
+            //$equipments = $this->getDoctrine()->getRepository('AppBundle:Equipment')->getAll($cat['id']);
             
             return $this->render('default/categorie.html.twig', array(
                 'category' => $cat,
-                'equipments' => $equipments
+                'searchState' => $ss
+                //'equipments' => $equipments
             ));
         }
         return null;
@@ -111,6 +116,34 @@ class DefaultController extends BaseController {
         return null;
     }
 
+    /**
+     * @Route("/equipment-list", name="equipment-list")
+     */ 
+    public function equipmentListAction(Request $request) {
+        $ss = $this->getSearchState($request);
+        $ss->getSearchParams()->updateFromRequest($request);
+        $request->getSession()->set('SearchState', $ss);
+                
+        //$equipments = $this->getDoctrine()->getRepository('AppBundle:Equipment')->findAll();
+        $equipments = $this->getDoctrine()->getRepository('AppBundle:Equipment')->getAll($ss->getSearchParams());
+        
+        return $this->render('default/equipment-list.html.twig', array(
+            'equipments' => $equipments
+        ));
+    }
+    
+    private function getSearchState(Request $request) {
+        $session = $request->getSession();
+        if ($session->has('SearchState')) {
+            $ss = $session->get('SearchState');
+        }
+        else {
+            $ss = new SearchState();
+            $session->set('SearchStage', $ss);            
+        }
+        return $ss;
+    }
+    
     /**
      * @Route("/subcats/{id}", name="subcat")
      */
