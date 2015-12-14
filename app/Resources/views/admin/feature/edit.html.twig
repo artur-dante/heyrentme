@@ -7,8 +7,8 @@
 
 {% block breadcrumb %}
     {{ parent() }}
-    <li><a href="{{ path('admin_feature_section_list', { 'featureSectionId': featureSectionId }) }}" class="active">Feature section</a></li>
-    <li><a href="{{ path('admin_feature_list', { 'featureSectionId': featureSectionId }) }}" >Feature</a></li>         
+    <li><a href="{{ path('admin_feature_section_list', { 'featureSectionId': featureSectionId }) }}">Feature section</a></li>
+    <li><a href="{{ path('admin_feature_list', { 'featureSectionId': featureSectionId }) }}" class="active-crumb">Feature</a></li>         
 {% endblock %}
 
 {% block body %}
@@ -25,7 +25,7 @@
           <label for="form_name" class="control-label col-xs-2">Name</label>
           <div class="col-xs-10">
               <div class="err-msg">{{ form_errors(form.name) }}</div>
-            {{ form_widget(form.name, { 'attr': { 'class': 'text-box single-line', 'placeholder': 'Input name' }}) }}
+            {{ form_widget(form.name, { 'attr': { 'class': 'text-box single-line', 'placeholder': 'name' }}) }}
           </div>
         </div>
     </div>
@@ -34,7 +34,7 @@
           <label for="form_shortname" class="control-label col-xs-2">Short name</label>
           <div class="col-xs-10">
               <div class="err-msg">{{ form_errors(form.shortName) }}</div>
-            {{ form_widget(form.shortName, { 'attr': { 'class': 'text-box single-line', 'placeholder': 'Input short name' }}) }}
+            {{ form_widget(form.shortName, { 'attr': { 'class': 'text-box single-line', 'placeholder': 'short name' }}) }}
           </div>
         </div>
     </div>
@@ -54,7 +54,7 @@
           <label for="form_position" class="control-label col-xs-2">Position</label>
           <div class="col-xs-10">
               <div class="err-msg">{{ form_errors(form.position) }}</div>
-          {{ form_widget(form.position, { 'attr': { 'class': 'text-box single-line', 'placeholder': 'Input position' }}) }}
+          {{ form_widget(form.position, { 'attr': { 'class': 'text-box single-line short', 'placeholder': 'position' }}) }}
           </div>
         </div>
     </div>

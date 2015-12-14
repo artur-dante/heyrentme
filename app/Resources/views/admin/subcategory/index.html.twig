@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block body %}
-<h1>Subcategories for {{ category.name() }}</h1>
+<h1>Subcategories for {{ category.name }}</h1>
 
 <a class="button-black backgound-yellow text-black" href="{{ path('admin_subcategory_new', { 'categoryID': category.id }) }}">New Subcategory</a>
 

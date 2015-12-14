@@ -19,7 +19,12 @@ class BaseController extends Controller
             $cats = $this->getDoctrine()->getRepository('AppBundle:Category')->getAllOrderedByPosition();
             $categories = array();
             foreach ($cats as $cat) {
-                $categories[$cat->getSlug()] = $cat;
+                $categories[$cat->getSlug()] = array(
+                    'id' => $cat->getId(),
+                    'name' => $cat->getName(),
+                    'slug' => $cat->getSlug(),
+                    'imageUrl' => $cat->getImage()->getUrlPath($this->getParameter('image_url_prefix'))
+                );
             }
             $session->set('CategoryList', $categories);
         }
@@ -45,12 +50,19 @@ class BaseController extends Controller
             $subcategories  = array();
             $subcategoriesDict = array();
             foreach ($subcats as $s) {
-                $subcategories[$s->getSlug()] = $s;
+                $sa = array(
+                    'id' => $s->getId(),
+                    'name' => $s->getName(),
+                    'slug' => $s->getSlug(),
+                    'imageUrl' => $s->getImage()->getUrlPath($this->getParameter('image_url_prefix'))
+                );
+
+                $subcategories[$s->getSlug()] = $sa;
                 $cat = $s->getCategory();
                 if (!array_key_exists($cat->getId(), $subcategoriesDict)) {
                     $subcategoriesDict[$cat->getId()] = array();
                 }
-                array_push($subcategoriesDict[$cat->getId()], $s);
+                array_push($subcategoriesDict[$cat->getId()], $sa);
             }
             $session->set('SubcategoryList', $subcategories);
             $session->set('SubcategoryDict', $subcategoriesDict);
