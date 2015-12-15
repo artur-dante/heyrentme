@@ -123,6 +123,9 @@ class DefaultController extends BaseController {
         $ss = $this->getSearchState($request);
         $ss->getSearchParams()->updateFromRequest($request);
         $request->getSession()->set('SearchState', $ss);
+        
+        $log = $this->get('monolog.logger.artur');
+        $log->debug(dump($ss->getSearchParams()));
                 
         //$equipments = $this->getDoctrine()->getRepository('AppBundle:Equipment')->findAll();
         $equipments = $this->getDoctrine()->getRepository('AppBundle:Equipment')->getAll($ss->getSearchParams());
