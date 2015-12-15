@@ -143,7 +143,7 @@ class User extends BaseUser
       /**
      * @var string
      *
-     * @ORM\Column(name="phone", type="integer", nullable=true)
+     * @ORM\Column(name="phone", type="string", length=10)
      */
     protected $phone;    
     public function getPhone()
@@ -158,7 +158,7 @@ class User extends BaseUser
       /**
      * @var string
      *
-     * @ORM\Column(name="phone_prefix", type="integer", nullable=true)
+     * @ORM\Column(name="phone_prefix", type="string", length=3)
      */
     protected $phonePrefix;    
     public function getPhonePrefix()
