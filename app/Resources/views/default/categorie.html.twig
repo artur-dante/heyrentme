@@ -134,6 +134,7 @@
         console.log(JSON.stringify(data));
         $("#pls-wait").modal();
         $("#equipment-list").load(url, data, function() {
+            initGrids();
             $("#pls-wait").modal('hide');
         });
     }
