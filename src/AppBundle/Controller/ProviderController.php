@@ -310,20 +310,23 @@ class ProviderController extends BaseController {
     public function equipmentAdd2Action(Request $request) {
         $session = $request->getSession();
         
-        //$eq = $this->getDoctrine()->getRepository('AppBundle:Equipment')->find($session->get('EquipmentAddId'));
-        $eq = $this->getDoctrine()->getRepository('AppBundle:Equipment')->find(117); //TODO: dev only! remove
+        // initialize form data
+        $eq = $this->getDoctrine()->getRepository('AppBundle:Equipment')->find($session->get('EquipmentAddId'));
+        //$eq = $this->getDoctrine()->getRepository('AppBundle:Equipment')->find(117); //TODO: dev only! remove
+        $data = array( 
+            'description' => $eq->getDescription(),
+            'street' => $eq->getAddrStreet(),
+            'number' => $eq->getAddrNumber(),
+            'postcode' => $eq->getAddrPostcode(),
+            'place' => $eq->getAddrPlace()
+        );
+        
         if ($request->getMethod() == "GET") {
             $session->set('EquipmentAddFileArray', array()); //initialize array of currently uploaded images
-            $data = array( // initialize form data
-                'description' => $eq->getDescription(),
-                'street' => $eq->getAddrStreet(),
-                'number' => $eq->getAddrNumber(),
-                'postcode' => $eq->getAddrPostcode(),
-                'place' => $eq->getAddrPlace()
-            );
         }
         else {
             $this->fileCount = count($session->get('EquipmentAddFileArray'));
+            $this->imageCount = count($eq->getImages());
         }
         
         
@@ -411,7 +414,6 @@ class ProviderController extends BaseController {
             'form' => $form->createView()
         ));
     }
-    private $fileCount = null;
     public function validateAccept($value, ExecutionContextInterface $context) {
         if (!$value) {
             $context->buildViolation('You must check this box')->atPath('accept')->addViolation();
@@ -422,8 +424,18 @@ class ProviderController extends BaseController {
             $context->buildViolation('You must check this box')->atPath('make_sure')->addViolation();
         }            
     }
+
+    private $fileCount = null; // num of uploaded images; necessary for image validation
+    private $imageCount = null; // num of existing images; necessary for image validation
     public function validateImages($data, ExecutionContextInterface $context) {
-        if ($this->fileCount == null || $this->fileCount == 0) {
+        $cnt = 0;
+        if ($this->fileCount != null) {
+            $cnt += $this->fileCount;
+        }            
+        if ($this->imageCount != null) {
+            $cnt += $this->imageCount;
+        }
+        if ($cnt > 0) {
             $context->buildViolation('Please upload at least one image')->addViolation();
         }
     }
