@@ -20,6 +20,7 @@ class ProviderController extends BaseController {
             
     /**
      * @Route("/provider", name="provider")
+     * @Route("/provider/")
      * @Route("/provider/profil", name="profil")
      */
     public function profilAction(Request $request) {
@@ -656,6 +657,8 @@ class ProviderController extends BaseController {
         $id = $ $session->get('EquipmentAddId');
         //$eqid = 118; // TODO: remove this; dev only!
         $eq = $this->getDoctrine()->getRepository('AppBundle:Equipment')->find($eqid);
+        
+        $this->createFormBuilder();
         
         // TODO: add server-side validation
         if ($request->getMethod() == "POST") {
