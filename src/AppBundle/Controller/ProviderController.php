@@ -152,6 +152,8 @@ class ProviderController extends BaseController {
         $user = $this->getUser();
         
         //$form = $this->createForm(EinstellungenType::class, $user);
+        // TODO: add server-side validation
+        // TODO: remove max_length, see phone
         $form = $this->createFormBuilder(null)
                 ->add('password', 'password', array( 'required'=>false, 'constraints' => array(
                             new Callback(array($this, 'validateOldPassword'))
@@ -162,8 +164,18 @@ class ProviderController extends BaseController {
                 ->add('repeatedPassword', 'password', array('required' => false))
                 ->add('name', 'text', array('max_length' => 255 , 'data' => $user->getName() ))
                 ->add('surname', 'text', array('max_length' => 255 , 'data' => $user->getSurname() ))
-                ->add('phone', 'integer', array('required' => false, 'data' => $user->getPhone() ))
-                ->add('phonePrefix', 'integer', array('required' => false, 'data' => $user->getPhonePrefix() ))
+                ->add('phone', 'text', array(
+                    'required' => false,
+                    'attr' => array(
+                        'maxlength' => 10, 
+                        'pattern' => '^[0-9]{1,10}$'),
+                    'data' => $user->getPhone()
+                ))
+                ->add('phonePrefix', 'text', array(
+                    'required' => false, 
+                    'attr' => array('maxlength' => 3, 'pattern' => '^[0-9]{1,3}$'),
+                    'data' => $user->getPhonePrefix() 
+                ))
                 ->add('iban', 'text', array('required' => false, 'data' => $user->getIban() ))
                 ->add('bic', 'text', array('required' => false, 'data' => $user->getBic() ))
                 ->getForm();
