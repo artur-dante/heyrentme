@@ -309,16 +309,27 @@ class ProviderController extends BaseController {
      */
     public function equipmentAdd2Action(Request $request) {
         $session = $request->getSession();
+        
+        //$eq = $this->getDoctrine()->getRepository('AppBundle:Equipment')->find($session->get('EquipmentAddId'));
+        $eq = $this->getDoctrine()->getRepository('AppBundle:Equipment')->find(117); //TODO: dev only! remove
         if ($request->getMethod() == "GET") {
-            $session->set('EquipmentAddFileArray', array());
+            $session->set('EquipmentAddFileArray', array()); //initialize array of currently uploaded images
+            $data = array( // initialize form data
+                'description' => $eq->getDescription(),
+                'street' => $eq->getAddrStreet(),
+                'number' => $eq->getAddrNumber(),
+                'postcode' => $eq->getAddrPostcode(),
+                'place' => $eq->getAddrPlace()
+            );
         }
         else {
             $this->fileCount = count($session->get('EquipmentAddFileArray'));
         }
         
+        
         // validation form
-        //<editor-fold>
-        $form = $this->createFormBuilder(null, array(
+        //<editor-fold>        
+        $form = $this->createFormBuilder($data, array(
                 'constraints' => array(
                     new Callback(array($this, 'validateImages'))
                 )
@@ -374,7 +385,6 @@ class ProviderController extends BaseController {
         if ($form->isValid()) {
             // update Equipment object
             $data = $form->getData();
-            $eq = $this->getDoctrine()->getRepository('AppBundle:Equipment')->find($session->get('EquipmentAddId'));
             // map fields
             //<editor-fold>
             $eq->setDescription($data['description']);
