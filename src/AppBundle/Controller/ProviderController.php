@@ -563,11 +563,11 @@ class ProviderController extends BaseController {
      */
     public function equipmentAdd3Action(Request $request) {
         $session = $request->getSession();
-        //$id = $ $session->get('EquipmentAddId');
-        $eqid = 118; // CRITICAL: remove this
+        
+        $id = $ $session->get('EquipmentAddId');
+        //$eqid = 118; // TODO: remove this; dev only!
         $eq = $this->getDoctrine()->getRepository('AppBundle:Equipment')->find($eqid);
         
-        // TODO: make it editable (take features from database and prefill inputs)
         // TODO: add server-side validation
         if ($request->getMethod() == "POST") {
             // parse params
@@ -601,9 +601,12 @@ class ProviderController extends BaseController {
             $session->remove('EquipmentAddId');
             return $this->redirectToRoute('equipment-add-4');
         }
+
+        $features = $this->getDoctrine()->getRepository('AppBundle:Equipment')->getFeaturesAsArray($eq->getId());
         
         return $this->render('provider\equipment_add_step3.html.twig', array(
             'subcategory' => $eq->getSubcategory(),
+            'features' => $features,
             'featureSectionRepo' => $this->getDoctrine()->getRepository('AppBundle:FeatureSection')
         ));
     }

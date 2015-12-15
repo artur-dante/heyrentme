@@ -80,4 +80,17 @@ class EquipmentRepository extends EntityRepository
         $em->flush();
         $em->clear();
     }
+    public function getFeaturesAsArray($equipmentId) {
+        $sql = "select * from equipment_feature where equipment_id = {$equipmentId}";
+        $conn = $this->getEntityManager()->getConnection();
+        $rows = $conn->query($sql)->fetchAll();
+        $conn->close();
+        
+        $result = array();
+        foreach ($rows as $row) {
+            $result[$row['feature_id']] = $row['name'];
+        }
+        
+        return $result;
+    }
 }
