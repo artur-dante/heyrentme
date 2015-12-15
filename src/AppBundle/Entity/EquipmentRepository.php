@@ -15,7 +15,19 @@ class EquipmentRepository extends \Doctrine\ORM\EntityRepository
         $query = $this->getEntityManager()->createQuery($sql);
         $query->setParameter('subcategoryId', $subcategoryId);
         return $query->getResult();        
-    }    
+    }   
+    public function getAllByUserId($userId) {
+        $qb = $this->getEntityManager()->createQueryBuilder();
+        $qb->select('e')
+            ->from('AppBundle:Equipment', 'e')
+            ->join('e.user', 'u');
+        $qb->andWhere("u.id = {$userId}");
+
+        $q = $qb->getQuery();
+        
+        return $q->getResult();        
+    }
+    
     public function getAll($categoryId = null) {
         $qb = $this->getEntityManager()->createQueryBuilder();
         

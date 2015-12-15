@@ -1,0 +1,122 @@
+{% extends 'base.html.twig' %}
+
+{% block home_header %}
+<link rel="stylesheet" href="{{ asset('css/heyrentme.css') }}" rel="stylesheet" type="text/css"/>
+
+{% endblock %}
+
+{% block body %}
+ {% include('provider/user_nav.html.twig') %}
+<section class="users container background-light-grey dashboard">
+    <div class="row">
+        <!-- Left side -->
+        <div class="col-md-9">
+            <img src="/img/logo-small.svg" alt=""/>
+          </div>
+        <!-- Right side -->
+        <div class="col-md-3 margin-rwd">
+          <div class="support">
+            <p class="head"Support Hotline</p>
+            <p class="">MO-FR 9:00 - 18:00</p>
+            <p class="">+43 1 586 48 90</p>
+          </div>
+        </div>
+    </div>
+    <div class="row ">
+        <div class="col-md-9 col-xs-12">
+
+        {% for o in offers %}
+            <div class="col-xs-12">
+                <div class="xol-xs-12">
+                    <div class="row user-offers">
+                        <div class="col-md-4 offer-detail">
+                            {% if o.images|length > 0 %}
+                                <img src="{{ o.images[0].urlPath(image_url_prefix) }}" alt="placeholder" class="img-responsive"/>                       
+                            {% else %}
+                                <img src="/img/equipment-default.jpg" alt="placeholder" class="img-responsive" />
+                            {% endif %}
+                            
+                            
+                            <div class="product-info">
+                                
+                                <div class="row">
+                                    <div class="col-xs-8">
+                                        <ul>
+                                            <li><span class="marked glyphicon glyphicon-star"></span></li>
+                                            <li><span class="marked glyphicon glyphicon-star"></span></li>
+                                            <li><span class="marked glyphicon glyphicon-star"></span></li>
+                                            <li><span class="glyphicon glyphicon-star"></span></li>
+                                            <li><span class="glyphicon glyphicon-star"></span></li>
+                                        </ul>
+                                        <p class="product-name">{{ o.name }}</p>
+                                    </div>
+                                    <div class="col-xs-4">
+                                        <p class="price">{{ o.price }} &#8364;</p>
+                                        <p class="tag">pro tag</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="buttons">
+                              <a class="button-black first-button col-xs-3" href="{{ path("equipment-edit-1", { "id": o.id } ) }}">bearbeiten</a>
+                              <a class="button-black col-xs-3" onclick="return confirm('Are you sure to delete?')" href="{{ path("equipment-delete", { "id": o.id } ) }}">entfernen</a>
+                              <a class="button-black background-facebook col-xs-3" href="#"><img src="/img/icons/fb-new.png" /> Teilen</a>
+                              <a class="button-black backgound-yellow col-xs-3 btnSaveStatus" id="BtnSave_{{ o.id }}" >speichern</a>
+                            </div>
+                            <div>
+                                <label id = "DivMessage_{{ o.id }}" style="display:none;"></label>
+                                <textarea id="TxtStatus_{{ o.id }}"  class="place_black placeholderStatusDashboard"  >{{ o.status }}</textarea>                                
+                                
+                            </div>
+                            <div>
+                                <div class="row">
+                                    <div class="col-xs-5">
+                                        <div class="search-form mobile-kategorie-form">
+                                            <div class="select-link">
+                                                <select title='diskont Wählen' name="gender2" class="selectpicker bs-select-hidden ">
+                                                    <option>diskont Wählen</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-1 infos">
+                                        <span class="info-icon"></span>
+                                    </div>
+                                    <div class="col-xs-3">
+                                        <div class="search-form mobile-kategorie-form">
+                                            <div class="select-link">
+                                                <select title='0%' name="gender2" class="selectpicker bs-select-hidden ">
+                                                    <option>10%</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-3">
+                                        <div class="search-form mobile-kategorie-form">
+                                            <div class="select-link">
+                                                <select title='Dauer' name="gender2" class="selectpicker bs-select-hidden ">
+                                                    <option>Dauer</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 id">
+                                        <p>Angebot-ID: {{ o.id }} </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+           
+        </div>
+    </div>
+</section>
+<script>
+    var url = "{{ path("equipment-saveStatus") }}";
+</script>
+<script src="/js/dashboard.js"></script>
+{% endblock %}

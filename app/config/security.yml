@@ -66,6 +66,9 @@ security:
         - { path: ^/rentme, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/vermietung, role: IS_AUTHENTICATED_REMEMBERED }
         - { path: ^/provider, role: IS_AUTHENTICATED_REMEMBERED }
+        - { path: ^/dashboard, role: IS_AUTHENTICATED_REMEMBERED }
+        
+        
         
         
     #</added by Seba>

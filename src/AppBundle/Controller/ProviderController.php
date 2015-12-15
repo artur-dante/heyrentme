@@ -6,6 +6,7 @@ use AppBundle\Entity\Equipment;
 use AppBundle\Entity\Image;
 use AppBundle\Utils;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Constraints\Callback;
@@ -227,6 +228,94 @@ class ProviderController extends BaseController {
         }
     }
 
+    /**
+     * @Route("/provider/equipment-delete/{id}", name="equipment-delete")
+     */
+    public function equipmentDeleteAction(Request $request, $id) {
+        $equipment = $this->getDoctrine()->getRepository('AppBundle:Equipment')->find($id);
+
+        if (!$equipment) {
+            throw $this->createNotFoundException('No equipment found for id '.$id);
+        }
+        
+        $this->getDoctrine()->getRepository('AppBundle:Image')->removeAllImages($equipment, $this->getParameter('image_storage_dir'));
+                
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($equipment);
+        $em->flush();
+        return $this->redirectToRoute("dashboard");
+    }
+    
+    /**
+     * @Route("/provider/equipment-edit-1/{id}", name="equipment-edit-1")
+     */
+    public function equipmentEdit1Action(Request $request, $id) {
+        $equipment = $this->getDoctrine()->getRepository('AppBundle:Equipment')->find($id);
+
+        if (!$equipment) {
+            throw $this->createNotFoundException('No equipment found for id '.$id);
+        }
+        
+        
+        // build form
+        //<editor-fold>
+        $form = $this->createFormBuilder($equipment)
+                ->add('name', 'text', array(
+                    'constraints' => array(
+                        new NotBlank(),
+                        new Length(array('max' => 256))
+                    )
+                ))
+                ->add('price', 'money', array(
+                    'constraints' => array(
+                        new NotBlank(),
+                        new Range(array('min' => 0))
+                    )
+                ))
+                ->add('deposit', 'money', array(
+                    'constraints' => array(
+                        new NotBlank(),
+                        new Range(array('min' => 0))
+                    )
+                ))
+                ->add('value', 'money', array(
+                    'constraints' => array(
+                        new NotBlank(),
+                        new Range(array('min' => 0))
+                    )
+                ))
+                ->add('priceBuy', 'money', array(
+                    'required' => false,
+                    'constraints' => array(
+                        new Range(array('min' => 0))
+                    )
+                ))
+                ->add('invoice', 'checkbox', array('required' => false))
+                ->add('industrial', 'checkbox', array('required' => false))
+                ->getForm();
+        //</editor-fold>
+        
+        $form->handleRequest($request);
+        
+        if ($form->isValid()) {
+            //$data = $form->getData();
+            
+            //$user = $this->getUser();
+            
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($equipment);
+            $em->flush();
+            
+            $session = $request->getSession();
+            $session->set('EquipmentEditId', $id);
+            return $this->redirectToRoute('equipment-edit-2');
+        }
+        
+        return $this->render('provider\equipment_add_step1.html.twig', array(
+            'form' => $form->createView()
+        ));
+    }
+    
     
     /**
      * @Route("/provider/equipment-add-1/{subcategoryId}", name="equipment-add-1")
@@ -597,4 +686,54 @@ class ProviderController extends BaseController {
         
         return $this->render('provider\equipment_add_step4.html.twig');
     }    
+    
+    
+    /**
+     * @Route("/provider/saveStatus", name="equipment-saveStatus")
+     */
+    public function saveStatusAction(Request $request) {
+        $id = $request->get('id');
+        $text = $request->get('text');        
+        $result = "OK";
+        $status = JsonResponse::HTTP_OK;
+        try {
+            $equipment = $this->getDoctrine()->getRepository('AppBundle:Equipment')->find($id);
+
+            $equipment->setStatus($text);            
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($equipment);
+            $em->flush();
+       
+        } catch (Exception $ex) {
+            $result = "Error.";
+            $status = JsonResponse::HTTP_INTERNAL_SERVER_ERROR;
+        }
+        
+        $resp = new JsonResponse($result, $status);        
+        return $resp;        
+    }    
+    
+    /**
+     * @Route("/provider/dashboard", name="dashboard")
+     */
+    public function dashboardAction(Request $request) {
+        $user = $this->getUser();
+        
+        $offers = $this->getDoctrine()->getRepository('AppBundle:Equipment')->getAllByUserId($user->getId());
+        
+        $forms = array();
+        foreach($offers as $offer) {
+            //$entity = new TaskComment();
+            $forms[$offer->getId()] = $this->createFormBuilder($offer)
+                ->add('status', 'textarea', array('required' => false, 'max_length' => 255 , 'data' => $offer->getStatus() ))
+                ->getForm();
+        }
+        
+        
+        return $this->render('provider/dashboard.html.twig', array( 
+            'offers'=> $offers, 
+            'image_url_prefix'=> $this->getParameter('image_url_prefix'),
+            'forms' => $forms
+        ));
+    }
 }

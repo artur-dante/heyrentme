@@ -38,29 +38,7 @@ class FeatureController extends BaseAdminController {
         
         $feature->setFeatureSection($featureSection);
         
-        $form = $this->createFormBuilder($feature)
-                ->add('name', 'text', array(
-                    'constraints' => array(
-                        new NotBlank(),
-                        new Length(array('max' => 128))
-                    )
-                ))
-                ->add('shortName', 'text', array(
-                    'constraints' => array(
-                        new NotBlank(),
-                        new Length(array('max' => 128))
-                    )
-                ))
-                ->add('freetext', 'checkbox', array(
-                    'required' => false
-                ))
-                ->add('position', 'integer', array(
-                    'required' => false,
-                    'constraints' => array(
-                        new Type(array('type' => 'integer'))
-                    )
-                ))
-                ->getForm();
+        
         //when the form is posted this method prefills entity with data from form
         $form->handleRequest($request);
         

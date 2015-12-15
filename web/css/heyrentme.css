@@ -184,3 +184,27 @@ img.headerProfileImage {
 .check-box {
     margin-top:3px;
 }
+
+
+/* class missing from main.css (?) */
+.img-responsive, .thumbnail > img, .thumbnail a > img, .carousel-inner > .item > img, .carousel-inner > .item > a > img {
+    display: block;
+    height: auto;
+    max-width: 100%;
+    width: 100%;
+}
+
+.btnSaveStatus{
+    cursor: pointer;
+}
+
+label.error {
+    color: #ff0000;
+    margin-top: 5px;
+}
+
+label.correct {
+    color: #5e8014;
+    margin-top: 5px;
+}
+

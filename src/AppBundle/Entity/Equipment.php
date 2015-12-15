@@ -46,11 +46,11 @@ class Equipment
      */
     protected $priceBuy;
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="boolean")
      */
     protected $invoice;
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="boolean")
      */
     protected $industrial;
     
@@ -97,6 +97,11 @@ class Equipment
      */
     protected $features;
     
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    protected $status;
+    
     public function getUrlPath() {
        $s = \AppBundle\Utils::slugify($this->getName());
        return "{$this->id}/{$s}";
@@ -118,6 +123,16 @@ class Equipment
     public function getId()
     {
         return $this->id;
+    }
+    
+    public function setStatus($status)
+    {
+        $this->status = $status;
+        return $this;
+    }
+     public function getStatus()
+    {
+        return $this->status;
     }
 
     /**
