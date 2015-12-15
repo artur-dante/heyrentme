@@ -1,13 +1,15 @@
 <?php
 
-namespace AppBundle;
+namespace AppBundle\Utils;
+
+use Cocur\Slugify\Slugify;
 
 class Utils {
     
     private static $slugifier;
     
     static function init() {
-        self::$slugifier = new \Cocur\Slugify\Slugify();
+        self::$slugifier = new Slugify();
     }
 
     public static function getUuid() {

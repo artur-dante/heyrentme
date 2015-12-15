@@ -11,11 +11,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Constraints\Length;
-use Symfony\Component\Validator\Constraints\Range;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Range;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
-use AppBundle\Form\EinstellungenType;
 
 class ProviderController extends BaseController {
             
@@ -399,16 +398,30 @@ class ProviderController extends BaseController {
      */
     public function equipmentAdd2Action(Request $request) {
         $session = $request->getSession();
+        
+        // initialize form data
+        $eq = $this->getDoctrine()->getRepository('AppBundle:Equipment')->find($session->get('EquipmentAddId'));
+        //$eq = $this->getDoctrine()->getRepository('AppBundle:Equipment')->find(117); //TODO: dev only! remove
+        $data = array( 
+            'description' => $eq->getDescription(),
+            'street' => $eq->getAddrStreet(),
+            'number' => $eq->getAddrNumber(),
+            'postcode' => $eq->getAddrPostcode(),
+            'place' => $eq->getAddrPlace()
+        );
+        
         if ($request->getMethod() == "GET") {
-            $session->set('EquipmentAddFileArray', array());
+            $session->set('EquipmentAddFileArray', array()); //initialize array of currently uploaded images
         }
         else {
             $this->fileCount = count($session->get('EquipmentAddFileArray'));
+            $this->imageCount = count($eq->getImages());
         }
         
+        
         // validation form
-        //<editor-fold>
-        $form = $this->createFormBuilder(null, array(
+        //<editor-fold>        
+        $form = $this->createFormBuilder($data, array(
                 'constraints' => array(
                     new Callback(array($this, 'validateImages'))
                 )
@@ -464,7 +477,6 @@ class ProviderController extends BaseController {
         if ($form->isValid()) {
             // update Equipment object
             $data = $form->getData();
-            $eq = $this->getDoctrine()->getRepository('AppBundle:Equipment')->find($session->get('EquipmentAddId'));
             // map fields
             //<editor-fold>
             $eq->setDescription($data['description']);
@@ -491,7 +503,6 @@ class ProviderController extends BaseController {
             'form' => $form->createView()
         ));
     }
-    private $fileCount = null;
     public function validateAccept($value, ExecutionContextInterface $context) {
         if (!$value) {
             $context->buildViolation('You must check this box')->atPath('accept')->addViolation();
@@ -502,8 +513,18 @@ class ProviderController extends BaseController {
             $context->buildViolation('You must check this box')->atPath('make_sure')->addViolation();
         }            
     }
+
+    private $fileCount = null; // num of uploaded images; necessary for image validation
+    private $imageCount = null; // num of existing images; necessary for image validation
     public function validateImages($data, ExecutionContextInterface $context) {
-        if ($this->fileCount == null || $this->fileCount == 0) {
+        $cnt = 0;
+        if ($this->fileCount != null) {
+            $cnt += $this->fileCount;
+        }            
+        if ($this->imageCount != null) {
+            $cnt += $this->imageCount;
+        }
+        if ($cnt > 0) {
             $context->buildViolation('Please upload at least one image')->addViolation();
         }
     }
@@ -631,11 +652,11 @@ class ProviderController extends BaseController {
      */
     public function equipmentAdd3Action(Request $request) {
         $session = $request->getSession();
-        //$id = $ $session->get('EquipmentAddId');
-        $eqid = 118; // CRITICAL: remove this
+        
+        $id = $ $session->get('EquipmentAddId');
+        //$eqid = 118; // TODO: remove this; dev only!
         $eq = $this->getDoctrine()->getRepository('AppBundle:Equipment')->find($eqid);
         
-        // TODO: make it editable (take features from database and prefill inputs)
         // TODO: add server-side validation
         if ($request->getMethod() == "POST") {
             // parse params
@@ -669,9 +690,12 @@ class ProviderController extends BaseController {
             $session->remove('EquipmentAddId');
             return $this->redirectToRoute('equipment-add-4');
         }
+
+        $features = $this->getDoctrine()->getRepository('AppBundle:Equipment')->getFeaturesAsArray($eq->getId());
         
         return $this->render('provider\equipment_add_step3.html.twig', array(
             'subcategory' => $eq->getSubcategory(),
+            'features' => $features,
             'featureSectionRepo' => $this->getDoctrine()->getRepository('AppBundle:FeatureSection')
         ));
     }

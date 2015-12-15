@@ -2,11 +2,13 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Utils\Utils;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Cocur\Slugify\Slugify;
 
 /**
- * @ORM\Entity(repositoryClass="AppBundle\Entity\EquipmentRepository")
+ * @ORM\Entity(repositoryClass="EquipmentRepository")
  * @ORM\Table(name="equipment")
  */
 class Equipment
@@ -69,7 +71,15 @@ class Equipment
     /**
      * @ORM\Column(type="string", length=128)
      */
-    protected $addrPlace;
+    protected $addrPlace;    
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    protected $createdAt;
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    protected $modifiedAt;
             
     /**
      * @ORM\ManyToOne(targetEntity="Subcategory", inversedBy="equipments")
@@ -103,7 +113,7 @@ class Equipment
     protected $status;
     
     public function getUrlPath() {
-       $s = \AppBundle\Utils::slugify($this->getName());
+       $s = Utils::slugify($this->getName());
        return "{$this->id}/{$s}";
     }
     
@@ -112,7 +122,7 @@ class Equipment
      */
     public function __construct()
     {
-        $this->images = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->images = new ArrayCollection();
     }
 
     /**
@@ -354,11 +364,11 @@ class Equipment
     /**
      * Set subcategory
      *
-     * @param \AppBundle\Entity\Subcategory $subcategory
+     * @param Subcategory $subcategory
      *
      * @return Equipment
      */
-    public function setSubcategory(\AppBundle\Entity\Subcategory $subcategory = null)
+    public function setSubcategory(Subcategory $subcategory = null)
     {
         $this->subcategory = $subcategory;
 
@@ -368,7 +378,7 @@ class Equipment
     /**
      * Get subcategory
      *
-     * @return \AppBundle\Entity\Subcategory
+     * @return Subcategory
      */
     public function getSubcategory()
     {
@@ -378,11 +388,11 @@ class Equipment
     /**
      * Add image
      *
-     * @param \AppBundle\Entity\Image $image
+     * @param Image $image
      *
      * @return Equipment
      */
-    public function addImage(\AppBundle\Entity\Image $image)
+    public function addImage(Image $image)
     {
         $this->images[] = $image;
 
@@ -392,9 +402,9 @@ class Equipment
     /**
      * Remove image
      *
-     * @param \AppBundle\Entity\Image $image
+     * @param Image $image
      */
-    public function removeImage(\AppBundle\Entity\Image $image)
+    public function removeImage(Image $image)
     {
         $this->images->removeElement($image);
     }
@@ -402,7 +412,7 @@ class Equipment
     /**
      * Get images
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return Collection
      */
     public function getImages()
     {
@@ -412,11 +422,11 @@ class Equipment
     /**
      * Set user
      *
-     * @param \AppBundle\Entity\User $user
+     * @param User $user
      *
      * @return Equipment
      */
-    public function setUser(\AppBundle\Entity\User $user = null)
+    public function setUser(User $user = null)
     {
         $this->user = $user;
 
@@ -426,7 +436,7 @@ class Equipment
     /**
      * Get user
      *
-     * @return \AppBundle\Entity\User
+     * @return User
      */
     public function getUser()
     {
@@ -532,11 +542,11 @@ class Equipment
     /**
      * Add feature
      *
-     * @param \AppBundle\Entity\EquipmentFeature $feature
+     * @param EquipmentFeature $feature
      *
      * @return Equipment
      */
-    public function addFeature(\AppBundle\Entity\EquipmentFeature $feature)
+    public function addFeature(EquipmentFeature $feature)
     {
         $this->features[] = $feature;
 
@@ -546,9 +556,9 @@ class Equipment
     /**
      * Remove feature
      *
-     * @param \AppBundle\Entity\EquipmentFeature $feature
+     * @param EquipmentFeature $feature
      */
-    public function removeFeature(\AppBundle\Entity\EquipmentFeature $feature)
+    public function removeFeature(EquipmentFeature $feature)
     {
         $this->features->removeElement($feature);
     }
@@ -556,7 +566,7 @@ class Equipment
     /**
      * Get features
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return Collection
      */
     public function getFeatures()
     {
