@@ -11,7 +11,7 @@
     <div class="row">
         <!-- Left side -->
         <div class="col-md-9">
-            <img src="/img/logo-small.svg" alt=""/>
+            <a href="{{ path('start-page') }}"><img src="/img/logo-small.svg" alt=""/></a>
           </div>
         <!-- Right side -->
         <div class="col-md-3 margin-rwd">
@@ -75,7 +75,7 @@
                                     <div class="col-xs-5">
                                         <div class="search-form mobile-kategorie-form">
                                             <div class="select-link">
-                                                {% if o.ActiveDiscount() != null %}
+                                                {% if o.activeDiscount %}
                                                     <input id="HiddenDiscountType_{{ o.id }}" type="hidden" value="{{o.ActiveDiscount().type()}}" />
                                                     <input id="HiddenPercent_{{ o.id }}" type="hidden" value="{{o.ActiveDiscount().percent()}}" />
                                                     <input id="HiddenDuration_{{ o.id }}" type="hidden" value="{{o.ActiveDiscount().Duration()}}" />
@@ -126,6 +126,9 @@
             </div>
         {% endfor %}
            
+        </div>
+        <div class="col-md-3">
+          {{ include('provider/user_nav2.html.twig', { 'page': 'dashboard' }) }}
         </div>
     </div>
 </section>

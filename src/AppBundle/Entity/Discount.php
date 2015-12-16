@@ -38,10 +38,7 @@ class Discount
      * @ORM\Column(type="integer")
      */
     protected $duration;
-    /**
-     * @ORM\Column(type="boolean")
-     */
-    protected $active;
+    
     /**
      * @ORM\Column(type="datetime")
      */
@@ -90,18 +87,6 @@ class Discount
     public function getDuration()
     {
         return $this->duration;
-    }
-    
-    public function setActive($active)
-    {
-        $this->active = $active;
-
-        return $this;
-    }
-
-    public function getActive()
-    {
-        return $this->active;
     }
     
     public function setCreatedAt($createdAt)

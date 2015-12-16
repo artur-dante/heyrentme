@@ -8,7 +8,7 @@
         <div class="row">
             <!-- Left side -->
             <div class="col-md-9">
-                <img src="/img/logo-small.svg" alt=""/>
+                <a href="{{ path('start-page') }}"><img src="/img/logo-small.svg" alt=""/></a>
                 <ul class="steps">
                     <li class="step-1 active-step"><span class="counters"><span class="n-one"></span>Tarif</span></li>
                     <li class="step-2 active-step"><span class="counters"><span class="n-two"></span>Beschreibung</span>
@@ -49,8 +49,7 @@
                         <img src="/img/step4b.svg" alt=""/>
                         <p class="text-bold">Weiteres Angebot</p>
                         <p  class="small-text">Möchtest du ein weiteres Angebot erstellen?</p>
-                        {# TODO: add url below #}
-                        <a href="#" class="button-black">weiteres angebot</a>
+                        <a href="{{ path('dashboard') }}" class="button-black">weiteres angebot</a>
                     </div>
                     <span class="clearfix"></span>
                     <div class="step4-info">

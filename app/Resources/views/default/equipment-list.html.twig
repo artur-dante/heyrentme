@@ -9,8 +9,8 @@
             {% if eq.priceBuy %}
                 <img src="/img/cart.svg" alt="cart" class="cart"/>
             {% endif %}
-            {% if eq.Discount > 0 %}
-                <div class="discount"><span>-{{ "%d"|format(eq.Discount) }}%</span></div>
+            {% if eq.activeDiscount %}
+                <div class="discount"><span>-{{ "%d"|format(eq.activeDiscount.percent) }}%</span></div>
             {% endif %}
             <div class="product-info position-relative">
                 <div class="row">
@@ -24,7 +24,7 @@
                             <li><span class="glyphicon glyphicon-star"></span></li>
                         </ul>
                         <p class="product-name">
-                            {{ eq.Name }}
+                            {{ eq.name }}
                         </p>
                     </div>
                     <div class="col-xs-5">
@@ -37,9 +37,10 @@
                     </div>
                 </div>
             </div>
-            <p class="product-list-info">{{ eq.Description }}</p>
-            <p class="product-list-info">Tincip erostrud dolore magnis atum quisse
-                d eugiam, sis nisit nullaorpero duis nim nit nonseni ssismolesto commy nullum nos adio odolorem iriusto ex esto diatet alisim ipisl il doluptate tat, corpero ex elenibh ea facidunt lummolor am inim nim ing eriliquat.</p>
+            {% if eq.status %}
+                <p class="product-list-info">{{ eq.status }}</p>
+            {% endif %}
+            <p class="product-list-info">{{ eq.description }}</p>
             <span class="list-desc-border"></span>
         </div>
     </a>

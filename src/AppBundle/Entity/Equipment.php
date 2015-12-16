@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use AppBundle\Utils\Utils;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -102,7 +103,6 @@ class Equipment
      */
     protected $images;
     
-    
     /**
      * @ORM\OneToMany(targetEntity="Discount", mappedBy="equipment")
      */
@@ -111,7 +111,7 @@ class Equipment
     /**
      * @ORM\OneToMany(targetEntity="EquipmentFeature", mappedBy="equipment")
      */
-    protected $features;
+    protected $features;        
     
     /**
      * @ORM\Column(type="string", length=255)
@@ -121,6 +121,18 @@ class Equipment
     public function getUrlPath() {
        $s = Utils::slugify($this->getName());
        return "{$this->id}/{$s}";
+    }
+    
+    public function getActiveDiscount() {
+        $discounts = $this->getDiscounts();
+        foreach ($discounts as $dc) {
+            $now = (new DateTime())->getTimestamp();
+            $start = $dc->getCreatedAt()->getTimestamp();
+            $end = $dc->getExpiresAt()->getTimestamp();
+            if ($start <= $now and $now <= $end) {
+                return $dc;
+            }
+        }
     }
     
     /**
@@ -449,19 +461,6 @@ class Equipment
         return $this->user;
     }
     
-    public function getDiscounts()
-    {
-        return $this->discounts;
-    }
-    
-    public function getActiveDiscount() {
-        foreach($this->discounts as $discount) {
-            if ($discount->getActive()){
-                return $discount;
-            }
-        }
-        return null;
-    }
     
     /**
      * Set addrStreet
@@ -591,5 +590,87 @@ class Equipment
     public function getFeatures()
     {
         return $this->features;
+    }
+
+    /**
+     * Set createdAt
+     *
+     * @param DateTime $createdAt
+     *
+     * @return Equipment
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * Get createdAt
+     *
+     * @return DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * Set modifiedAt
+     *
+     * @param DateTime $modifiedAt
+     *
+     * @return Equipment
+     */
+    public function setModifiedAt($modifiedAt)
+    {
+        $this->modifiedAt = $modifiedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get modifiedAt
+     *
+     * @return DateTime
+     */
+    public function getModifiedAt()
+    {
+        return $this->modifiedAt;
+    }
+
+    /**
+     * Add discount
+     *
+     * @param Discount $discount
+     *
+     * @return Equipment
+     */
+    public function addDiscount(Discount $discount)
+    {
+        $this->discounts[] = $discount;
+
+        return $this;
+    }
+
+    /**
+     * Remove discount
+     *
+     * @param Discount $discount
+     */
+    public function removeDiscount(Discount $discount)
+    {
+        $this->discounts->removeElement($discount);
+    }
+
+    /**
+     * Get discounts
+     *
+     * @return Collection
+     */
+    public function getDiscounts()
+    {
+        return $this->discounts;
     }
 }

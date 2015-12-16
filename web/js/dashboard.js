@@ -1,22 +1,21 @@
+var discountTypePrefix = "DiscountType_";
+var discountPercentPrefix = "Percent_";
+var discountDurationPrefix = "Duration_";
+
+
 $(function(){
     $(".placeholderStatusDashboard").each(function(){        
         $(this).attr("placeholder", defaultStatusText);
     });
     $(".btnSaveStatus").click(SaveStatusAndDiscount);        
     
-    $(".selectpicker[id^='DiscountType_']").change(function(){
+    $(".selectpicker[id^="+discountTypePrefix+"]").change(function(){
         var id = $(this).attr("id").split("_")[1];
         if(id == undefined || id == null){
             return;
         }                
         var selectedVal = $(this).val();
-        if (selectedVal == 1){
-            EnableDiscounts(4, "week", id);
-        } else if (selectedVal == 2) {
-            EnableDiscounts(24, "hour", id);
-        } else {
-            DisbleDiscounts(id);
-        }
+        CreateDurationOptionsAndEnableDiscounts(selectedVal, id);
 
     });
     
@@ -24,37 +23,58 @@ $(function(){
 });
 
 function RestoreActiveDiscounts(){    
-    $(".selectpicker[id^='DiscountType_']").each(function(i,item){
+    $(".selectpicker[id^="+discountTypePrefix+"]").each(function(i,item){
         var id = $(item).attr("id").split("_")[1];
-        var discountTypeVal = $("#HiddenDiscountType_"+id).val();
+        var discountTypeVal = $("#Hidden"+discountTypePrefix+id).val();
         if (discountTypeVal != undefined && discountTypeVal != -1) {
-            SetValueAndDisable($(item), discountTypeVal)
-            
-            
+            SetValueAndDisable($(item), discountTypeVal);            
+                        
+            SetValueAndDisable($("#"+discountPercentPrefix+id), $("#Hidden"+discountPercentPrefix+id).val());                        
+            CreateDurationOptions(discountTypeVal, id);
+            SetValueAndDisable($("#"+discountDurationPrefix+id), $("#Hidden"+discountDurationPrefix+id).val());                    
         }
-        
     });
 }
 
-function SetValueAndDisable($item, val){
+function SetValueAndDisable($item, val){    
     $item.val(val);
     $item.attr("disabled", "disabled");
     $item.selectpicker("refresh");
+    $item.selectpicker("val", val);
 }
 
 function DisbleDiscounts(id){
-    var $control = $("#Duration_"+id);    
+    var $control = $("#"+discountDurationPrefix+id);    
     $control.html("");
     $control.append(CreateOption(-1, "Dauer"));
     DisableControl($control);
-    $control = $("#Percent_"+id);    
+    $control = $("#"+discountPercentPrefix+id);    
     $control.val("-1");
     DisableControl($control);
 }
 
+function CreateDurationOptionsAndEnableDiscounts(selectedVal, id){
+    if (selectedVal == 1 || selectedVal == 2){
+        CreateDurationOptions(selectedVal, id);
+        EnableDiscounts(id);    
+    } else {
+        DisbleDiscounts(id);
+    }
+}
 
-function EnableDiscounts(maxValue, type, id){
-    var $control = $("#Duration_"+id);        
+function CreateDurationOptions(selectedVal, id){
+    var maxValue=0;
+    var type= "";
+
+    if (selectedVal == 1){
+        maxValue = 4;
+        type = "week";        
+    } else if (selectedVal == 2) {
+        maxValue = 24;
+        type = "hour";        
+    }
+        
+    var $control = $("#"+discountDurationPrefix+id);        
     $control.html("");
     $control.append(CreateOption(-1, "Dauer"));
     var suffix = "";    
@@ -64,8 +84,13 @@ function EnableDiscounts(maxValue, type, id){
         }
         $control.append(CreateOption(i, type + suffix));
     }
+}
+
+
+function EnableDiscounts(id){
+    $control = $("#"+discountDurationPrefix+id);        
     EnableControl($control);    
-    $control = $("#Percent_"+id);        
+    $control = $("#"+discountPercentPrefix+id);        
     EnableControl($control);
 }
 
@@ -109,15 +134,15 @@ function SaveStatusAndDiscount(){
         errors.push("Status can have maximum 255 chars, "+ text.length + " given.");        
     }
     
-    var discountTypeValue = $(".selectpicker[id='DiscountType_"+id+"']").val();
-    var percentValue = $(".selectpicker[id='Percent_"+id+"']").val();
-    var durationValue = $(".selectpicker[id='Duration_"+id+"']").val();
+    var discountTypeValue = $(".selectpicker[id='"+discountTypePrefix+id+"']").val();
+    var percentValue = $(".selectpicker[id='"+discountPercentPrefix+id+"']").val();
+    var durationValue = $(".selectpicker[id='"+discountDurationPrefix+id+"']").val();
     
-    if (discountTypeValue != -1) {                        
+    if (discountTypeValue != -1 && discountTypeValue != "") {                        
         if (percentValue == -1){
             errors.push("Please select discount percent.");
         }                
-        if (durationValue == -1){
+        if (durationValue == -1 || durationValue == 0){
             errors.push("Please select discount duration.");
         }        
     }
@@ -145,7 +170,10 @@ function SaveStatusAndDiscount(){
             type: 'post',
             data: dataDict,
             success: function(){
-                WriteMessage($msgBox,[ "Offer saved correctly." ], false);
+                WriteMessage($msgBox,[ "Offer saved correctly." ], false);                
+                DisableControl($("#"+discountTypePrefix+id));
+                DisableControl($("#"+discountPercentPrefix+id));
+                DisableControl($("#"+discountDurationPrefix+id));                
             },
             error: function(){
                 WriteMessage($msgBox,[ "Some error occured." ], true);
