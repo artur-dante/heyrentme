@@ -49,15 +49,19 @@ class EquipmentRepository extends EntityRepository
     public function getAll(SearchParams $params) {
         $qb = $this->getEntityManager()->createQueryBuilder();
         
-        $qb->select('e')
+        $qb->select('e', 'i', 'd')        
             ->from('AppBundle:Equipment', 'e')
-            ->join('e.subcategory', 's');
+            ->join('e.subcategory', 's')
+            ->leftJoin('e.images', 'i')
+            ->leftJoin('e.discounts', 'd');
         
         if ($params->getCategoryId() != null) {
             $qb->andWhere("s.category = {$params->getCategoryId()}");
         }
         if ($params->getDiscount()) {
-            $qb->andWhere('e.discount > 0');
+            $now = date('Y-m-d H:i:s');
+            $qb->andWhere("d.createdAt <= '{$now}'")
+                ->andWhere("d.expiresAt >= '{$now}'");
         }
         if ($params->getTestBuy()) {
             $qb->andWhere('e.priceBuy > 0');
