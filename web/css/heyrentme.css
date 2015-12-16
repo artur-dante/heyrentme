@@ -198,13 +198,16 @@ img.headerProfileImage {
     cursor: pointer;
 }
 
-label.error {
+ul.error {
     color: #ff0000;
     margin-top: 5px;
 }
 
-label.correct {
+ul.correct {
     color: #5e8014;
     margin-top: 5px;
 }
 
+div.clear {
+    clear:both;
+}

@@ -3,6 +3,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Equipment;
+use AppBundle\Entity\Discount;
 use AppBundle\Entity\Image;
 use AppBundle\Utils;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -15,6 +16,8 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Range;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
+use \DateTime;
+use \DateInterval;
 
 class ProviderController extends BaseController {
             
@@ -716,8 +719,11 @@ class ProviderController extends BaseController {
      * @Route("/provider/saveStatus", name="equipment-saveStatus")
      */
     public function saveStatusAction(Request $request) {
+        /* TODO SERVER SIDE VALIDATION FOR DISCOUNT */
         $id = $request->get('id');
-        $text = $request->get('text');        
+        $text = $request->get('text');                
+        $discountType = (integer)$request->get('discountType');          
+        
         $result = "OK";
         $status = JsonResponse::HTTP_OK;
         try {
@@ -726,7 +732,36 @@ class ProviderController extends BaseController {
             $equipment->setStatus($text);            
             $em = $this->getDoctrine()->getManager();
             $em->persist($equipment);
-            $em->flush();
+            $em->flush();            
+            
+            if ($discountType != -1 && $discountType != 0 && $equipment->getActiveDiscount() == null){
+                $percent = (integer)$request->get('percent');        
+                $duration = (integer)$request->get('duration');        
+            
+                $discount = new Discount();            
+                $discount->setType($discountType);
+                $discount->setPercent($percent);
+                $discount->setDuration($duration);
+
+                $discount->setEquipment($equipment);
+                $discount->setActive(1);
+
+                $now = new DateTime();                        
+                $endDate = new DateTime();                        
+                $discount->setCreatedAt($now);                
+                $inverval = "";
+                if ($discountType == 1) {
+                    $inverval = "P".($duration*7) ."D" ;
+                } else if ($discountType == 2){
+                    $inverval = "PT". $duration ."H";
+                }
+                $endDate->add(new DateInterval($inverval));
+                $discount->setExpiresAt($endDate);
+
+                $em->persist($discount);
+                $em->flush();
+            }
+                
        
         } catch (Exception $ex) {
             $result = "Error.";
@@ -741,23 +776,12 @@ class ProviderController extends BaseController {
      * @Route("/provider/dashboard", name="dashboard")
      */
     public function dashboardAction(Request $request) {
-        $user = $this->getUser();
-        
-        $offers = $this->getDoctrine()->getRepository('AppBundle:Equipment')->getAllByUserId($user->getId());
-        
-        $forms = array();
-        foreach($offers as $offer) {
-            //$entity = new TaskComment();
-            $forms[$offer->getId()] = $this->createFormBuilder($offer)
-                ->add('status', 'textarea', array('required' => false, 'max_length' => 255 , 'data' => $offer->getStatus() ))
-                ->getForm();
-        }
-        
+        $user = $this->getUser();        
+        $offers = $this->getDoctrine()->getRepository('AppBundle:Equipment')->getAllByUserId($user->getId());        
         
         return $this->render('provider/dashboard.html.twig', array( 
             'offers'=> $offers, 
-            'image_url_prefix'=> $this->getParameter('image_url_prefix'),
-            'forms' => $forms
+            'image_url_prefix'=> $this->getParameter('image_url_prefix')            
         ));
     }
 }

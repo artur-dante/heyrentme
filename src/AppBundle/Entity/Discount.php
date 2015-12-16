@@ -82,7 +82,7 @@ class Discount
     
     public function setDuration($duration)
     {
-        $this->percent = $duration;
+        $this->duration = $duration;
 
         return $this;
     }
@@ -125,5 +125,17 @@ class Discount
     public function getExpiresAt()
     {
         return $this->expiresAt;
+    }
+    
+    public function setEquipment(Equipment $equipment = null)
+    {
+        $this->equipment = $equipment;
+
+        return $this;
+    }
+
+    public function getEquipment()
+    {
+        return $this->equipment;
     }
 }

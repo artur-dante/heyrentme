@@ -102,6 +102,12 @@ class Equipment
      */
     protected $images;
     
+    
+    /**
+     * @ORM\OneToMany(targetEntity="Discount", mappedBy="equipment")
+     */
+    protected $discounts;
+    
     /**
      * @ORM\OneToMany(targetEntity="EquipmentFeature", mappedBy="equipment")
      */
@@ -442,7 +448,21 @@ class Equipment
     {
         return $this->user;
     }
-
+    
+    public function getDiscounts()
+    {
+        return $this->discounts;
+    }
+    
+    public function getActiveDiscount() {
+        foreach($this->discounts as $discount) {
+            if ($discount->getActive()){
+                return $discount;
+            }
+        }
+        return null;
+    }
+    
     /**
      * Set addrStreet
      *
