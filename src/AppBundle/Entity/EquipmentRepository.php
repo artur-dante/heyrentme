@@ -49,7 +49,13 @@ class EquipmentRepository extends EntityRepository
     public function getAll(SearchParams $params) {
         $qb = $this->getEntityManager()->createQueryBuilder();
         
-        $qb->select('e', 'i', 'd')        
+        /*
+         * Please not this query uses "fetch join".
+         * It fetches images and discounts (associated with equipments) immediately 
+         * (instead of lazy loading them later).
+         * Keep for optimum performance.
+         */        
+        $qb->select('e', 'i', 'd') // this line forces fetch join
             ->from('AppBundle:Equipment', 'e')
             ->join('e.subcategory', 's')
             ->leftJoin('e.images', 'i')
