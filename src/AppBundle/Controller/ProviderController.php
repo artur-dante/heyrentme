@@ -152,7 +152,7 @@ class ProviderController extends BaseController {
         $user = $this->getUser();
         
         //$form = $this->createForm(EinstellungenType::class, $user);
-        // TODO: add server-side validation
+        // TODO: add server-side validation (zob. equipmentEdit3Action for phone)
         // TODO: remove max_length, see phone
         $form = $this->createFormBuilder(null)
                 ->add('password', 'password', array( 'required'=>false, 'constraints' => array(
@@ -693,26 +693,58 @@ class ProviderController extends BaseController {
     }
     
     /**
-     * @Route("/provider/equipment-edit-3/{id}", name="equipment-edit-3")
+     * @Route("/provider/equipment-edit-3/{eqid}", name="equipment-edit-3")
      */
-    public function equipmentEdit3Action(Request $request, $id) {
+    public function equipmentEdit3Action(Request $request, $eqid) {
         $session = $request->getSession();
+        $user = $this->getUser();
         
         //$eqid = 118; // TODO: remove this; dev only!
-        $eq = $this->getDoctrine()->getRepository('AppBundle:Equipment')->find($id);
+        $eq = $this->getDoctrine()->getRepository('AppBundle:Equipment')->find($eqid);
         if (!$eq) {
             throw $this->createNotFoundException();
         }        
         // security check
-        if ($this->getUser()->getId() !== $eq->getUser()->getId()) {
+        if ($user->getId() !== $eq->getUser()->getId()) {
             return new Response($status = Response::HTTP_FORBIDDEN);
         }
-                
-        $this->createFormBuilder();
         
+        $data = array(
+            'phone' => $user->getPhone(),
+            'phonePrefix' => $user->getPhonePrefix()
+        );
+        
+        // TODO: add server-side validation for features
+        $form = $this->createFormBuilder($data, array(
+                'constraints' => array(
+                    new Callback(array($this, 'validatePhone'))
+                )
+            ))
+            ->add('phone', 'text', array(
+                'required' => false,
+                'attr' => array(
+                    'maxlength' => 10, 
+                    'pattern' => '^[0-9]{1,10}$'),
+                'constraints' => array(
+                    new Regex(array('pattern' => '/^\d{1,10}$/', 'message' => 'Please fill in a valid phone number'))
+                )
+            ))
+            ->add('phonePrefix', 'text', array(
+                'required' => false, 
+                'attr' => array('maxlength' => 3, 'pattern' => '^[0-9]{1,3}$'),
+                'constraints' => array(
+                    new Regex(array('pattern' => '/^\d{1,3}$/', 'message' => 'Please fill in a valid phone number'))
+                )
+            ))
+            ->getForm();
+      
+        $form->handleRequest($request);
+                        
         // TODO: add server-side validation
-        if ($request->getMethod() == "POST") {
+        if ($form->isValid()) {
+            $data = $form->getData();
             // parse params
+            //<editor-fold>
             $params = $request->request->all();
             $features = array();
             // first detect checkboxes and radios
@@ -731,26 +763,41 @@ class ProviderController extends BaseController {
             }          
             // next, detect input[text]
             foreach ($params as $key => $val) {
-                if (is_string($val) && strpos($key, 'text_') === 0) {
+                if (is_string($val) && strpos($key, 'text_') === 0 && !empty($val)) {                    
                     $id = intval(str_replace('text_', '', $key));                    
                     $features[$id] = $val;
                 }
             }          
+            //</editor-fold>
             
             $this->getDoctrine()->getRepository('AppBundle:Equipment')->saveFeatures($eqid, $features);
             
-            // clean up
-            $session->remove('EquipmentEditId');
+            // save phone
+            if (!empty($data['phone']) and !empty($data['phone'])) {
+                $em = $this->getDoctrine()->getManager();
+                $u = $em->getRepository('AppBundle:User')->find($user->getId());
+                $u->setPhone($data['phone']);
+                $u->setPhonePrefix($data['phonePrefix']);
+                $em->flush();
+            }
+            
             return $this->redirectToRoute('equipment-edit-4');
         }
 
         $features = $this->getDoctrine()->getRepository('AppBundle:Equipment')->getFeaturesAsArray($eq->getId());
         
         return $this->render('provider\equipment_edit_step3.html.twig', array(
+            'form' => $form->createView(),
             'subcategory' => $eq->getSubcategory(),
             'features' => $features,
             'featureSectionRepo' => $this->getDoctrine()->getRepository('AppBundle:FeatureSection')
         ));
+    }
+    
+    public function validatePhone($data, ExecutionContextInterface $context) {
+        if (!empty($data['phone']) xor !empty($data['phonePrefix'])) {
+            $context->buildViolation('Please provide phone number (both prefix and number)')->addViolation();
+        }
     }
 
     /**

@@ -40,6 +40,8 @@
                           </div>
                       </div>
                   </div>
+                {{ form_start(form) }}
+                <div class="err-msg">{{ form_errors(form) }}</div>
                   {% for section in subcategory.featureSections %}
                         <div class="col-xs-12 border-bottom-white form-head describe">
                             <div class="form-container">
@@ -78,13 +80,17 @@
                       <div class="form-container form-input-border">
                           <div class="row">
                             <div class="phone-inputs">
-                              <span>+43</span><input type="number" name="phone1" maxlength="3" min="0" placeholder="000" />
-                              <input type="number" maxlength="7" name="phone2" min="0" placeholder="1234567" />
+                              <span>+43</span>
+                              {#<input type="number" name="phone1" maxlength="3" min="0" placeholder="000" />#}
+                              {{ form_widget(form.phonePrefix, { 'attr': { 'placeholder': '000' } }) }}                              
+                              {#<input type="number" maxlength="7" name="phone2" min="0" placeholder="1234567" />#}
+                              {{ form_widget(form.phone, { 'attr': { 'placeholder': '1234567' } }) }}                              
                             </div>
                           </div>
                       </div>
                   </div>
                   <input type="submit" class="green-big-button green-button" value="Einstellungen speichern und fertig">
+                  {{ form_end(form) }}
               </div>
           </div>
           </form>
