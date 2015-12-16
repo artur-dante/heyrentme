@@ -263,40 +263,55 @@ class ProviderController extends BaseController {
      */
     public function equipmentEdit1Action(Request $request, $id) {
         $equipment = $this->getDoctrine()->getRepository('AppBundle:Equipment')->find($id);
-
         if (!$equipment) {
-            throw $this->createNotFoundException('No equipment found for id '.$id);
+            throw $this->createNotFoundException();
+        }        
+        // security check
+        if ($this->getUser()->getId() !== $equipment->getUser()->getId()) {
+            return new Response($status = Response::HTTP_FORBIDDEN);
         }
         
+        // map fields, TODO: consider moving to Equipment's method
+        //<editor-fold> map fields            
+        $data = array(
+            'name' => $equipment->getName(),
+            'price' => $equipment->getPrice(),
+            'deposit' => $equipment->getDeposit(),
+            'value' => $equipment->getValue(),
+            'priceBuy' => $equipment->getPriceBuy(),
+            'invoice' => $equipment->getInvoice(),
+            'industrial' => $equipment->getIndustrial()
+        );
+        //</editor-fold>
         
         // build form
         //<editor-fold>
-        $form = $this->createFormBuilder($equipment)
+        $form = $this->createFormBuilder($data)
                 ->add('name', 'text', array(
                     'constraints' => array(
                         new NotBlank(),
                         new Length(array('max' => 256))
                     )
                 ))
-                ->add('price', 'money', array(
+                ->add('price', 'number', array(
                     'constraints' => array(
                         new NotBlank(),
                         new Range(array('min' => 0))
                     )
                 ))
-                ->add('deposit', 'money', array(
+                ->add('deposit', 'number', array(
                     'constraints' => array(
                         new NotBlank(),
                         new Range(array('min' => 0))
                     )
                 ))
-                ->add('value', 'money', array(
+                ->add('value', 'number', array(
                     'constraints' => array(
                         new NotBlank(),
                         new Range(array('min' => 0))
                     )
                 ))
-                ->add('priceBuy', 'money', array(
+                ->add('priceBuy', 'number', array(
                     'required' => false,
                     'constraints' => array(
                         new Range(array('min' => 0))
@@ -310,25 +325,31 @@ class ProviderController extends BaseController {
         $form->handleRequest($request);
         
         if ($form->isValid()) {
-            //$data = $form->getData();
+            $data = $form->getData();
+
+            // map fields, TODO: consider moving to Equipment's method
+            //<editor-fold> map fields            
+            $equipment->setName($data['name']);
+            $equipment->setPrice($data['price']);
+            $equipment->setValue($data['value']);
+            $equipment->setDeposit($data['deposit']);
+            $equipment->setPriceBuy($data['priceBuy']);
+            $equipment->setInvoice($data['invoice']);
+            $equipment->setIndustrial($data['industrial']);
+            //</editor-fold>
             
-            //$user = $this->getUser();
-            
+            // save to db
             $em = $this->getDoctrine()->getManager();
             $em->persist($equipment);
             $em->flush();
             
-            $session = $request->getSession();
-            $session->set('EquipmentEditId', $id);
-            return $this->redirectToRoute('equipment-edit-2');
+            return $this->redirectToRoute('equipment-edit-2', array('id' => $id));
         }
         
-        return $this->render('provider\equipment_add_step1.html.twig', array(
+        return $this->render('provider\equipment_edit_step1.html.twig', array(
             'form' => $form->createView()
         ));
-    }
-    
-    
+    }        
     /**
      * @Route("/provider/equipment-add-1/{subcategoryId}", name="equipment-add-1")
      */
@@ -343,25 +364,25 @@ class ProviderController extends BaseController {
                         new Length(array('max' => 256))
                     )
                 ))
-                ->add('price', 'money', array(
+                ->add('price', 'number', array(
                     'constraints' => array(
                         new NotBlank(),
                         new Range(array('min' => 0))
                     )
                 ))
-                ->add('deposit', 'money', array(
+                ->add('deposit', 'number', array(
                     'constraints' => array(
                         new NotBlank(),
                         new Range(array('min' => 0))
                     )
                 ))
-                ->add('value', 'money', array(
+                ->add('value', 'number', array(
                     'constraints' => array(
                         new NotBlank(),
                         new Range(array('min' => 0))
                     )
                 ))
-                ->add('priceBuy', 'money', array(
+                ->add('priceBuy', 'number', array(
                     'required' => false,
                     'constraints' => array(
                         new Range(array('min' => 0))
@@ -379,7 +400,7 @@ class ProviderController extends BaseController {
             // get subcategory
             $subcat = $this->getDoctrine()->getRepository('AppBundle:Subcategory')->find($subcategoryId);
             $user = $this->getUser();
-            // map fields, TODO: move to Equipment's method
+            // map fields, TODO: consider moving to Equipment's method
             //<editor-fold> map fields            
             $eq = new Equipment();
             $eq->setName($data['name']);
@@ -398,23 +419,31 @@ class ProviderController extends BaseController {
             $em->flush();
             
             $session = $request->getSession();
-            $session->set('EquipmentAddId', $eq->getId());
-            return $this->redirectToRoute('equipment-add-2');
+            $session->set('EquipmentEditId', $eq->getId());
+            return $this->redirectToRoute('equipment-edit-2', array('id' => $eq->getId()));
         }
         
-        return $this->render('provider\equipment_add_step1.html.twig', array(
+        return $this->render('provider\equipment_edit_step1.html.twig', array(
             'form' => $form->createView()
         ));
     }
     /**
-     * @Route("/provider/equipment-add-2", name="equipment-add-2")
+     * @Route("/provider/equipment-edit-2/{id}", name="equipment-edit-2")
      */
-    public function equipmentAdd2Action(Request $request) {
+    public function equipmentEdit2Action(Request $request, $id) {
         $session = $request->getSession();
         
-        // initialize form data
-        $eq = $this->getDoctrine()->getRepository('AppBundle:Equipment')->find($session->get('EquipmentAddId'));
+        $eq = $this->getDoctrine()->getRepository('AppBundle:Equipment')->find($id);
         //$eq = $this->getDoctrine()->getRepository('AppBundle:Equipment')->find(117); //TODO: dev only! remove
+        if (!$eq) {
+            throw $this->createNotFoundException();
+        }        
+        // security check
+        if ($this->getUser()->getId() !== $eq->getUser()->getId()) {
+            return new Response($status = Response::HTTP_FORBIDDEN);
+        }
+        
+        // initialize form data
         $data = array( 
             'description' => $eq->getDescription(),
             'street' => $eq->getAddrStreet(),
@@ -429,6 +458,9 @@ class ProviderController extends BaseController {
         else {
             $this->fileCount = count($session->get('EquipmentAddFileArray'));
             $this->imageCount = count($eq->getImages());
+            $logger = $this->get('monolog.logger.artur');
+            $logger->debug("file count: {$this->fileCount}");
+            $logger->debug("image count: {$this->imageCount}");
         }
         
         
@@ -509,10 +541,10 @@ class ProviderController extends BaseController {
             $session->remove('EquipmentAddFileArray');            
             $this->fileCount = null;
             
-            return $this->redirectToRoute('equipment-add-3');
+            return $this->redirectToRoute('equipment-edit-3', array('id' => $id));
         }
         
-        return $this->render('provider\equipment_add_step2.html.twig', array(
+        return $this->render('provider\equipment_edit_step2.html.twig', array(
             'form' => $form->createView()
         ));
     }
@@ -537,7 +569,7 @@ class ProviderController extends BaseController {
         if ($this->imageCount != null) {
             $cnt += $this->imageCount;
         }
-        if ($cnt > 0) {
+        if ($cnt = 0) {
             $context->buildViolation('Please upload at least one image')->addViolation();
         }
     }
@@ -657,19 +689,25 @@ class ProviderController extends BaseController {
                 $session->set('EquipmentAddFileArray', $eqFiles);
             }
         }
-        return new Response($status = 200);
+        return new Response($status = Response::HTTP_OK);
     }
     
     /**
-     * @Route("/provider/equipment-add-3", name="equipment-add-3")
+     * @Route("/provider/equipment-edit-3/{id}", name="equipment-edit-3")
      */
-    public function equipmentAdd3Action(Request $request) {
+    public function equipmentEdit3Action(Request $request, $id) {
         $session = $request->getSession();
         
-        $id = $ $session->get('EquipmentAddId');
         //$eqid = 118; // TODO: remove this; dev only!
-        $eq = $this->getDoctrine()->getRepository('AppBundle:Equipment')->find($eqid);
-        
+        $eq = $this->getDoctrine()->getRepository('AppBundle:Equipment')->find($id);
+        if (!$eq) {
+            throw $this->createNotFoundException();
+        }        
+        // security check
+        if ($this->getUser()->getId() !== $eq->getUser()->getId()) {
+            return new Response($status = Response::HTTP_FORBIDDEN);
+        }
+                
         $this->createFormBuilder();
         
         // TODO: add server-side validation
@@ -702,13 +740,13 @@ class ProviderController extends BaseController {
             $this->getDoctrine()->getRepository('AppBundle:Equipment')->saveFeatures($eqid, $features);
             
             // clean up
-            $session->remove('EquipmentAddId');
-            return $this->redirectToRoute('equipment-add-4');
+            $session->remove('EquipmentEditId');
+            return $this->redirectToRoute('equipment-edit-4');
         }
 
         $features = $this->getDoctrine()->getRepository('AppBundle:Equipment')->getFeaturesAsArray($eq->getId());
         
-        return $this->render('provider\equipment_add_step3.html.twig', array(
+        return $this->render('provider\equipment_edit_step3.html.twig', array(
             'subcategory' => $eq->getSubcategory(),
             'features' => $features,
             'featureSectionRepo' => $this->getDoctrine()->getRepository('AppBundle:FeatureSection')
@@ -716,14 +754,10 @@ class ProviderController extends BaseController {
     }
 
     /**
-     * @Route("/provider/equipment-add-4", name="equipment-add-4")
+     * @Route("/provider/equipment-edit-4", name="equipment-edit-4")
      */
-    public function equipmentAdd4Action(Request $request) {
-        $session = $request->getSession();
-        if ($session->has('EquipmentAddId'))
-            $session->remove('EquipmentAddId');
-        
-        return $this->render('provider\equipment_add_step4.html.twig');
+    public function equipmentEdit4Action(Request $request) {
+        return $this->render('provider\equipment_edit_step4.html.twig');
     }    
     
     
