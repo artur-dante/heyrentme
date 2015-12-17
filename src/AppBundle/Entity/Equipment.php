@@ -4,6 +4,7 @@ namespace AppBundle\Entity;
 
 use AppBundle\Utils\Utils;
 use DateTime;
+use \DateInterval;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -133,6 +134,26 @@ class Equipment
                 return $dc;
             }
         }
+    }
+    
+    public function IsNewOfferDiscountPossible() {        
+        //TODO check if there is any rating for this equipment and add condition about active discount!
+        return true;
+    }
+    
+    public function IsTemporaryDiscountPossible() {
+        $discounts = $this->getDiscounts();
+        $discountsInLastMonth = 0;
+        $now = new DateTime();
+        $lastMonth = $now->sub(new DateInterval("P1M"))->getTimestamp();        
+        foreach ($discounts as $dc) {            
+            //$start = $dc->getCreatedAt()->getTimestamp();
+            $end = $dc->getExpiresAt()->getTimestamp();
+            if ($lastMonth <= $end) {
+                $discountsInLastMonth++;
+            }
+        }
+        return $discountsInLastMonth < 2 || ($this->getActiveDiscount() && $this->getActiveDiscount()->getType() == 2);
     }
     
     /**

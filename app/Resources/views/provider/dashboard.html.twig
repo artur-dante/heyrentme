@@ -82,8 +82,12 @@
                                                 {% endif %}
                                                     <select id="DiscountType_{{ o.id }}" title='No discount' name="gender2" class="selectpicker bs-select-hidden ">
                                                         <option value="-1" >No discount</option>
+                                                        {% if o.IsNewOfferDiscountPossible %}
                                                         <option value="1" >New offer discount</option>
+                                                        {% endif %}
+                                                        {% if o.IsTemporaryDiscountPossible %}                                                        
                                                         <option value="2" >Temporary discount</option>
+                                                        {% endif %}
                                                     </select>                                                                                                 
                                             </div>
                                         </div>

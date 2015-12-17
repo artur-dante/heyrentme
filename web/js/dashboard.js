@@ -26,7 +26,15 @@ function RestoreActiveDiscounts(){
     $(".selectpicker[id^="+discountTypePrefix+"]").each(function(i,item){
         var id = $(item).attr("id").split("_")[1];
         var discountTypeVal = $("#Hidden"+discountTypePrefix+id).val();
-        if (discountTypeVal != undefined && discountTypeVal != -1) {
+       
+        if (discountTypeVal == undefined) {
+            discountTypeVal = -1;
+        }
+       
+        if (discountTypeVal == -1) {
+            SetValueAndDisable($("#"+discountPercentPrefix+id), $("#Hidden"+discountPercentPrefix+id).val());                        
+            SetValueAndDisable($("#"+discountDurationPrefix+id), $("#Hidden"+discountDurationPrefix+id).val());                    
+        } else {
             SetValueAndDisable($(item), discountTypeVal);            
                         
             SetValueAndDisable($("#"+discountPercentPrefix+id), $("#Hidden"+discountPercentPrefix+id).val());                        
@@ -162,6 +170,7 @@ function SaveStatusAndDiscount(){
                 "discountType": discountTypeValue,
                 "percent": percentValue,
                 "duration": durationValue
+                
             } 
         }
 
@@ -175,8 +184,13 @@ function SaveStatusAndDiscount(){
                 DisableControl($("#"+discountPercentPrefix+id));
                 DisableControl($("#"+discountDurationPrefix+id));                
             },
-            error: function(){
-                WriteMessage($msgBox,[ "Some error occured." ], true);
+            error: function(data){
+                
+                if (data.responseJSON != undefined && data.responseJSON.length > 0) {
+                    WriteMessage($msgBox, data.responseJSON, true);
+                } else {
+                    WriteMessage($msgBox,[ "Some error occured." ], true);
+                }                
             }        
         });
     } else {

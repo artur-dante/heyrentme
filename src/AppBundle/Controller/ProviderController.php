@@ -810,20 +810,78 @@ class ProviderController extends BaseController {
         return $this->render('provider\equipment_edit_step4.html.twig');
     }    
     
+    private function testIfStringConstainsInt($s)
+    {
+        return filter_var($s, FILTER_VALIDATE_INT) !== false;
+    }
+    
+    private function IsParamValidInt(&$errors, $strvalue, $fieldName){
+        
+        $result = 0;
+        if ($this->testIfStringConstainsInt($strvalue))
+        {
+            $result = (integer)$strvalue;
+        } else {
+            $errors[count($errors)] = "Please provide integer value for ".$fieldName;            
+        }
+        
+        return $result;
+    }
     
     /**
      * @Route("/provider/saveStatus", name="equipment-saveStatus")
      */
     public function saveStatusAction(Request $request) {
-        /* TODO SERVER SIDE VALIDATION FOR DISCOUNT */
+
         $id = $request->get('id');
-        $text = $request->get('text');                
-        $discountType = (integer)$request->get('discountType');          
+        $text = $request->get('text');             
+        $errors = array();
+        
+        $discountType = $this->IsParamValidInt($errors, $request->get('discountType'), "discount type");
+        $percent = $this->IsParamValidInt($errors, $request->get('percent'), "percent");
+        $duration = $this->IsParamValidInt($errors, $request->get('duration'), "duration");
+        //$discountType = (integer)$discountTypeStr;          
+        //$percent = (integer)$request->get('percent');        
+        //$duration = (integer)$request->get('duration');       
+        
+        $equipment = $this->getDoctrine()->getRepository('AppBundle:Equipment')->find($id);
+        
+        if (count($errors) == 0 && $discountType != -1  && $discountType != 0 && $equipment->getActiveDiscount() != null) {
+            $errors[count($errors)] = "There already is active discount!";
+        } else if (count($errors) == 0 && $discountType != -1  && $discountType != 0){
+            if ($discountType != 1 && $discountType != 2){
+                $errors[count($errors)] = "Unknown discount selected.";
+            }
+            
+            if ($percent < -1 || $percent > 6 ) {
+                $errors[count($errors)] = "Unknown percent selected.";
+            }
+            
+            if (($discountType == 1 && ($duration < -1 || $duration > 5)) ||
+                ($discountType == 2 && ($duration < -1 || $duration > 24))) {
+                $errors[count($errors)] = "Unknown duration selected.";
+            }
+            
+            
+            if ($percent == -1 || $percent == 0) {
+                $errors[count($errors)] = "Please select discount percent.";
+            }
+            
+            if ($duration == -1 || $duration == 0) {
+                $errors[count($errors)] = "Please select discount duration.";
+            }
+        }
+        
+        if (count($errors) > 0){
+            $status = JsonResponse::HTTP_INTERNAL_SERVER_ERROR;                    
+            $resp = new JsonResponse($errors, $status);        
+            return $resp; 
+        }
         
         $result = "OK";
         $status = JsonResponse::HTTP_OK;
         try {
-            $equipment = $this->getDoctrine()->getRepository('AppBundle:Equipment')->find($id);
+            
 
             $equipment->setStatus($text);            
             $em = $this->getDoctrine()->getManager();
@@ -831,8 +889,7 @@ class ProviderController extends BaseController {
             $em->flush();            
             
             if ($discountType != -1 && $discountType != 0 && $equipment->getActiveDiscount() == null){
-                $percent = (integer)$request->get('percent');        
-                $duration = (integer)$request->get('duration');        
+                 
             
                 $discount = new Discount();            
                 $discount->setType($discountType);
