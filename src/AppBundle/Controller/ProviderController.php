@@ -2,22 +2,23 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\Entity\Equipment;
 use AppBundle\Entity\Discount;
+use AppBundle\Entity\Equipment;
 use AppBundle\Entity\Image;
-use AppBundle\Utils;
+use AppBundle\Utils\Utils;
+use DateInterval;
+use DateTime;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Serializer\Exception\Exception;
 use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Range;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
-use \DateTime;
-use \DateInterval;
 
 class ProviderController extends BaseController {
             
@@ -475,6 +476,7 @@ class ProviderController extends BaseController {
                 )
             ))
             ->add('description', 'textarea', array(
+                'attr' => array('maxlength' => 500),
                 'constraints' => array(
                     new NotBlank(),
                     new Length(array('max' => 500))
@@ -544,7 +546,7 @@ class ProviderController extends BaseController {
             $session->remove('EquipmentAddFileArray');            
             $this->fileCount = null;
             
-            return $this->redirectToRoute('equipment-edit-3', array('id' => $id));
+            return $this->redirectToRoute('equipment-edit-3', array('eqid' => $id));
         }
         
         return $this->render('provider\equipment_edit_step2.html.twig', array(
