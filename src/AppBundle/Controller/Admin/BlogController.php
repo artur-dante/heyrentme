@@ -3,7 +3,7 @@ namespace AppBundle\Controller\Admin;
 
 use AppBundle\Entity\Blog;
 use AppBundle\Entity\Image;
-use AppBundle\Utils;
+use AppBundle\Utils\Utils;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
