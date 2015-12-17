@@ -890,7 +890,9 @@ class ProviderController extends BaseController {
             $em->persist($equipment);
             $em->flush();            
             
-            if ($discountType != -1 && $discountType != 0 && $equipment->getActiveDiscount() == null){
+            $activeDiscount = $equipment->getActiveDiscount();
+            
+            if ($discountType != -1 && $discountType != 0 && $activeDiscount == null){
                  
             
                 $discount = new Discount();            
@@ -913,6 +915,11 @@ class ProviderController extends BaseController {
                 $discount->setExpiresAt($endDate);
 
                 $em->persist($discount);
+                $em->flush();
+            } else if (($discountType == -1 || $discountType == 0) && $activeDiscount != null){
+                $now = new DateTime();    
+                $activeDiscount->setExpiresAt($now);
+                $em->persist($activeDiscount);
                 $em->flush();
             }
                 

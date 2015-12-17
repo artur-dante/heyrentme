@@ -211,3 +211,37 @@ ul.correct {
 div.clear {
     clear:both;
 }
+
+#deleteOffer{
+    text-align: center;
+    font-weight: normal;
+}
+
+#deleteOffer h1 {
+    font-size: inherit;
+    font-weight: bold;    
+}
+
+
+#deleteOffer .button-red {
+    text-decoration: none;
+    text-transform: uppercase;
+    color: #ffffff;
+    
+    white-space: nowrap;
+    
+    background-color: red;
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
+    border-top-right-radius: 6px;
+    color: white;
+    font-family: "Open Sans",sans-serif;
+    font-size: 1.03em;
+    font-weight: bolder;
+    width: 200px;
+    padding: 12px 20px;
+    text-transform: uppercase;
+    display: inline-block;
+    margin-top:10px;
+    
+}

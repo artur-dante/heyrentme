@@ -270,6 +270,40 @@ class User extends BaseUser
         return $imageUrl;
     }
     
+     /**
+     * @ORM\Column(type="datetime")
+     */
+    protected $createdAt;    
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    protected $modifiedAt;    
+    
+    
+    
+    public function setCreatedAt($createdAt)
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    public function setModifiedAt($modifiedAt)
+    {
+        $this->modifiedAt = $modifiedAt;
+
+        return $this;
+    }
+
+    public function getModifiedAt()
+    {
+        return $this->modifiedAt;
+    }
     public function __construct()
     {
         parent::__construct();

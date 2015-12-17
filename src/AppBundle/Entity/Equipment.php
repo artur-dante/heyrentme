@@ -138,7 +138,8 @@ class Equipment
     
     public function IsNewOfferDiscountPossible() {        
         //TODO check if there is any rating for this equipment and add condition about active discount!
-        return true;
+        return ($this->getActiveDiscount() && $this->getActiveDiscount()->getType() == 1) || 
+                    !$this->getActiveDiscount();
     }
     
     public function IsTemporaryDiscountPossible() {
@@ -153,7 +154,8 @@ class Equipment
                 $discountsInLastMonth++;
             }
         }
-        return $discountsInLastMonth < 2 || ($this->getActiveDiscount() && $this->getActiveDiscount()->getType() == 2);
+        return $discountsInLastMonth < 2 && (($this->getActiveDiscount() && $this->getActiveDiscount()->getType() == 2) || 
+                    !$this->getActiveDiscount());
     }
     
     /**
