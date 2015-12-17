@@ -5,6 +5,7 @@ namespace AppBundle\Controller\Admin;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class UserController extends BaseAdminController {
      /**
@@ -24,13 +25,18 @@ class UserController extends BaseAdminController {
         $sortDirection = $request->get('sord');
         $pageSize = $request->get('rows');
         $page = $request->get('page');
-        
-        $fSubcategory = $request->get('s_name');
-        $fName = $request->get('fs_name');
         $callback = $request->get('callback');
         
-        $repo = $this->getDoctrine()->getRepository('AppBundle:FeatureSection');
-        $dataRows = $repo->getGridOverview($sortColumn, $sortDirection, $pageSize, $page, $fSubcategory, $fName);
+        $email = $request->get('u_email');
+        $name = $request->get('u_name');
+        $surname = $request->get('u_surname');
+        $enabled = $request->get('u_enabled');        
+        $createdAt = $request->get('u_createdAt');
+        $modifiedAt = $request->get('u_modifiedAt');
+        
+        $repo = $this->getDoctrine()->getRepository('AppBundle:User');
+        $dataRows = $repo->getGridOverview($sortColumn, $sortDirection, $pageSize, $page, 
+                $email, $name, $surname, $enabled, $createdAt, $createdAt, $modifiedAt);
         $rowsCount = $repo->countAll();
         $pagesCount = ceil($rowsCount / $pageSize);
         
@@ -41,11 +47,14 @@ class UserController extends BaseAdminController {
             $row['id'] = $dataRow->getId();
             $cell = array();
             $i = 0;
-            $cell[$i++] = '';
-            $cell[$i++] = $dataRow->getSubcategory()->getName();
+            $cell[$i++] = "";
+            $cell[$i++] = $dataRow->getId();
+            $cell[$i++] = $dataRow->getUsername();
             $cell[$i++] = $dataRow->getName();
-            $cell[$i++] = $dataRow->getExclusive();
-            $cell[$i++] = $dataRow->getPosition();
+            $cell[$i++] = $dataRow->getSurname();
+            $cell[$i++] = $dataRow->isEnabled();
+            $cell[$i++] = $dataRow->getCreatedAt()->format('Y-m-d H:i');
+            $cell[$i++] = $dataRow->getModifiedAt()->format('Y-m-d H:i');            
             $row['cell'] = $cell;
             array_push($rows, $row);
         }
