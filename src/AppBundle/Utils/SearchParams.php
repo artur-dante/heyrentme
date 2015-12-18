@@ -59,31 +59,3 @@ class SearchParams {
         $this->discount = $discount;
     }
 }
-
-class SearchState {
-    
-    private $listIds = array();
-    private $searchParams;
-    
-    public function __construct() {
-        $this->searchParams = new SearchParams();
-    }
-    
-    public function getListIds() {
-        return $this->listIds;
-    }
-
-    public function getSearchParams() {
-        return $this->searchParams;
-    }
-
-    public function setListIds($listIds) {
-        $this->listIds = $listIds;
-    }
-
-    public function setSearchParams($searchParams) {
-        $this->searchParams = $searchParams;
-    }
-
-
-}

@@ -2,7 +2,7 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\Utils\SearchState;
+use AppBundle\Utils\SearchParams;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -70,16 +70,16 @@ class DefaultController extends BaseController {
     
     private function processCategory(Request $request, $content) {
         $cat = $this->getCategoryBySlug($request, $content);
-        $ss = $this->getSearchState($request);
-        $ss->getSearchParams()->setCategoryId($cat['id']);
-        $request->getSession()->set('SearchState', $ss);
+        $sp = $this->getSearchParams($request);
+        $sp->setCategoryId($cat['id']);
+        $request->getSession()->set('SearchState', $sp);
         
         if ($cat != null) {
             //$equipments = $this->getDoctrine()->getRepository('AppBundle:Equipment')->getAll($cat['id']);
             
             return $this->render('default/categorie.html.twig', array(
                 'category' => $cat,
-                'searchState' => $ss
+                'searchParams' => $sp
                 //'equipments' => $equipments
             ));
         }
@@ -106,11 +106,37 @@ class DefaultController extends BaseController {
             $eq = $this->getDoctrine()->getRepository('AppBundle:Equipment')->find(intval($arr[0]));
         }
         
+        if ($eq == null) {
+            throw $this->createNotFoundException();
+        }
+        
+        // determine prev/next
+        //<editor-fold>
+        $session = $request->getSession();
+        $prev = null;
+        $next = null;
+        if ($session->has('SearchList')) {
+            $ids = $session->get('SearchList');
+            $i = array_search($eq->getId(), $ids);
+            if ($i !== null) {
+                $repo = $this->getDoctrine()->getRepository('AppBundle:Equipment');
+                if ($i > 0) {
+                    $prev = $repo->find($ids[$i - 1]);
+                }
+                if ($i < count($ids) - 1) {
+                    $next = $repo->find($ids[$i + 1]);
+                }        
+            }
+        }
+        //</editor-fold>
+        
         if ($eq != null) {
             return $this->render('default/equipment.html.twig', array(
                 'equipment' => $eq,
                 'category' => $eq->getSubcategory()->getCategory(),
-                'categories' => $this->getCategories($request)
+                'categories' => $this->getCategories($request),
+                'next' => $next,
+                'prev' => $prev
             ));
         }
         return null;
@@ -120,27 +146,33 @@ class DefaultController extends BaseController {
      * @Route("/equipment-list", name="equipment-list")
      */ 
     public function equipmentListAction(Request $request) {
-        $ss = $this->getSearchState($request);
-        $ss->getSearchParams()->updateFromRequest($request);
-        $request->getSession()->set('SearchState', $ss);
+        $sp = $this->getSearchParams($request);
+        $sp->updateFromRequest($request);
         
-        $equipments = $this->getDoctrine()->getRepository('AppBundle:Equipment')->getAll($ss->getSearchParams());
+        $equipments = $this->getDoctrine()->getRepository('AppBundle:Equipment')->getAll($sp);
+        
+        // store id list in session (for prev/next traversal)
+        $ids = array();
+        foreach ($equipments as $eq) {
+            array_push($ids, $eq->getId());
+        }
+        $request->getSession()->set('SearchList', $ids);
         
         return $this->render('default/equipment-list.html.twig', array(
             'equipments' => $equipments
         ));
     }
     
-    private function getSearchState(Request $request) {
+    private function getSearchParams(Request $request) {
         $session = $request->getSession();
-        if ($session->has('SearchState')) {
-            $ss = $session->get('SearchState');
+        if ($session->has('SearchParams')) {
+            $sp = $session->get('SearchParams');
         }
         else {
-            $ss = new SearchState();
-            $session->set('SearchStage', $ss);            
+            $sp = new SearchParams();
+            $session->set('SearchParams', $sp);
         }
-        return $ss;
+        return $sp;
     }
     
     /**

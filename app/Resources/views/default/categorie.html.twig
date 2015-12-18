@@ -66,11 +66,11 @@
             <option value="price">Preis: niedrigster zuerst</option>
         </select>
           <div class="chbox-holder">
-            <input type="checkbox" id="buy" {% if searchState.searchParams.testBuy %}checked="checked"{% endif %} />
+            <input type="checkbox" id="buy" {% if searchParams.testBuy %}checked="checked"{% endif %} />
             <label for="buy"><span></span>Test & Buy</label>
           </div>
           <div class="chbox-holder" style="margin-left: 8px;">{# TODO: move style to class #}
-            <input type="checkbox" id="discount" {% if searchState.searchParams.discount %}checked="checked"{% endif %} />
+            <input type="checkbox" id="discount" {% if searchParams.discount %}checked="checked"{% endif %} />
             <label for="discount"><span></span>Discount</label>
           </div>
         </div>
@@ -83,9 +83,9 @@
   <script>
     $(document).ready(function(){
         var $sort = $("#sort");
-        $sort.val('{{ searchState.searchParams.sort }}');
+        $sort.val('{{ searchParams.sort }}');
         $sort.selectpicker('refresh');
-        $sort.selectpicker('val', '{{ searchState.searchParams.sort }}');
+        $sort.selectpicker('val', '{{ searchParams.sort }}');
         initGrids();
         $("#sort, #buy, #discount").change(search);
     });
