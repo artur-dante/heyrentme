@@ -150,7 +150,11 @@ function SaveStatusAndDiscount(){
     var percentValue = $(".selectpicker[id='"+discountPercentPrefix+id+"']").val();
     var durationValue = $(".selectpicker[id='"+discountDurationPrefix+id+"']").val();
     
-    if (discountTypeValue != -1 && discountTypeValue != "") {                        
+    if(discountTypeValue == ""){
+        discountTypeValue = -1;
+    }
+    
+    if (discountTypeValue != -1) {                        
         if (percentValue == -1){
             errors.push("Please select discount percent.");
         }                

@@ -250,6 +250,11 @@ class ProviderController extends BaseController {
     public function equipmentDeleteAction(Request $request, $id) {
         $equipment = $this->getDoctrine()->getRepository('AppBundle:Equipment')->find($id);
 
+        // security check
+        if ($this->getUser()->getId() !== $equipment->getUser()->getId()) {
+            return new Response($status = Response::HTTP_FORBIDDEN);
+        }
+        
         if (!$equipment) {
             throw $this->createNotFoundException('No equipment found for id '.$id);
         }
@@ -847,6 +852,12 @@ class ProviderController extends BaseController {
         //$duration = (integer)$request->get('duration');       
         
         $equipment = $this->getDoctrine()->getRepository('AppBundle:Equipment')->find($id);
+        
+        // security check
+        if ($this->getUser()->getId() !== $equipment->getUser()->getId()) {
+            //return new Response($status = Response::HTTP_FORBIDDEN);
+            $errors[count($errors)] = "Access denied.";
+        }
         
         if (count($errors) == 0 && $discountType != -1  && $discountType != 0 && $equipment->getActiveDiscount() != null) {
             $errors[count($errors)] = "There already is active discount!";
