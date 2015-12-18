@@ -7,7 +7,16 @@
 
 {% block head %}
     {{ parent() }}
-   
+   <script src="//cdn.tinymce.com/4/tinymce.min.js"></script>
+  <script>
+      tinymce.init({ 
+          selector: 'textarea.rich-text-edit',
+          width: 600,
+          menubar: false/*,
+          content_css: '/css/main.css'*/
+      });
+      
+    </script>
 {% endblock %}
 
 {% block body %}
@@ -49,7 +58,7 @@
           <label for="form_name" class="control-label col-xs-2">Description</label>
           <div class="col-xs-10">
               <div class="err-msg">{{ form_errors(form.description) }}</div>
-            {{ form_widget(form.description, { 'attr': { 'class': 'text-box single-line', 'placeholder': 'Description' }}) }}
+            {{ form_widget(form.description, { 'attr': { 'class': 'rich-text-edit', 'placeholder': 'Description' }}) }}
           </div>
         </div>
     </div>
@@ -63,7 +72,15 @@
           </div>
         </div>
     </div>
-          
+    
+          <div class="row">
+        <div class="form-group">
+          <label for="form_upl" class="control-label col-xs-2">Add testimonial image</label>
+          <div class="col-xs-10">
+            <input type="file" name="upl"/>
+          </div>
+        </div>
+    </div>
    
     <div class="row">          
         <div class="form-group">

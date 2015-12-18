@@ -82,7 +82,9 @@
         <div class="form-group">
             <label class="control-label col-xs-2">Current post image</label>
             <div class="col-xs-10">
-                <img src="{{ blog.image.urlPath(image_url_prefix) }}" class="thumb" alt=""/>
+                {% if testimonial.image %}
+                    <img src="{{ blog.image.urlPath(image_url_prefix) }}" class="thumb" alt=""/>
+                {% endif %}
             </div>
         </div>
     </div>

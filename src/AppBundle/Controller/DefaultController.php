@@ -23,6 +23,9 @@ class DefaultController extends BaseController {
     public function rentmeAction(Request $request, $token=null) {      
         $cats = $this->getCategories($request);
         
+        //if param = 0 then get all from db
+        $testimonials = $this->getDoctrine()->getRepository("AppBundle:Testimonials")->getForMainPage(3);
+        
         $confirmed= null;
         $confParam = $request->query->get('confirmed');
         if ($confParam != null){
@@ -32,7 +35,8 @@ class DefaultController extends BaseController {
         return $this->render('default/equipment_mieten.html.twig', array(
             'categories' => $cats,
             'token' => $token,
-            'confirmed' => $confirmed
+            'confirmed' => $confirmed,
+            'testimonials' => $testimonials
         ));
     }
     

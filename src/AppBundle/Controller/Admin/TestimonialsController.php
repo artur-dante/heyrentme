@@ -2,6 +2,8 @@
 
 namespace AppBundle\Controller\Admin;
 
+use AppBundle\Utils\Utils;
+use AppBundle\Entity\Image;
 use AppBundle\Entity\Testimonials;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -86,6 +88,7 @@ class TestimonialsController extends BaseAdminController {
                     )
                 ))
                 ->add('description', 'textarea', array(
+                    'required' => false,
                     'constraints' => array(
                         new NotBlank(),
                         new Length(array('max' => 500))
@@ -113,8 +116,37 @@ class TestimonialsController extends BaseAdminController {
         $form->handleRequest($request);
         
         if ($form->isValid()) {
-            
+            //check if there is file
+            $file = $request->files->get('upl');
             $em = $this->getDoctrine()->getManager();
+            
+            if ($file != null && $file->isValid()) {
+                
+                // save file
+                $uuid = Utils::getUuid();
+                $image_storage_dir = $this->getParameter('image_storage_dir');
+                
+                $destDir = 
+                    $image_storage_dir .
+                    DIRECTORY_SEPARATOR .
+                    'testimonials' .
+                    DIRECTORY_SEPARATOR;
+                $destFilename = sprintf("%s.%s", $uuid, $file->getClientOriginalExtension());
+                
+                $file->move($destDir, $destFilename);
+                
+                // create object
+                $img = new Image();
+                $img->setUuid($uuid);
+                $img->setName($file->getClientOriginalName());
+                $img->setExtension($file->getClientOriginalExtension());
+                $img->setPath('testimonials');
+                              
+                $em->persist($img);
+                $em->flush();
+                
+                $testimonial->setImage($img);
+            }
             
             $em->persist($testimonial);
             $em->flush();
@@ -177,9 +209,43 @@ class TestimonialsController extends BaseAdminController {
         $form->handleRequest($request);
         
         if ($form->isValid()) {
-             
+             //check if there is file
+            $file = $request->files->get('upl');
            
             $em = $this->getDoctrine()->getManager();
+            
+            if ($file != null && $file->isValid()) {
+                
+                //remove old Image (both file from filesystem and entity from db)
+                $this->getDoctrine()->getRepository('AppBundle:Image')->removeImage($testimonial, $this->getParameter('image_storage_dir'));
+                
+                
+                // save file
+                $uuid = Utils::getUuid();
+                $image_storage_dir = $this->getParameter('image_storage_dir');
+                
+                //$destDir = sprintf("%sblog\\",$image_storage_dir);                
+                $destDir = 
+                        $image_storage_dir .
+                        DIRECTORY_SEPARATOR .
+                        'testimonials' .
+                        DIRECTORY_SEPARATOR;
+                $destFilename = sprintf("%s.%s", $uuid, $file->getClientOriginalExtension());
+                
+                $file->move($destDir, $destFilename);
+                
+                // create object
+                $img = new Image();
+                $img->setUuid($uuid);
+                $img->setName($file->getClientOriginalName());
+                $img->setExtension($file->getClientOriginalExtension());
+                $img->setPath('testimonials');
+                              
+                $em->persist($img);
+                $em->flush();
+                
+                $testimonial->setImage($img);
+            }     
             
             $em->persist($testimonial);
             $em->flush();
@@ -204,6 +270,10 @@ class TestimonialsController extends BaseAdminController {
         if (!$testimonial) {
             throw $this->createNotFoundException('No testimonial found for id '.$id);
         }
+        
+        //remove old Image (both file from filesystem and entity from db)
+        $this->getDoctrine()->getRepository('AppBundle:Image')->removeImage($testimonial, $this->getParameter('image_storage_dir'));
+                
         
         $em = $this->getDoctrine()->getManager();
         $em->remove($testimonial);

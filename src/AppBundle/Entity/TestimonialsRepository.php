@@ -47,4 +47,20 @@ class TestimonialsRepository extends EntityRepository
         return $q->getResult();        
     }
     
+    public function getForMainPage($maxResults) {
+        $qb = $this->getEntityManager()->createQueryBuilder();
+        // build query
+        $qb->select('t')
+            ->from('AppBundle:Testimonials', 't')
+            ->orderBy("t.position");
+       
+        $q = $qb->getQuery();
+        // page and page size
+        
+        if ($maxResults != 0)
+            $q->setMaxResults($maxResults);
+        
+        return $q->getResult();        
+    }
+    
 }

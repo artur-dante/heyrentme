@@ -288,3 +288,8 @@ div.error{
 .selecttionPanel{
     margin-bottom: 20px;
 }
+
+img.testimonialDisplayImg {
+    max-width: 235px;
+    max-height: 235px;
+}

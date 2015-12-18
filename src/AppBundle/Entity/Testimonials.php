@@ -42,6 +42,11 @@ class Testimonials
      */
     protected $position;   
         
+    /**
+     * @ORM\OneToOne(targetEntity="Image")
+     * @ORM\JoinColumn(name="image_id", referencedColumnName="id")
+     */
+    protected $image;
    
 
     public function setId($id)
@@ -114,7 +119,17 @@ class Testimonials
     {
         return $this->position;
     }
+     public function setImage(Image $image = null)
+    {
+        $this->image = $image;
+
+        return $this;
+    }
     
+    public function getImage()
+    {
+        return $this->image;
+    }
    
     public function __construct()
     {
