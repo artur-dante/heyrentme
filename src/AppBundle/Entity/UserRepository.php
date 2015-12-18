@@ -17,7 +17,7 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
             ->from('AppBundle:User', 'u');   
         // where
         if (!empty($email)) {
-            $qb->andWhere($qb->expr()->like('u.Email', ':email'));
+            $qb->andWhere($qb->expr()->like('u.username', ':email'));
         }
         if (!empty($name)) {
             $qb->andWhere($qb->expr()->like('u.name', ':name'));
