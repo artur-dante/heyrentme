@@ -304,6 +304,18 @@ class User extends BaseUser
     {
         return $this->modifiedAt;
     }
+    
+    
+    /**
+     * @ORM\OneToMany(targetEntity="DiscountCode", mappedBy="user")
+     */
+    protected $discountCodes;
+    
+    public function getDiscountCodes()
+    {
+        return $this->discountCodes;
+    }
+    
     public function __construct()
     {
         parent::__construct();
