@@ -17,6 +17,44 @@ class UserController extends BaseAdminController {
     }
     
     /**
+     * 
+     * @Route("/admin/users/details/{id}", name="admin_users_details")
+     */
+    public function detailsAction(Request $request, $id) {
+        $user = $this->getDoctrine()->getRepository('AppBundle:User')->find($id);
+
+        if (!$user) {
+            throw $this->createNotFoundException('No user found for id '.$id);
+        }        
+        
+        $form = $this->createFormBuilder($user)
+                
+                ->add('Enabled', 'checkbox', array('required' => false))
+                ->getForm();
+
+       
+        //when the form is posted this method prefills entity with data from form
+        $form->handleRequest($request);
+        
+        if ($form->isValid()) {
+            
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($user);
+            $em->flush();
+
+            return $this->redirect($this->generateUrl('admin_users_list' ));
+                    
+        }
+        
+        
+        return $this->render('admin/user/details.html.twig', array(
+            'form' => $form->createView(),
+            'user' => $user
+        ));
+    }
+    
+    
+    /**
      * @Route("/admin/users/jsondata", name="admin_users_jsondata")
      */
     public function JsonData(Request $request)

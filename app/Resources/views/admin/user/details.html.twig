@@ -2,96 +2,136 @@
 
 {% block breadcrumb %}
     {{ parent() }}
-    <li><a href="{{ path('admin_blog_list') }}" class="active-crumb">Blog</a></li>
+    <li><a href="{{ path('admin_users_list') }}" >Users</a></li>
 {% endblock %}
 
 {% block head %}
     {{ parent() }}
     <script src="//cdn.tinymce.com/4/tinymce.min.js"></script>
-  <script>
-      tinymce.init({ 
-          selector: 'textarea.rich-text-edit',
-          width: 600,
-          menubar: false/*,
-          content_css: '/css/main.css'*/
-      });
-        $(function() {
-            $("#form_title").keyup(updateSlug).blur(updateSlug);
-        });
-        function updateSlug() {
-            $("#form_slug").val(getSlug($("#form_title").val()));
-        }
-  </script>
+  
 {% endblock %}
 
 {% block body %}
-<h1>Blog post edit</h1>
+<h1>User details</h1>
 
 {{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
 <div class="form-horizontal">
     <div class="err-msg">{{ form_errors(form) }}</div>
-    
-    {{ form_widget(form.id) }}
-
-    <div class="row">
+   
+     <div class="row">
         <div class="form-group">
-          <label for="form_name" class="control-label col-xs-2">Title</label>
-          <div class="col-xs-10">
-              <div class="err-msg">{{ form_errors(form.title) }}</div>
-            {{ form_widget(form.title, { 'attr': { 'class': 'text-box single-line', 'placeholder': 'Title' }}) }}
-          </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="form-group">
-          <label for="form_slug" class="control-label col-xs-2">Slug</label>
-          <div class="col-xs-10">
-              <div class="err-msg">{{ form_errors(form.slug) }}</div>
-            {{ form_widget(form.slug, { 'attr': { 'class': 'text-box single-line', 'placeholder': 'Slug' }}) }}
-          </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="form-group">
-          <label for="form_slug" class="control-label col-xs-2">Content</label>
-          <div class="col-xs-10">
-              <div class="err-msg">{{ form_errors(form.content) }}</div>
-          {{ form_widget(form.content, { 'attr': { 'class': 'rich-text-edit', 'placeholder': 'Content' }}) }}
-          </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="form-group">
-          <label for="form_position" class="control-label col-xs-2">Position</label>
-          <div class="col-xs-10">
-              <div class="err-msg">{{ form_errors(form.position) }}</div>
-          {{ form_widget(form.position, { 'attr': { 'class': 'text-box single-line short', 'placeholder': 'Position' }}) }}
+          <label for="form_name" class="control-label col-xs-2">Image</label>
+          <div class="col-xs-10 control-readonly">      
+              <img alt ="{{ user.ProfilePicture(true, image_url_prefix) }}" src="{{ user.ProfilePicture(true, image_url_prefix) }}" />
           </div>
         </div>
     </div>
     
     <div class="row">
-        
-        
         <div class="form-group">
-          <label for="form_upl" class="control-label col-xs-2">Change post image</label>
-          <div class="col-xs-10">
-            <input type="file" name="upl"/>
+          <label for="form_name" class="control-label col-xs-2">Username</label>
+          <div class="col-xs-10 control-readonly">              
+            {{ user.email }}
           </div>
         </div>
+    </div>
+    <div class="row">
         <div class="form-group">
-            <label class="control-label col-xs-2">Current post image</label>
-            <div class="col-xs-10">
-                <img src="{{ blog.image.urlPath(image_url_prefix) }}" class="thumb" alt=""/>
-            </div>
+          <label for="form_name" class="control-label col-xs-2">Name</label>
+          <div class="col-xs-10 control-readonly">              
+            {{ user.name }}
+          </div>
         </div>
     </div>
+    <div class="row">
+        <div class="form-group">
+          <label for="form_name" class="control-label col-xs-2">Surname</label>
+          <div class="col-xs-10 control-readonly">              
+            {{ user.surname }}
+          </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group">
+          <label for="form_name" class="control-label col-xs-2">Enabled</label>
+          <div class="err-msg">{{ form_errors(form) }}</div>
+          <div class="col-xs-10 control-readonly">              
+                {{ form_widget(form.Enabled) }}
+          </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group">
+          <label for="form_name" class="control-label col-xs-2">Created at</label>
+          <div class="col-xs-10 control-readonly">              
+            {{ user.createdAt.format('Y-m-d H:i') }}
+          </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group">
+          <label for="form_name" class="control-label col-xs-2">Modified at</label>
+          <div class="col-xs-10 control-readonly">              
+            {{ user.modifiedAt.format('Y-m-d H:i') }}
+          </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group">
+          <label for="form_name" class="control-label col-xs-2">Last login</label>
+          <div class="col-xs-10 control-readonly">              
+            {{ user.lastlogin.format('Y-m-d H:i') }}
+          </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group">
+          <label for="form_name" class="control-label col-xs-2">About myself</label>
+          <div class="col-xs-10 control-readonly"> 
+              <p>{{ user.aboutMyself }}</p>
+          </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group">
+          <label for="form_name" class="control-label col-xs-2">Phone prefix</label>
+          <div class="col-xs-10 control-readonly">              
+            {{ user.phonePrefix }}
+          </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group">
+          <label for="form_name" class="control-label col-xs-2">Phone</label>
+          <div class="col-xs-10 control-readonly">              
+            {{ user.phone }}
+          </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group">
+          <label for="form_name" class="control-label col-xs-2">IBAN</label>
+          <div class="col-xs-10 control-readonly">              
+            {{ user.iban }}
+          </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group">
+          <label for="form_name" class="control-label col-xs-2">BIC</label>
+          <div class="col-xs-10 control-readonly">              
+            {{ user.bic }}
+          </div>
+        </div>
+    </div>
+    
+   
           
     <div class="row">          
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
                 <input type="submit" class="button-black backgound-yellow text-black" value="Save">
-                <a class="button-black backgound-yellow text-black" href="{{ path('admin_blog_list') }}">Cancel</a>
+                <a class="button-black backgound-yellow text-black" href="{{ path('admin_users_list') }}">Cancel</a>
             </div>
         </div>
     </div>

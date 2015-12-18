@@ -245,3 +245,11 @@ div.clear {
     margin-top:10px;
     
 }
+
+.control-readonly {
+    padding-top: 7px;
+}
+
+.control-readonly p {
+    max-width: 50%;
+}
