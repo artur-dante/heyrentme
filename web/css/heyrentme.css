@@ -253,3 +253,43 @@ div.clear {
 .control-readonly p {
     max-width: 50%;
 }
+
+div.redButtonAdmin {
+    text-decoration: none;
+    text-transform: uppercase;
+    color: #ffffff;
+    
+    white-space: nowrap;
+    
+    background-color: red;
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
+    border-top-right-radius: 6px;
+    color: white;
+    font-family: "Open Sans",sans-serif;
+    font-size: inherit;
+    font-weight: bolder;
+    min-width: 100px;
+    padding: 6px 20px;
+    text-transform: uppercase;
+    display: inline-block;
+    margin-left:20px;
+    cursor:pointer;
+}
+
+div.error{
+    color:red;
+}
+
+.generatePanel {
+    margin-top: 20px;
+}
+
+.selecttionPanel{
+    margin-bottom: 20px;
+}
+
+img.testimonialDisplayImg {
+    max-width: 235px;
+    max-height: 235px;
+}

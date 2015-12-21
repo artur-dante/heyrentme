@@ -2,12 +2,12 @@
 
 {% block breadcrumb %}
     {{ parent() }}
-    <li><a href="{{ path('admin_blog_list') }}" class="active-crumb">Blog</a></li>
+    <li><a href="{{ path('admin_testimonials_list') }}" >Testimonials</a></li>
 {% endblock %}
 
 {% block head %}
     {{ parent() }}
-    <script src="//cdn.tinymce.com/4/tinymce.min.js"></script>
+   <script src="//cdn.tinymce.com/4/tinymce.min.js"></script>
   <script>
       tinymce.init({ 
           selector: 'textarea.rich-text-edit',
@@ -15,17 +15,12 @@
           menubar: false/*,
           content_css: '/css/main.css'*/
       });
-        $(function() {
-            $("#form_title").keyup(updateSlug).blur(updateSlug);
-        });
-        function updateSlug() {
-            $("#form_slug").val(getSlug($("#form_title").val()));
-        }
+       
   </script>
 {% endblock %}
 
 {% block body %}
-<h1>Blog post edit</h1>
+<h1>Testimonials edit</h1>
 
 {{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
 <div class="form-horizontal">
@@ -35,28 +30,37 @@
 
     <div class="row">
         <div class="form-group">
-          <label for="form_name" class="control-label col-xs-2">Title</label>
+          <label for="form_name" class="control-label col-xs-2">Name</label>
           <div class="col-xs-10">
-              <div class="err-msg">{{ form_errors(form.title) }}</div>
-            {{ form_widget(form.title, { 'attr': { 'class': 'text-box single-line', 'placeholder': 'Title' }}) }}
+              <div class="err-msg">{{ form_errors(form.name) }}</div>
+            {{ form_widget(form.name, { 'attr': { 'class': 'text-box single-line', 'placeholder': 'Name' }}) }}
+          </div>
+        </div>
+    </div>
+   <div class="row">
+        <div class="form-group">
+          <label for="form_name" class="control-label col-xs-2">Age</label>
+          <div class="col-xs-10">
+              <div class="err-msg">{{ form_errors(form.age) }}</div>
+            {{ form_widget(form.age, { 'attr': { 'class': 'text-box single-line', 'placeholder': 'Age' }}) }}
           </div>
         </div>
     </div>
     <div class="row">
         <div class="form-group">
-          <label for="form_slug" class="control-label col-xs-2">Slug</label>
+          <label for="form_name" class="control-label col-xs-2">Place</label>
           <div class="col-xs-10">
-              <div class="err-msg">{{ form_errors(form.slug) }}</div>
-            {{ form_widget(form.slug, { 'attr': { 'class': 'text-box single-line', 'placeholder': 'Slug' }}) }}
+              <div class="err-msg">{{ form_errors(form.place) }}</div>
+            {{ form_widget(form.place, { 'attr': { 'class': 'text-box single-line', 'placeholder': 'Place' }}) }}
           </div>
         </div>
     </div>
     <div class="row">
         <div class="form-group">
-          <label for="form_slug" class="control-label col-xs-2">Content</label>
+          <label for="form_name" class="control-label col-xs-2">Description</label>
           <div class="col-xs-10">
-              <div class="err-msg">{{ form_errors(form.content) }}</div>
-          {{ form_widget(form.content, { 'attr': { 'class': 'rich-text-edit', 'placeholder': 'Content' }}) }}
+              <div class="err-msg">{{ form_errors(form.description) }}</div>            
+            {{ form_widget(form.description, { 'attr': { 'class': 'rich-text-edit', 'placeholder': 'Description' }}) }}
           </div>
         </div>
     </div>
@@ -69,7 +73,7 @@
           </div>
         </div>
     </div>
-    
+   
     <div class="row">
         
         
@@ -83,7 +87,7 @@
             <label class="control-label col-xs-2">Current post image</label>
             <div class="col-xs-10">
                 {% if testimonial.image %}
-                    <img src="{{ blog.image.urlPath(image_url_prefix) }}" class="thumb" alt=""/>
+                    <img src="{{ testimonial.image.urlPath(image_url_prefix) }}" class="thumb" alt=""/>
                 {% endif %}
             </div>
         </div>
@@ -93,7 +97,7 @@
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
                 <input type="submit" class="button-black backgound-yellow text-black" value="Save">
-                <a class="button-black backgound-yellow text-black" href="{{ path('admin_blog_list') }}">Cancel</a>
+                <a class="button-black backgound-yellow text-black" href="{{ path('admin_testimonials_list') }}">Cancel</a>
             </div>
         </div>
     </div>
