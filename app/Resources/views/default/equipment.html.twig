@@ -12,6 +12,7 @@
                 <li><a href="/rentme">hey! rentme</a></li>
                 <li><a href="{{ path('catchall', { 'content': category.slug }) }}">{{ category.name }}</a></li>
                 <li><a href="{{ path('catchall', { 'content': equipment.urlPath }) }}" class="active-crumb">{{ equipment.name }}</a></li>
+                <a href="javascript:inquiry()">test</a>
             </ul>
             <ul class="col-xs-5 pull-right text-right kaup-select">
                 {{ render(controller('AppBundle:Common:categoryList')) }}
@@ -312,7 +313,7 @@
                 </div>
                 <!-- row end -->
                 <div class="col-xs-12">
-                    <a data-toggle="modal" data-target="#feedback-modal" class="green-big-button" href="#">Jetzt Anfragen</a>
+                    <a class="green-big-button" href="javascript:inquiry()">Jetzt Anfragen</a>
                 </div>
             </div>
         <!-- LEFT side ends -->
@@ -387,8 +388,8 @@
                         </select>
                     </div>
                     <p>Deine Gesamtkosten<span class="info-icon" data-toggle="tooltip" title="Hooray!"></span></p>
-                    <p class="price"><span>ab</span><b class="price-calc">30</b>,-<span class="euro-sign">&#8364;</span></p>
-                    <button  data-toggle="modal" data-target="#feedback-modal"  class="green-big-button">Jetzt anfragen!</button>
+                    <p class="price"><span>ab</span><b class="price-calc">{{ equipment.price|number_format(0) }}</b>,-<span class="euro-sign">&#8364;</span></p>
+                    <a class="green-big-button" href="javascript:inquiry()">Jetzt anfragen!</a>
                 </div>
             </div>
             <div class="user-data">
@@ -577,20 +578,8 @@
     </div>
   </section>
   <!-- Modal -->
-  <div id="feedback-modal" class="modal fade" role="dialog">
+  <div id="inquiry-modal" class="modal fade" role="dialog">
     <div class="modal-dialog rent-dialog angrafge-dialog">
-        <!-- Modal content-->
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><img src="/img/close-modal.svg" alt="close"/></button>
-                <h4 class="modal-title">Anfrage</h4>
-                <p><span class="text-bold" >Abholung:</span>  <span id="from-data"></span>, <span id="from-time">&nbsp; &nbsp; &nbsp; &nbsp; 10:00</span> </p>
-                <p><span class="text-bold">Rückgabe:</span> <span id="to-data"></span>, <span id="to-time">&nbsp; &nbsp; &nbsp; &nbsp; 18:00</span></p>
-                <p><span class="text-bold">Gesamtkosten Miete: </span><span class="price-calc">30</span>,- €</p>
-                <p><span class="text-bold">Kaution:</span> 100,- €</p>
-                <p><span class="text-bold">Preis bei Kauf:</span> 800,- €</p>
-                <form method="post" accept-charset="utf-8" class="rent" action="/detail/index/1"><div style="display:none;"><input type="hidden" name="_method" value="POST"></div><input type="text" name="name" placeholder="DEIN NAME*" id="name" value=""><input type="text" name="name2" placeholder="DEIN EMAIL*" id="name2" value=""><textarea name="desc" placeholder="NACHRICHT: WOFÜR BENÖTIGST DU DAS EQUIPMENT?*" id="desc" rows="5"></textarea><input type="submit" value="abschicken"></form>            </div>
-        </div>
     </div>
   </div>
   <div id="melden" class="modal fade" role="dialog">
@@ -670,7 +659,7 @@
                 var c = ( b - a );
                 var d = c / (1000 * 60 * 60 * 24);
 
-                $('.price-calc').html((Math.round(d)+1)*30);
+                $('.price-calc').html((Math.round(d)+1) * {{ equipment.price|number_format(2, '.', '') }});
                 $('#date-range').val('AB '+ s1 + ' BIS '+s2);
             }
         };
@@ -706,8 +695,51 @@
         $('#tests').parent().find('.bootstrap-select').eq(0).find('.dropdown-toggle').html('Uhrzeit ab &nbsp; &nbsp; &nbsp; &nbsp;   10:00').prepend('<span class="caret"></span>');
         $('#tests2').parent().find('.bootstrap-select').eq(1).find('.dropdown-toggle').html('Uhrzeit bis &nbsp; &nbsp; &nbsp; &nbsp;  18:00').prepend('<span class="caret"></span>');
     });
+    
+    function inquiry() {
+        // parse datetimes
+        var range = $('#date-range').val();
+        var arr = range.split('BIS');
+        var f = $.trim(arr[0].replace('AB', '')).split('.');                        // from date
+        var t = $.trim(arr[1].replace('BIS', '')).split('.');                       // to date
+        var fh = $.trim($("#tests").val().replace('Uhrzeit ab', '')).split(':');    // from hour
+        var th = $.trim($("#tests2").val().replace('Uhrzeit bis', '')).split(':');  // to hour
+        
+        var from = new Date(f[2], f[1], f[0], fh[0], fh[1]);
+        var to = new Date(t[2], t[1], t[0], th[0], th[1]);
+        // update timezone offset, so toISOString yields local time
+        var tzoffset = new Date().getTimezoneOffset() * 60000; // offset in milliseconds
+        from = new Date(from.getTime() - tzoffset);
+        to = new Date(to.getTime() - tzoffset);
+        
+        // assemble params
+        var url = '{{ path('inquiry', { 'id': equipment.id, 'dateFrom': ':FROM', 'dateTo': ':TO' }) }}'
+                .replace(':FROM', from.toISOString())
+                .replace(':TO', to.toISOString());
+                
+        $("#inquiry-modal .modal-dialog").load(url, function(data) {
+            $("#inquiry-modal").modal();
+            $("#inquiry-modal form").ajaxForm({
+                target: $("#inquiry-modal .modal-dialog"),
+                success: makeAjaxForm
+            });
+        });
+    }
+    function makeAjaxForm(data, status, xhr) {
+        // check response
+        if (xhr.getResponseHeader('content-type').indexOf('json') > -1 && data.status === 'ok') { // form was submitted successfully
+            $("#inquiry-modal").modal('hide');
+        }
+        else { // make ajaxForm again (ie. attach events to new DOM elements)
+            $("#inquiry-modal form").ajaxForm({
+                target: $("#inquiry-modal .modal-dialog"),
+                success: makeAjaxForm
+            });
+        }
+    }
   </script>
   <script src="http://maps.googleapis.com/maps/api/js?language=de"></script>
+  <script src="http://malsup.github.com/jquery.form.js"></script> 
   <script>
     var map;
     var lat=48.209206;

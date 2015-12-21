@@ -321,4 +321,68 @@ class User extends BaseUser
         parent::__construct();
         // your own logic
     }
+
+    /**
+     * @ORM\OneToMany(targetEntity="Inquiry", mappedBy="user")
+     */
+    protected $inquiries;
+    
+
+    /**
+     * Add discountCode
+     *
+     * @param \AppBundle\Entity\DiscountCode $discountCode
+     *
+     * @return User
+     */
+    public function addDiscountCode(\AppBundle\Entity\DiscountCode $discountCode)
+    {
+        $this->discountCodes[] = $discountCode;
+
+        return $this;
+    }
+
+    /**
+     * Remove discountCode
+     *
+     * @param \AppBundle\Entity\DiscountCode $discountCode
+     */
+    public function removeDiscountCode(\AppBundle\Entity\DiscountCode $discountCode)
+    {
+        $this->discountCodes->removeElement($discountCode);
+    }
+
+    /**
+     * Add inquiry
+     *
+     * @param \AppBundle\Entity\Inquiry $inquiry
+     *
+     * @return User
+     */
+    public function addInquiry(\AppBundle\Entity\Inquiry $inquiry)
+    {
+        $this->inquiries[] = $inquiry;
+
+        return $this;
+    }
+
+    /**
+     * Remove inquiry
+     *
+     * @param \AppBundle\Entity\Inquiry $inquiry
+     */
+    public function removeInquiry(\AppBundle\Entity\Inquiry $inquiry)
+    {
+        $this->inquiries->removeElement($inquiry);
+    }
+
+    /**
+     * Get inquiries
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getInquiries()
+    {
+        return $this->inquiries;
+    }
 }

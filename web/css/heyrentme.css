@@ -13,18 +13,38 @@ div.err-msg  ul  li {
     color: #c00;
 }
 
-#reg-modal .modal-dialog,#login .modal-dialog,#emailConfirmed .modal-dialog,#passwordReset .modal-dialog,
-#passwordRecovery .modal-dialog,#melden .modal-dialog{
+/* 
+ * TODO: refactor long lists of id-prefixed selectors below
+ */
+#reg-modal .modal-dialog,
+#login .modal-dialog,
+#emailConfirmed .modal-dialog,
+#passwordReset .modal-dialog,
+#passwordRecovery .modal-dialog,
+#inquiry-modal .modal-dialog,
+#melden .modal-dialog {
     max-width:450px
 }
-#reg-modal .modal-content,#login .modal-content,#passwordRecovery .modal-content,#passwordReset .modal-content,
-#emailConfirmed .modal-content,#melden .modal-content{
+#reg-modal .modal-content,
+#login .modal-content,
+#passwordRecovery .modal-content,
+#passwordReset .modal-content,
+#emailConfirmed .modal-content,
+#inquiry-modal .modal-content,
+#melden .modal-content{
     border-radius:0;
     box-shadow:none;
     max-width:450px
 }
-#passwordRecovery .modal-title,#feedback-modal .modal-title,#reg-modal .modal-title,#login .modal-title,
-#passwordRecovery .modal-title,#passwordReset .modal-title,#emailConfirmed .modal-title,#melden .modal-title{
+#passwordRecovery .modal-title,
+#feedback-modal .modal-title,
+#reg-modal .modal-title,
+#login .modal-title,
+#passwordRecovery .modal-title,
+#passwordReset .modal-title,
+#emailConfirmed .modal-title,
+#inquiry-modal .modal-title,
+#melden .modal-title{
     text-align:center;
     font-size:34px;
     font-weight:bold;
@@ -32,12 +52,31 @@ div.err-msg  ul  li {
     margin-top:40px;
     letter-spacing:1.2px
 }
-#passwordRecovery input[type="text"],#feedback-modal input[type="text"],#reg-modal input[type="text"],#login input[type="text"],
-#emailConfirmed input[type="text"],#passwordReset input[type="text"],#passwordRecovery input[type="text"],#melden input[type="text"], 
-#passwordRecovery input[type="password"],#feedback-modal input[type="password"],#reg-modal input[type="email"],
-#reg-modal input[type="password"],#login input[type="password"],#passwordRecovery input[type="password"],
-#passwordReset input[type="password"],#emailConfirmed input[type="password"],#melden input[type="password"], 
-#passwordRecovery textarea,#feedback-modal textarea,#reg-modal textarea,#login textarea,#melden textarea{
+#passwordRecovery input[type="text"],
+#feedback-modal input[type="text"],
+#reg-modal input[type="text"],
+#login input[type="text"],
+#emailConfirmed input[type="text"],
+#passwordReset input[type="text"],
+#passwordRecovery input[type="text"],
+#melden input[type="text"], 
+#passwordRecovery input[type="password"],
+#feedback-modal input[type="password"],
+#reg-modal input[type="email"],
+#reg-modal input[type="password"],
+#login input[type="password"],
+#passwordRecovery input[type="password"],
+#passwordReset input[type="password"],
+#emailConfirmed input[type="password"],
+#melden input[type="password"], 
+#passwordRecovery textarea,
+#feedback-modal textarea,
+#reg-modal textarea,
+#login textarea,
+#inquiry-modal input[type="text"],
+#inquiry-modal input[type="email"],
+#inquiry-modal textarea,
+#melden textarea{
     display:block;
     width:100%;
     height:48px;
@@ -54,13 +93,27 @@ div.err-msg  ul  li {
     border-top:1px solid #c7c7c7;
     border-left:1px solid #c7c7c7
 }
-#passwordRecovery textarea,#feedback-modal textarea,#reg-modal textarea,#login textarea,#melden textarea{
+#inquiry-modal textarea {
+    height: auto;
+}
+
+#passwordRecovery textarea,
+#feedback-modal textarea,
+#reg-modal textarea,
+#login textarea,
+#melden textarea{
     min-height:140px;
     padding-right:10px
 } 
-#passwordRecovery input[type="submit"],#feedback-modal input[type="submit"],#reg-modal input[type="submit"],
-#login input[type="submit"],#passwordRecovery input[type="submit"],#passwordReset input[type="submit"],
-#emailConfirmed input[type="submit"],#melden input[type="submit"]{
+#passwordRecovery input[type="submit"],
+#feedback-modal input[type="submit"],
+#reg-modal input[type="submit"],
+#login input[type="submit"],
+#passwordRecovery input[type="submit"],
+#passwordReset input[type="submit"],
+#emailConfirmed input[type="submit"],
+#inquiry-modal input[type="submit"],
+#melden input[type="submit"]{
     background-color:#34b437;
     width:100%;
     height:47px;
@@ -76,22 +129,41 @@ div.err-msg  ul  li {
     font-family:'open sans',sans-serif;
     margin-bottom:22px
 }
-#passwordRecovery input[type="submit"]:hover,#feedback-modal input[type="submit"]:hover,#reg-modal input[type="submit"]:hover,
-#login input[type="submit"]:hover,#passwordRecovery input[type="submit"]:hover,#passwordReset input[type="submit"]:hover,
-#emailConfirmed input[type="submit"]:hover,#melden input[type="submit"]:hover{
+#passwordRecovery input[type="submit"]:hover,
+#feedback-modal input[type="submit"]:hover,
+#reg-modal input[type="submit"]:hover,
+#login input[type="submit"]:hover,
+#passwordRecovery input[type="submit"]:hover,
+#passwordReset input[type="submit"]:hover,
+#emailConfirmed input[type="submit"]:hover,
+#inquiry-modal input[type="submit"]:hover,
+#melden input[type="submit"]:hover{
     background-color:#009103;
     transition:all 300ms ease-in
 }
 
-#passwordRecovery input[placeholder],#feedback-modal input[placeholder],#reg-modal input[placeholder],#login input[placeholder],
-#passwordRecovery input[placeholder],#passwordReset input[placeholder],#emailConfirmed input[placeholder],#melden input[placeholder]{
+#passwordRecovery input[placeholder],
+#feedback-modal input[placeholder],
+#reg-modal input[placeholder],
+#login input[placeholder],
+#passwordRecovery input[placeholder],
+#passwordReset input[placeholder],
+#emailConfirmed input[placeholder],
+#inquiry-modal input[placeholder],
+#melden input[placeholder]{
     font-weight:bold;
     border-color:#c7c7c7;
     font-size:15px;
     font-weight:normal
 } 
-#passwordRecovery button.close,#feedback-modal button.close,#reg-modal button.close,#login button.close,#passwordRecovery button.close,
-#passwordReset button.close,#emailConfirmed button.close,#melden button.close{opacity:1}.rent-dialog p{
+#passwordRecovery button.close,
+#feedback-modal button.close,
+#reg-modal button.close,
+#login button.close,
+#passwordRecovery button.close,
+#passwordReset button.close,
+#emailConfirmed button.close,
+#melden button.close{opacity:1}.rent-dialog p{
     font-family:'open sans',sans-serif !important;
     text-transform:uppercase;
     margin-left:20px
