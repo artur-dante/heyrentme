@@ -10,8 +10,15 @@ class BaseController extends Controller
     public function getUser() {
         return $this->get('security.token_storage')->getToken()->getUser();
     }
+    /**
+     * Just a shortcut for $this->getDoctrine()->getRepository(...)
+     * @param string $name
+     */
+    public function getDoctrineRepo($name) {
+        return $this->getDoctrine()->getRepository($name);
+    }
     /*
-     * We cach categories and subcategories in user session,
+     * We cache categories and subcategories in user session,
      * since they won't change often.
      */
     protected function initCategories($session) {

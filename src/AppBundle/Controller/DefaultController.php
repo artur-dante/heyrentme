@@ -130,11 +130,16 @@ class DefaultController extends BaseController {
         }
         //</editor-fold>
         
+        $subcat = $eq->getSubcategory();
+        
+        $featureSections = $this->getDoctrineRepo('AppBundle:Equipment')->getEquipmentFeatures($eq->getId());
+        
         if ($eq != null) {
             return $this->render('default/equipment.html.twig', array(
                 'equipment' => $eq,
-                'category' => $eq->getSubcategory()->getCategory(),
+                'category' => $subcat->getCategory(),
                 'categories' => $this->getCategories($request),
+                'featureSections' => $featureSections,
                 'next' => $next,
                 'prev' => $prev
             ));
@@ -181,4 +186,15 @@ class DefaultController extends BaseController {
     public function subcategoriesAction(Request $request, $id) {
         return new JsonResponse($this->getSubcategories($request, $id));
     }
-}
+
+    /**
+     * @Route("/test")
+     */
+    public function testAction() {
+        $repo = $this->getDoctrineRepo('AppBundle:Equipment');
+        $eq = $repo->find(128);
+        $r = $repo->getEquipmentFeatures($eq);
+        return new JsonResponse($r);
+    }
+    
+    }

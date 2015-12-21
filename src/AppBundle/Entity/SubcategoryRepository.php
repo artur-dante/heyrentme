@@ -81,4 +81,17 @@ class SubcategoryRepository extends \Doctrine\ORM\EntityRepository
         }
         return $q->getResult();        
     }
+
+    public function getFeatureSectionsSorted($subcategoryId) {
+        $dql = <<<EOT
+            select fs
+            from AppBundle:FeatureSection fs
+            where fs.subcategory = :subcategoryId
+            order by fs.position
+EOT;
+        $q = $this->getEntityManager()->createQuery($dql);
+        $q->setParameter(':subcategoryId', $subcategoryId);
+        return $q->getResult();
+    }
+    
 }

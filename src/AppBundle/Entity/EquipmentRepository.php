@@ -115,4 +115,48 @@ class EquipmentRepository extends EntityRepository
         
         return $result;
     }
+    public function getEquipmentFeatures($equipmentId) {
+        /*
+         * ef = equipment_feature
+         * f = feature
+         */
+        $dql = <<<EOT
+                select e, ef, f, fs
+                from AppBundle:Equipment e
+                    join e.features ef
+                    join ef.feature f
+                    join f.featureSection fs
+                where e.id = :equipmentId
+                order by fs.position asc, f.position asc
+EOT;
+        $q = $this->getEntityManager()->createQuery($dql);
+        $q->setParameter(':equipmentId', $equipmentId);
+        $eqs = $q->getResult();
+        
+        if (count($eqs) == 0) {
+            return array();
+        }
+        
+        $fts = array();
+        $eq = $eqs[0];
+        
+        // iterate over features and assemble array        
+        foreach ($eq->getFeatures() as $ef) {               // ef = equipment_feature
+            $fs = $ef->getFeature()->getFeatureSection();   
+            $name = $fs->getName();                         // feature_section name becomes array's key
+            if (!array_key_exists($name, $fts)) {
+                $fts[$name] = array();
+            }
+            if ($ef->getName() !== null) {                  // array of selected features becomes array's value
+                $val = $ef->getName();
+            } else {
+                $val = $ef->getFeature()->getShortname();   
+            }
+            array_push($fts[$name], $val);
+        }
+        foreach ($fts as $key => $val) {                    // translate array of values into a string (comma-separated)
+            $fts[$key] = implode(', ', $val);
+        }
+        return $fts;
+    }
 }

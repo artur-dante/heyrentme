@@ -401,21 +401,13 @@
                       {{ equipment.price }} € pro Tag
                     </p>
                   </div>
-                  <div class="user-tab cal">
-                    <p>
-                      Vorm. / Nachm. / WE
-                    </p>
-                  </div>
-                  <div class="user-tab steps">
-                    <p>
-                      Treffpunkt an deinem Wunschort
-                    </p>
-                  </div>
-                  <div class="user-tab gruppen">
-                    <p>
-                      Bietet auch Gruppenstunden an
-                    </p>
-                  </div>
+                    {% for key, val in featureSections %}
+                        <div class="user-tab cal" title="{{ key }}">
+                            <p>
+                                {{ val }}
+                            </p>
+                        </div>
+                    {% endfor %}
                 </div>
             </div>
             <div class="user-info">
