@@ -24,7 +24,7 @@ class DefaultController extends BaseController {
         $cats = $this->getCategories($request);
         
         //if param = 0 then get all from db
-        $testimonials = $this->getDoctrineRepo("AppBundle:Testimonials")->getForMainPage(3);
+        $testimonials = $this->getDoctrineRepo("AppBundle:Testimonial")->getForMainPage(3);
         
         $confirmed= null;
         $confParam = $request->query->get('confirmed');

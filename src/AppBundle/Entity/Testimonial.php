@@ -6,10 +6,10 @@ use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="TestimonialsRepository")
- * @ORM\Table(name="testimonials")
+ * @ORM\Entity(repositoryClass="TestimonialRepository")
+ * @ORM\Table(name="testimonial")
  */
-class Testimonials
+class Testimonial
 {
     /**
      * @ORM\Column(type="integer")

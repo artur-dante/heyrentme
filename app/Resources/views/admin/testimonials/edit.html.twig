@@ -60,7 +60,7 @@
           <label for="form_name" class="control-label col-xs-2">Description</label>
           <div class="col-xs-10">
               <div class="err-msg">{{ form_errors(form.description) }}</div>            
-            {{ form_widget(form.description, { 'attr': { 'class': 'rich-text-edit', 'placeholder': 'Description' }}) }}
+            {{ form_widget(form.description, { 'attr': { 'rows': '12', 'class': 'text-box', 'placeholder': 'Description' }}) }}
           </div>
         </div>
     </div>

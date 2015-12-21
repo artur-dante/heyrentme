@@ -4,7 +4,7 @@ namespace AppBundle\Controller\Admin;
 
 use AppBundle\Utils\Utils;
 use AppBundle\Entity\Image;
-use AppBundle\Entity\Testimonials;
+use AppBundle\Entity\Testimonial;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -16,7 +16,7 @@ use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\Type;
 use Symfony\Component\Validator\ExecutionContextInterface;
 
-class TestimonialsController extends BaseAdminController {
+class TestimonialController extends BaseAdminController {
      /**
      * 
      * @Route("/admin/testimonials", name="admin_testimonials_list")
@@ -37,7 +37,7 @@ class TestimonialsController extends BaseAdminController {
         $callback = $request->get('callback');
         
         
-        $repo = $this->getDoctrineRepo('AppBundle:Testimonials');        
+        $repo = $this->getDoctrineRepo('AppBundle:Testimonial');        
         $dataRows = $repo->getGridOverview($sortColumn, $sortDirection, $pageSize, $page);
         $rowsCount = $repo->countAll();
         $pagesCount = ceil($rowsCount / $pageSize);
@@ -78,7 +78,7 @@ class TestimonialsController extends BaseAdminController {
      * @Route("/admin/testimonials/new", name="admin_testimonials_new")
      */
     public function newAction(Request $request) {
-        $testimonial = new Testimonials();
+        $testimonial = new Testimonial();
         
         $form = $this->createFormBuilder($testimonial)
                 ->add('name', 'text', array(
@@ -165,7 +165,7 @@ class TestimonialsController extends BaseAdminController {
      * @Route("/admin/testimonials/edit/{id}", name="admin_testimonials_edit")
      */
     public function editAction(Request $request, $id) {
-        $testimonial = $this->getDoctrineRepo('AppBundle:Testimonials')->find($id);
+        $testimonial = $this->getDoctrineRepo('AppBundle:Testimonial')->find($id);
 
         if (!$testimonial) {
             throw $this->createNotFoundException('No $testimonial found for id '.$id);
@@ -265,7 +265,7 @@ class TestimonialsController extends BaseAdminController {
      * @Route("/admin/testimonials/delete/{id}", name="admin_testimonials_delete")
      */
     public function deleteAction(Request $request, $id) {
-        $testimonial = $this->getDoctrineRepo('AppBundle:Testimonials')->find($id);
+        $testimonial = $this->getDoctrineRepo('AppBundle:Testimonial')->find($id);
 
         if (!$testimonial) {
             throw $this->createNotFoundException('No testimonial found for id '.$id);
