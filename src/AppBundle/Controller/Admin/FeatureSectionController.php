@@ -29,7 +29,7 @@ class FeatureSectionController extends BaseAdminController {
      */
     public function newAction(Request $request) {
         $featureSection = new FeatureSection();
-        $subcategory = $this->getDoctrine()->getRepository('AppBundle:Subcategory')->getAllOrderedByName();
+        $subcategory = $this->getDoctrineRepo('AppBundle:Subcategory')->getAllOrderedByName();
         
         $form = $this->createFormBuilder($featureSection)
                 ->add('subcategory', 'entity', array(
@@ -78,7 +78,7 @@ class FeatureSectionController extends BaseAdminController {
      * @Route("/admin/feature-section/edit/{id}", name="admin_feature_section_edit")
      */
     public function editAction(Request $request, $id) {
-        $featureSection = $this->getDoctrine()->getRepository('AppBundle:FeatureSection')->find($id);
+        $featureSection = $this->getDoctrineRepo('AppBundle:FeatureSection')->find($id);
 
         if (!$featureSection) {
             throw $this->createNotFoundException('No feature section found for id '.$id);
@@ -132,7 +132,7 @@ class FeatureSectionController extends BaseAdminController {
      * @Route("/admin/feature-section/delete/{id}", name="admin_feature_section_delete")
      */
     public function deleteAction(Request $request, $id) {
-        $featureSection = $this->getDoctrine()->getRepository('AppBundle:FeatureSection')->find($id);
+        $featureSection = $this->getDoctrineRepo('AppBundle:FeatureSection')->find($id);
 
         if (!$featureSection) {
             throw $this->createNotFoundException('No feature section found for id '.$id);
@@ -157,7 +157,7 @@ class FeatureSectionController extends BaseAdminController {
         $fName = $request->get('fs_name');
         $callback = $request->get('callback');
         
-        $repo = $this->getDoctrine()->getRepository('AppBundle:FeatureSection');
+        $repo = $this->getDoctrineRepo('AppBundle:FeatureSection');
         $dataRows = $repo->getGridOverview($sortColumn, $sortDirection, $pageSize, $page, $fSubcategory, $fName);
         $rowsCount = $repo->countAll();
         $pagesCount = ceil($rowsCount / $pageSize);

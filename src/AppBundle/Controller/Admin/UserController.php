@@ -21,7 +21,7 @@ class UserController extends BaseAdminController {
      * @Route("/admin/users/details/{id}", name="admin_users_details")
      */
     public function detailsAction(Request $request, $id) {
-        $user = $this->getDoctrine()->getRepository('AppBundle:User')->find($id);
+        $user = $this->getDoctrineRepo('AppBundle:User')->find($id);
 
         if (!$user) {
             throw $this->createNotFoundException('No user found for id '.$id);
@@ -72,7 +72,7 @@ class UserController extends BaseAdminController {
         $createdAt = $request->get('u_createdAt');
         $modifiedAt = $request->get('u_modifiedAt');
         
-        $repo = $this->getDoctrine()->getRepository('AppBundle:User');
+        $repo = $this->getDoctrineRepo('AppBundle:User');
         $dataRows = $repo->getGridOverview($sortColumn, $sortDirection, $pageSize, $page, 
                 $email, $name, $surname, $enabled, $createdAt, $createdAt, $modifiedAt);
         $rowsCount = $repo->countAll();

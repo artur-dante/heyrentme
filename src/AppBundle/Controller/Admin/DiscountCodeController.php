@@ -48,7 +48,7 @@ class DiscountCodeController extends BaseAdminController {
         $ids =  explode(",", $idsStr);
         $em = $this->getDoctrine()->getManager();
         foreach($ids as $id){
-            $dc = $this->getDoctrine()->getRepository("AppBundle:DiscountCode")->find((integer)$id);
+            $dc = $this->getDoctrineRepo("AppBundle:DiscountCode")->find((integer)$id);
             if (!$dc){
                 continue;
             }
@@ -75,7 +75,7 @@ class DiscountCodeController extends BaseAdminController {
         $callback = $request->get('callback');
         
         
-        $repo = $this->getDoctrine()->getRepository('AppBundle:DiscountCode');        
+        $repo = $this->getDoctrineRepo('AppBundle:DiscountCode');        
         $dataRows = $repo->getGridOverview($sortColumn, $sortDirection, $pageSize, $page);
         $rowsCount = $repo->countAll();
         $pagesCount = ceil($rowsCount / $pageSize);

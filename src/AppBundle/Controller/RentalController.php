@@ -30,7 +30,7 @@ class RentalController extends BaseController {
      * @Route("/rental-detail/{subcategoryId}", name="rental-detail")
      */
     public function rentalDetailAction(Request $request, $subcategoryId) {
-        $subcategory = $this->getDoctrine()->getRepository('AppBundle:Subcategory')->find($subcategoryId);
+        $subcategory = $this->getDoctrineRepo('AppBundle:Subcategory')->find($subcategoryId);
 
         // build form
         //<editor-fold>

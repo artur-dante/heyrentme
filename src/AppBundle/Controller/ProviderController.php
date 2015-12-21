@@ -53,7 +53,7 @@ class ProviderController extends BaseController {
             if ($ef != null){
                 $oldImg = $user->getImage();
                 if ($oldImg != null){
-                    $img = $this->getDoctrine()->getRepository('AppBundle:Image')->find($oldImg->getId());
+                    $img = $this->getDoctrineRepo('AppBundle:Image')->find($oldImg->getId());
                     $oldImgPath = 
                         $this->getParameter('image_storage_dir') .
                         DIRECTORY_SEPARATOR . 
@@ -248,7 +248,7 @@ class ProviderController extends BaseController {
      * @Route("/provider/equipment-delete/{id}", name="equipment-delete")
      */
     public function equipmentDeleteAction(Request $request, $id) {
-        $equipment = $this->getDoctrine()->getRepository('AppBundle:Equipment')->find($id);
+        $equipment = $this->getDoctrineRepo('AppBundle:Equipment')->find($id);
 
         // security check
         if ($this->getUser()->getId() !== $equipment->getUser()->getId()) {
@@ -259,7 +259,7 @@ class ProviderController extends BaseController {
             throw $this->createNotFoundException('No equipment found for id '.$id);
         }
         
-        $this->getDoctrine()->getRepository('AppBundle:Image')->removeAllImages($equipment, $this->getParameter('image_storage_dir'));
+        $this->getDoctrineRepo('AppBundle:Image')->removeAllImages($equipment, $this->getParameter('image_storage_dir'));
                 
         $em = $this->getDoctrine()->getManager();
         $em->remove($equipment);
@@ -271,7 +271,7 @@ class ProviderController extends BaseController {
      * @Route("/provider/equipment-edit-1/{id}", name="equipment-edit-1")
      */
     public function equipmentEdit1Action(Request $request, $id) {
-        $equipment = $this->getDoctrine()->getRepository('AppBundle:Equipment')->find($id);
+        $equipment = $this->getDoctrineRepo('AppBundle:Equipment')->find($id);
         if (!$equipment) {
             throw $this->createNotFoundException();
         }        
@@ -407,7 +407,7 @@ class ProviderController extends BaseController {
         if ($form->isValid()) {
             $data = $form->getData();
             // get subcategory
-            $subcat = $this->getDoctrine()->getRepository('AppBundle:Subcategory')->find($subcategoryId);
+            $subcat = $this->getDoctrineRepo('AppBundle:Subcategory')->find($subcategoryId);
             $user = $this->getUser();
             // map fields, TODO: consider moving to Equipment's method
             //<editor-fold> map fields            
@@ -442,8 +442,8 @@ class ProviderController extends BaseController {
     public function equipmentEdit2Action(Request $request, $id) {
         $session = $request->getSession();
         
-        $eq = $this->getDoctrine()->getRepository('AppBundle:Equipment')->find($id);
-        //$eq = $this->getDoctrine()->getRepository('AppBundle:Equipment')->find(117); //TODO: dev only! remove
+        $eq = $this->getDoctrineRepo('AppBundle:Equipment')->find($id);
+        //$eq = $this->getDoctrineRepo('AppBundle:Equipment')->find(117); //TODO: dev only! remove
         if (!$eq) {
             throw $this->createNotFoundException();
         }        
@@ -710,7 +710,7 @@ class ProviderController extends BaseController {
         $user = $this->getUser();
         
         //$eqid = 118; // TODO: remove this; dev only!
-        $eq = $this->getDoctrine()->getRepository('AppBundle:Equipment')->find($eqid);
+        $eq = $this->getDoctrineRepo('AppBundle:Equipment')->find($eqid);
         if (!$eq) {
             throw $this->createNotFoundException();
         }        
@@ -780,7 +780,7 @@ class ProviderController extends BaseController {
             }          
             //</editor-fold>
             
-            $this->getDoctrine()->getRepository('AppBundle:Equipment')->saveFeatures($eqid, $features);
+            $this->getDoctrineRepo('AppBundle:Equipment')->saveFeatures($eqid, $features);
             
             // save phone
             if (!empty($data['phone']) and !empty($data['phone'])) {
@@ -794,13 +794,13 @@ class ProviderController extends BaseController {
             return $this->redirectToRoute('equipment-edit-4');
         }
 
-        $features = $this->getDoctrine()->getRepository('AppBundle:Equipment')->getFeaturesAsArray($eq->getId());
+        $features = $this->getDoctrineRepo('AppBundle:Equipment')->getFeaturesAsArray($eq->getId());
         
         return $this->render('provider\equipment_edit_step3.html.twig', array(
             'form' => $form->createView(),
             'subcategory' => $eq->getSubcategory(),
             'features' => $features,
-            'featureSectionRepo' => $this->getDoctrine()->getRepository('AppBundle:FeatureSection')
+            'featureSectionRepo' => $this->getDoctrineRepo('AppBundle:FeatureSection')
         ));
     }
     
@@ -851,7 +851,7 @@ class ProviderController extends BaseController {
         //$percent = (integer)$request->get('percent');        
         //$duration = (integer)$request->get('duration');       
         
-        $equipment = $this->getDoctrine()->getRepository('AppBundle:Equipment')->find($id);
+        $equipment = $this->getDoctrineRepo('AppBundle:Equipment')->find($id);
         
         // security check
         if ($this->getUser()->getId() !== $equipment->getUser()->getId()) {
@@ -949,7 +949,7 @@ class ProviderController extends BaseController {
      */
     public function dashboardAction(Request $request) {
         $user = $this->getUser();        
-        $offers = $this->getDoctrine()->getRepository('AppBundle:Equipment')->getAllByUserId($user->getId());        
+        $offers = $this->getDoctrineRepo('AppBundle:Equipment')->getAllByUserId($user->getId());        
         
         return $this->render('provider/dashboard.html.twig', array( 
             'offers'=> $offers, 

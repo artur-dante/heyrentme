@@ -119,7 +119,7 @@ class BlogController  extends BaseAdminController {
         ));
     }
     public function validateSlug($blog, ExecutionContextInterface $context) {
-        $unique = $this->getDoctrine()->getRepository('AppBundle:Blog')->isSlugUnique($blog->getSlug(), $blog->getId());
+        $unique = $this->getDoctrineRepo('AppBundle:Blog')->isSlugUnique($blog->getSlug(), $blog->getId());
         if (!$unique) {
             $context->buildViolation('The slug is not unique')->addViolation();
         }
@@ -130,7 +130,7 @@ class BlogController  extends BaseAdminController {
      * @Route("/admin/blog/edit/{id}", name="admin_blog_edit")
      */
     public function editAction(Request $request, $id) {
-        $blog = $this->getDoctrine()->getRepository('AppBundle:Blog')->find($id);
+        $blog = $this->getDoctrineRepo('AppBundle:Blog')->find($id);
 
         if (!$blog) {
             throw $this->createNotFoundException('No blog post found for id '.$id);
@@ -188,7 +188,7 @@ class BlogController  extends BaseAdminController {
             if ($file != null && $file->isValid()) {
                 
                 //remove old Image (both file from filesystem and entity from db)
-                $this->getDoctrine()->getRepository('AppBundle:Image')->removeImage($blog, $this->getParameter('image_storage_dir'));
+                $this->getDoctrineRepo('AppBundle:Image')->removeImage($blog, $this->getParameter('image_storage_dir'));
                 
                 
                 // save file
@@ -238,14 +238,14 @@ class BlogController  extends BaseAdminController {
      * @Route("/admin/blog/delete/{id}", name="admin_blog_delete")
      */
     public function deleteAction(Request $request, $id) {
-        $blog = $this->getDoctrine()->getRepository('AppBundle:Blog')->find($id);
+        $blog = $this->getDoctrineRepo('AppBundle:Blog')->find($id);
 
         if (!$blog) {
             throw $this->createNotFoundException('No blog post found for id '.$id);
         }
         
         //remove old Image (both file from filesystem and entity from db)
-        $this->getDoctrine()->getRepository('AppBundle:Image')->removeImage($blog, $this->getParameter('image_storage_dir'));
+        $this->getDoctrineRepo('AppBundle:Image')->removeImage($blog, $this->getParameter('image_storage_dir'));
                 
         $em = $this->getDoctrine()->getManager();
         $em->remove($blog);
@@ -266,7 +266,7 @@ class BlogController  extends BaseAdminController {
         $callback = $request->get('callback');
         
         
-        $repo = $this->getDoctrine()->getRepository('AppBundle:Blog');        
+        $repo = $this->getDoctrineRepo('AppBundle:Blog');        
         $dataRows = $repo->getGridOverview($sortColumn, $sortDirection, $pageSize, $page);
         $rowsCount = $repo->countAll();
         $pagesCount = ceil($rowsCount / $pageSize);

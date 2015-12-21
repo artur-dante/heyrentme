@@ -31,7 +31,7 @@ class FeatureController extends BaseAdminController {
      */
     public function newAction(Request $request, $featureSectionId) {
         $feature = new Feature();
-        $featureSection = $this->getDoctrine()->getRepository('AppBundle:FeatureSection')->find($featureSectionId);
+        $featureSection = $this->getDoctrineRepo('AppBundle:FeatureSection')->find($featureSectionId);
         
         $feature->setFeatureSection($featureSection);
         
@@ -62,7 +62,7 @@ class FeatureController extends BaseAdminController {
      * @Route("/admin/feature/edit/{id}", name="admin_feature_edit")
      */
     public function editAction(Request $request, $id) {
-        $feature = $this->getDoctrine()->getRepository('AppBundle:Feature')->find($id);
+        $feature = $this->getDoctrineRepo('AppBundle:Feature')->find($id);
 
         if (!$feature) {
             throw $this->createNotFoundException('No feature found for id '.$id);
@@ -119,7 +119,7 @@ class FeatureController extends BaseAdminController {
      * @Route("/admin/feature/delete/{id}", name="admin_feature_delete")
      */
     public function deleteAction(Request $request, $id) {
-        $feature = $this->getDoctrine()->getRepository('AppBundle:Feature')->find($id);
+        $feature = $this->getDoctrineRepo('AppBundle:Feature')->find($id);
         
         $featureSectionId =  $feature->getFeatureSection()->getId();
         
@@ -145,7 +145,7 @@ class FeatureController extends BaseAdminController {
         $page = $request->get('page');                
         $callback = $request->get('callback');
         
-        $repo = $this->getDoctrine()->getRepository('AppBundle:Feature');
+        $repo = $this->getDoctrineRepo('AppBundle:Feature');
         $dataRows = $repo->getGridOverview($sortColumn, $sortDirection, $pageSize, $page, $featureSectionId);
         $rowsCount = $repo->countAll();
         $pagesCount = ceil($rowsCount / $pageSize);

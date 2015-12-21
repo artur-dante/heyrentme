@@ -13,7 +13,7 @@ class BlogController extends BaseController {
      * @Route("/blog", name="blog")
      */
     public function indexAction(Request $request) {
-        $posts = $this->getDoctrine()->getRepository('AppBundle:Blog')->getAllOrderedByPosition();
+        $posts = $this->getDoctrineRepo('AppBundle:Blog')->getAllOrderedByPosition();
        
         return $this->render('blog/blog.html.twig', array(
             'posts' => $posts
@@ -24,11 +24,11 @@ class BlogController extends BaseController {
      * @Route("/blog/{slug}", name="blog_detail")
      */
     public function detailAction(Request $request, $slug) {
-        $post = $this->getDoctrine()->getRepository('AppBundle:Blog')->getBySlug($slug);
-        $posts = $this->getDoctrine()->getRepository('AppBundle:Blog')->getAllOrderedByPosition();
+        $post = $this->getDoctrineRepo('AppBundle:Blog')->getBySlug($slug);
+        $posts = $this->getDoctrineRepo('AppBundle:Blog')->getAllOrderedByPosition();
        
-        $nextPost = $this->getDoctrine()->getRepository('AppBundle:Blog')->getByPosition($post->getPosition() + 1);
-        $prevPost = $this->getDoctrine()->getRepository('AppBundle:Blog')->getByPosition($post->getPosition() - 1);
+        $nextPost = $this->getDoctrineRepo('AppBundle:Blog')->getByPosition($post->getPosition() + 1);
+        $prevPost = $this->getDoctrineRepo('AppBundle:Blog')->getByPosition($post->getPosition() - 1);
         
         
         return $this->render('blog/blog_detail.html.twig', array(

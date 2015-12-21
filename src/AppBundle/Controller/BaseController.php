@@ -23,7 +23,7 @@ class BaseController extends Controller
      */
     protected function initCategories($session) {
         if (!$session->has('CategoryList')) {
-            $cats = $this->getDoctrine()->getRepository('AppBundle:Category')->getAllOrderedByPosition();
+            $cats = $this->getDoctrineRepo('AppBundle:Category')->getAllOrderedByPosition();
             $categories = array();
             foreach ($cats as $cat) {
                 $categories[$cat->getSlug()] = array(
@@ -53,7 +53,7 @@ class BaseController extends Controller
     }
     protected function initSubcategories($session) {
         if (!$session->has('SubcategoryList')) {
-            $subcats = $this->getDoctrine()->getRepository('AppBundle:Subcategory')->getAllOrderedByPosition();
+            $subcats = $this->getDoctrineRepo('AppBundle:Subcategory')->getAllOrderedByPosition();
             $subcategories  = array();
             $subcategoriesDict = array();
             foreach ($subcats as $s) {

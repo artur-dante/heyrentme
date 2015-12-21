@@ -37,7 +37,7 @@ class TestimonialsController extends BaseAdminController {
         $callback = $request->get('callback');
         
         
-        $repo = $this->getDoctrine()->getRepository('AppBundle:Testimonials');        
+        $repo = $this->getDoctrineRepo('AppBundle:Testimonials');        
         $dataRows = $repo->getGridOverview($sortColumn, $sortDirection, $pageSize, $page);
         $rowsCount = $repo->countAll();
         $pagesCount = ceil($rowsCount / $pageSize);
@@ -165,7 +165,7 @@ class TestimonialsController extends BaseAdminController {
      * @Route("/admin/testimonials/edit/{id}", name="admin_testimonials_edit")
      */
     public function editAction(Request $request, $id) {
-        $testimonial = $this->getDoctrine()->getRepository('AppBundle:Testimonials')->find($id);
+        $testimonial = $this->getDoctrineRepo('AppBundle:Testimonials')->find($id);
 
         if (!$testimonial) {
             throw $this->createNotFoundException('No $testimonial found for id '.$id);
@@ -217,7 +217,7 @@ class TestimonialsController extends BaseAdminController {
             if ($file != null && $file->isValid()) {
                 
                 //remove old Image (both file from filesystem and entity from db)
-                $this->getDoctrine()->getRepository('AppBundle:Image')->removeImage($testimonial, $this->getParameter('image_storage_dir'));
+                $this->getDoctrineRepo('AppBundle:Image')->removeImage($testimonial, $this->getParameter('image_storage_dir'));
                 
                 
                 // save file
@@ -265,14 +265,14 @@ class TestimonialsController extends BaseAdminController {
      * @Route("/admin/testimonials/delete/{id}", name="admin_testimonials_delete")
      */
     public function deleteAction(Request $request, $id) {
-        $testimonial = $this->getDoctrine()->getRepository('AppBundle:Testimonials')->find($id);
+        $testimonial = $this->getDoctrineRepo('AppBundle:Testimonials')->find($id);
 
         if (!$testimonial) {
             throw $this->createNotFoundException('No testimonial found for id '.$id);
         }
         
         //remove old Image (both file from filesystem and entity from db)
-        $this->getDoctrine()->getRepository('AppBundle:Image')->removeImage($testimonial, $this->getParameter('image_storage_dir'));
+        $this->getDoctrineRepo('AppBundle:Image')->removeImage($testimonial, $this->getParameter('image_storage_dir'));
                 
         
         $em = $this->getDoctrine()->getManager();

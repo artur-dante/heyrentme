@@ -24,7 +24,7 @@ class DefaultController extends BaseController {
         $cats = $this->getCategories($request);
         
         //if param = 0 then get all from db
-        $testimonials = $this->getDoctrine()->getRepository("AppBundle:Testimonials")->getForMainPage(3);
+        $testimonials = $this->getDoctrineRepo("AppBundle:Testimonials")->getForMainPage(3);
         
         $confirmed= null;
         $confParam = $request->query->get('confirmed');
@@ -79,7 +79,7 @@ class DefaultController extends BaseController {
         $request->getSession()->set('SearchState', $sp);
         
         if ($cat != null) {
-            //$equipments = $this->getDoctrine()->getRepository('AppBundle:Equipment')->getAll($cat['id']);
+            //$equipments = $this->getDoctrineRepo('AppBundle:Equipment')->getAll($cat['id']);
             
             return $this->render('default/categorie.html.twig', array(
                 'category' => $cat,
@@ -93,7 +93,7 @@ class DefaultController extends BaseController {
         $subcat = $this->getSubcategoryBySlug($request, $content);
         
         if ($subcat != null) {            
-            $equipments = $this->getDoctrine()->getRepository('AppBundle:Equipment')->getAllBySubcategory($subcat->getId());
+            $equipments = $this->getDoctrineRepo('AppBundle:Equipment')->getAllBySubcategory($subcat->getId());
             
             return $this->render('default/categorie.html.twig', array(
                 'subcategory' => $subcat,
@@ -107,7 +107,7 @@ class DefaultController extends BaseController {
         $pat = '^[[:digit:]]+/.+$';
         if (ereg($pat, $content)) {
             $arr = split('/', $content);
-            $eq = $this->getDoctrine()->getRepository('AppBundle:Equipment')->find(intval($arr[0]));
+            $eq = $this->getDoctrineRepo('AppBundle:Equipment')->find(intval($arr[0]));
         }
         
         if ($eq == null) {
@@ -123,7 +123,7 @@ class DefaultController extends BaseController {
             $ids = $session->get('SearchList');
             $i = array_search($eq->getId(), $ids);
             if ($i !== null) {
-                $repo = $this->getDoctrine()->getRepository('AppBundle:Equipment');
+                $repo = $this->getDoctrineRepo('AppBundle:Equipment');
                 if ($i > 0) {
                     $prev = $repo->find($ids[$i - 1]);
                 }
@@ -158,7 +158,7 @@ class DefaultController extends BaseController {
         $sp = $this->getSearchParams($request);
         $sp->updateFromRequest($request);
         
-        $equipments = $this->getDoctrine()->getRepository('AppBundle:Equipment')->getAll($sp);
+        $equipments = $this->getDoctrineRepo('AppBundle:Equipment')->getAll($sp);
         
         // store id list in session (for prev/next traversal)
         $ids = array();

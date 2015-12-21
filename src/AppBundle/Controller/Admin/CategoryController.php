@@ -114,7 +114,7 @@ class CategoryController extends BaseAdminController {
      * @Route("/admin/category/edit/{id}", name="admin_category_edit")
      */
     public function editAction(Request $request, $id) {
-        $category = $this->getDoctrine()->getRepository('AppBundle:Category')->find($id);
+        $category = $this->getDoctrineRepo('AppBundle:Category')->find($id);
 
         if (!$category) {
             throw $this->createNotFoundException('No category found for id '.$id);
@@ -162,7 +162,7 @@ class CategoryController extends BaseAdminController {
             if ($file != null && $file->isValid()) {
                 
                 //remove old Image (both file from filesystem and entity from db)
-                $this->getDoctrine()->getRepository('AppBundle:Image')->removeImage($category, $this->getParameter('image_storage_dir'));
+                $this->getDoctrineRepo('AppBundle:Image')->removeImage($category, $this->getParameter('image_storage_dir'));
                 
                 
                 // save file
@@ -213,17 +213,17 @@ class CategoryController extends BaseAdminController {
      * @Route("/admin/category/delete/{id}", name="admin_category_delete")
      */
     public function deleteAction(Request $request, $id) {
-        $category = $this->getDoctrine()->getRepository('AppBundle:Category')->find($id);
+        $category = $this->getDoctrineRepo('AppBundle:Category')->find($id);
 
         if (!$category) {
             throw $this->createNotFoundException('No category found for id '.$id);
         }
         
         //remove old Image (both file from filesystem and entity from db)
-        $this->getDoctrine()->getRepository('AppBundle:Image')->removeImage($category, $this->getParameter('image_storage_dir'));
+        $this->getDoctrineRepo('AppBundle:Image')->removeImage($category, $this->getParameter('image_storage_dir'));
         
         //remove subcategories
-        $this->getDoctrine()->getRepository('AppBundle:Category')->removeSubcategoriesFromCategory($category);
+        $this->getDoctrineRepo('AppBundle:Category')->removeSubcategoriesFromCategory($category);
         
         $em = $this->getDoctrine()->getManager();
         $em->remove($category);
@@ -245,7 +245,7 @@ class CategoryController extends BaseAdminController {
         
         
         
-        $repo = $this->getDoctrine()->getRepository('AppBundle:Category');
+        $repo = $this->getDoctrineRepo('AppBundle:Category');
         $dataRows = $repo->getGridOverview($sortColumn, $sortDirection, $pageSize, $page);
         $rowsCount = $repo->countAll();
         $pagesCount = ceil($rowsCount / $pageSize);
@@ -284,7 +284,7 @@ class CategoryController extends BaseAdminController {
         /*
         
         $rows = $this->GetData($sortColumn, $sortDirection, $pageSize, $page);
-        $rowsCount = $this->getDoctrine()->getRepository('AppBundle:Category')->countAll();
+        $rowsCount = $this->getDoctrineRepo('AppBundle:Category')->countAll();
         $pagesCount =   ceil($rowsCount/$pageSize);
         
         $rowsStr = "";
@@ -309,7 +309,7 @@ class CategoryController extends BaseAdminController {
     /*
     public function GetData($sortColumn, $sortDirection, $pageSize, $page)
     {
-        $cats = $this->getDoctrine()->getRepository('AppBundle:Category')->getAll($sortColumn, $sortDirection, $pageSize, $page);
+        $cats = $this->getDoctrineRepo('AppBundle:Category')->getAll($sortColumn, $sortDirection, $pageSize, $page);
         return $cats;
     }*/
 
