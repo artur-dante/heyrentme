@@ -62,17 +62,20 @@
         </div>
     </div>
     <div class="row bewertung-request-form legals">
+        {{ form_start(form) }}
         <div class="col-xs-12">
             <p>Bitte achte beim Verleih auf sorgsamen Umgang mit dem Equipment. Robert wird dafür sorgen, dass das Gerät funktionstüchtig und einsatzbereit ist. Ihr bekommt beide noch ein Übergabeprotokoll zur Kontrolle für bereits bestehender Schäden oder Kratzer. Bitte nimm zur Übergabe die Kaution sowie einen Personalausweis mit.</p>
             <p>Sollte etwas vor dem Übergabetermin dazwischen kommen melde dich bitte direkt bei Robert. <br />
                 Für andere Rückfragen bitte Email an <a href="mailto:support@hey-tsc.com">support@hey-tsc.com</a> oder +43 664 180 80 21.</p>
             <div class="checkbox">
               <div class="chbox-holder">
-                  <input type="checkbox" id="tscc"><label for="tscc" class="padding-0"><span></span>Ich habe die hey! TSC <a href="#" data-toggle="modal" data-target=".allgemeine">Nutzungsbedingungen</a> gelesen und stimme diesen zu.</label>
+                  {{ form_widget(form.agree) }}<label for="form_agree" class="padding-0"><span></span>Ich habe die hey! TSC <a href="#" data-toggle="modal" data-target=".allgemeine">Nutzungsbedingungen</a> gelesen und stimme diesen zu.</label>
+                  <div class="err-msg">{{ form_errors(form.agree) }}</div>
               </div>
             </div>
-            <button class="">Jetzt Buchen</button>
+            <button onclick="submit();">Jetzt Buchen</button>
         </div>
+        {{ form_end(form) }}
     </div>
     <span class="add-margin-bottom-300"></span>
   </div>
@@ -96,4 +99,9 @@
           </div>
       </div>
   </div>
+    <script>
+        function submit() {
+            $("form").submit();
+        }
+    </script>
 {% endblock %}

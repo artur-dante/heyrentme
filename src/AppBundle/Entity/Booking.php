@@ -11,6 +11,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Booking {
     
+    const STATUS_BOOKED = 1;
+    
     /**
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id

@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Booking;
 use AppBundle\Entity\Inquiry;
 use AppBundle\Utils\Utils;
 use DateTime;
@@ -9,6 +10,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Swift_Message;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
@@ -147,11 +149,11 @@ class BookingController extends BaseController {
         
         // security check
         if ($this->getUser()->getId() !== $eq->getUser()->getId()) {
-            throw $this->createAccessDeniedException();
+            return new Response('', Response::HTTP_FORBIDDEN);
         }
         // sanity check
         if ($inq->getAccepted() !== null) { // already responded
-            throw $this->createAccessDeniedException();
+            return new Response('', Response::HTTP_FORBIDDEN);
         }
         
         if ($request->getMethod() === "POST") {
@@ -208,13 +210,79 @@ class BookingController extends BaseController {
      */
     public function confirmationAction(Request $request, $uuid) {
         $inq = $this->getDoctrineRepo('AppBundle:Inquiry')->findOneByUuid($uuid);
-        
+
+        // sanity check
         if ($inq == null) {
             throw $this->createNotFoundException();
         }
+        if ($inq->getBooking() !== null) { // booking already confirmed
+            return new Response('', 403); // TODO: display a nice message to the user?
+        }
+        
+        $form = $this->createFormBuilder()
+                ->add('agree', 'checkbox', array(
+                    'required' => false,
+                    'constraints' => array(
+                        new NotBlank()
+                    )
+                ))
+                ->getForm();
+        
+        $form->handleRequest($request);
+        
+        if ($form->isValid()) {
+            $bk = new Booking();
+            $bk->setInquiry($inq);
+            $bk->setStatus(Booking::STATUS_BOOKED);
+            
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($bk);
+            $em->flush();
+            
+            // send email to provider & user
+            //<editor-fold>
+            $provider = $inq->getEquipment()->getUser();
+            $from = array($this->getParameter('mailer_fromemail') => $this->getParameter('mailer_fromname'));
+            
+            $emailHtml = $this->renderView('emails/booking_confirmation_provider.html.twig', array(
+                'mailer_image_url_prefix' => $this->getParameter('mailer_image_url_prefix'),
+                'provider' => $provider,
+                'inquiry' => $inq,
+                'equipment' => $inq->getEquipment()
+            ));
+            $message = Swift_Message::newInstance()
+                ->setSubject('Du hast soeben eine Anfrage erhalten')
+                ->setFrom($from)
+                ->setTo($provider->getEmail())
+                ->setBody($emailHtml, 'text/html');
+            $this->get('mailer')->send($message);
+
+            if ($inq->getUser() !== null) {
+                $email = $inq->getUser()->getEmail();
+            }
+            else {
+                $email = $inq->getEmail();
+            }
+            $emailHtml = $this->renderView('emails/booking_confirmation_user.html.twig', array(
+                'mailer_image_url_prefix' => $this->getParameter('mailer_image_url_prefix'),
+                'provider' => $provider,
+                'inquiry' => $inq,
+                'equipment' => $inq->getEquipment()
+            ));
+            $message = Swift_Message::newInstance()
+                ->setSubject('Du hast soeben eine Anfrage erhalten')
+                ->setFrom($from)
+                ->setTo($email)
+                ->setBody($emailHtml, 'text/html');
+            $this->get('mailer')->send($message);
+            //</editor-fold>
+        
+            return $this->redirectToRoute('rentme');
+        }
         
         return $this->render('booking/confirmation.html.twig', array(
-            'inquiry' => $inq
+            'inquiry' => $inq,
+            'form' => $form->createView()
         ));
     }
 }

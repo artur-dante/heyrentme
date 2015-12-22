@@ -85,7 +85,7 @@ class Inquiry {
     /**
      * @ORM\OneToOne(targetEntity="Booking", mappedBy="inquiry")
      */
-    private $inquiry;
+    private $booking;
 
     /**
      * Get id
@@ -464,9 +464,9 @@ class Inquiry {
      *
      * @return Inquiry
      */
-    public function setInquiry(\AppBundle\Entity\Booking $inquiry = null)
+    public function setBooking(\AppBundle\Entity\Booking $booking = null)
     {
-        $this->inquiry = $inquiry;
+        $this->inquiry = $booking;
 
         return $this;
     }
@@ -476,8 +476,8 @@ class Inquiry {
      *
      * @return \AppBundle\Entity\Booking
      */
-    public function getInquiry()
+    public function getBooking()
     {
-        return $this->inquiry;
+        return $this->booking;
     }
 }
