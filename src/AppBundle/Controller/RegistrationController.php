@@ -93,6 +93,10 @@ class RegistrationController extends BaseRegistrationController
         $dispatcher->dispatch(FOSUserEvents::REGISTRATION_CONFIRM, $event);
 
         $userManager->updateUser($user);
+        
+        $codeRepo = $this->getDoctrine()->getRepository('AppBundle:DiscountCode');
+        $code = $codeRepo->assignToUser($user);
+        $this->getDoctrine()->getRepository('AppBundle:Inquiry')->updateInquiries($user);
 
         if (null === $response = $event->getResponse()) {
             $url = $this->generateUrl('rentme') . "?confirmed=1";
@@ -101,12 +105,12 @@ class RegistrationController extends BaseRegistrationController
 
         $dispatcher->dispatch(FOSUserEvents::REGISTRATION_CONFIRMED, new FilterUserResponseEvent($user, $request, $response));
 
-        $this->SendWelcomeEmail($user);
+        $this->SendWelcomeEmail($user, $code);
         
         return $response;
     }
     
-    public function SendWelcomeEmail($user)
+    public function SendWelcomeEmail($user, $code)
     {
         $from = $this->getParameter('mailer_fromEmail');        
         #$username = 'seba';
@@ -121,7 +125,11 @@ class RegistrationController extends BaseRegistrationController
             $this->renderView(
                 // app/Resources/views/Emails/registration.html.twig
                 'Emails/registration_welcome.html.twig',
-                array('name' => $username, 'mailer_image_url_prefix' => $this->getParameter('mailer_image_url_prefix'))
+                array(
+                    'name' => $username, 
+                    'mailer_image_url_prefix' => $this->getParameter('mailer_image_url_prefix'),
+                    'discountCode' => $code
+                )
             ),
             'text/html'
         )

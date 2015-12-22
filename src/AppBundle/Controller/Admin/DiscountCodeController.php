@@ -29,7 +29,7 @@ class DiscountCodeController extends BaseAdminController {
         
         for($i = 0; $i < $number; $i++){
             $dc = new DiscountCode();
-            $dc->setStatus(DiscountCode::status_new);
+            $dc->setStatus(DiscountCode::STATUS_NEW);
             $dc->setCode(DiscountCode::generateCode($chars));            
             $em->persist($dc);
         }
@@ -52,7 +52,7 @@ class DiscountCodeController extends BaseAdminController {
             if (!$dc){
                 continue;
             }
-            $dc->setStatus(DiscountCode::status_cancelled);
+            $dc->setStatus(DiscountCode::STATUS_CANCELLED);
             $em->persist($dc);
         }
         $em->flush();

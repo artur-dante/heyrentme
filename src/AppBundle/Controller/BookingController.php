@@ -3,6 +3,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Booking;
+use AppBundle\Entity\DiscountCode;
 use AppBundle\Entity\Inquiry;
 use AppBundle\Utils\Utils;
 use DateTime;
@@ -11,9 +12,11 @@ use Swift_Message;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\ExecutionContextInterface;
 
 class BookingController extends BaseController {
 
@@ -219,25 +222,49 @@ class BookingController extends BaseController {
             return new Response('', 403); // TODO: display a nice message to the user?
         }
         
-        $form = $this->createFormBuilder()
+        $data = array('uuid' => $uuid);
+        
+        $form = $this->createFormBuilder($data, array(
+                    'constraints' => array(
+                        new Callback(array($this, 'validateDiscountCode'))
+                    )
+                ))
                 ->add('agree', 'checkbox', array(
                     'required' => false,
                     'constraints' => array(
                         new NotBlank()
                     )
                 ))
+                ->add('discountCode', 'text', array(
+                    'required' => false
+                ))
+                ->add('uuid', 'hidden')
                 ->getForm();
         
         $form->handleRequest($request);
         
-        if ($form->isValid()) {
+        if ($form->isValid()) {            
+            $data = $form->getData();
+            
             $bk = new Booking();
             $bk->setInquiry($inq);
             $bk->setStatus(Booking::STATUS_BOOKED);
             
+            // save booking
             $em = $this->getDoctrine()->getManager();
             $em->persist($bk);
             $em->flush();
+            
+            // calcualte discount
+            if (!empty($data['discountCode'])) {
+                $dcode = $this->getDoctrineRepo('AppBundle:DiscountCode')->findOneByCode($data['discountCode']);
+                $dcode->setStatus(DiscountCode::STATUS_USED);
+                $dcode->setInquiry($inq);
+                $p = $inq->getPrice() - 5;
+                $inq->setPrice($p);
+                $this->getDoctrine()->getManager()->flush();
+            }
+            
             
             // send email to provider & user
             //<editor-fold>
@@ -285,4 +312,45 @@ class BookingController extends BaseController {
             'form' => $form->createView()
         ));
     }
+
+    public function validateDiscountCode($data, ExecutionContextInterface $context) {
+        if (empty($data['discountCode'])) {
+            return;
+        }
+        
+        $dcode = $this->getDoctrineRepo('AppBundle:DiscountCode')->findOneByCode($data['discountCode']);
+        if ($dcode === null) {
+            $context->buildViolation('This is not a valid discount code')->atPath('discountCode')->addViolation();
+            return;
+        }
+        
+        $inq = $this->getDoctrineRepo('AppBundle:Inquiry')->findOneByUuid($data['uuid']);
+        $user = $inq->getUser();
+        if ($user === null || $user->getId() !== $dcode->getUser()->getId()) {
+            $context->buildViolation('This is not a valid discount code')->atPath('discountCode')->addViolation();
+        }
+    }
+    /**
+     * @Route("/booking/check-code/{uuid}/{code}", name="booking-check-code")
+     */
+    public function checkCodeAction(Request $request, $uuid, $code) {
+        /*
+         *  We're checking combinaion of uuid and code, 
+         * so it's not impossible to brute-force-hack discount codes
+         */
+        $dcode = $this->getDoctrineRepo('AppBundle:DiscountCode')->findOneByCode($code);
+        if ($dcode === null) {
+            return new Response('', Response::HTTP_FORBIDDEN);
+        }
+        
+        $inq = $this->getDoctrineRepo('AppBundle:Inquiry')->findOneByUuid($uuid);
+        $user = $inq->getUser();
+        
+        // security
+        if ($user === null || $user->getId() !== $dcode->getUser()->getId()) {
+            return new Response('', Response::HTTP_FORBIDDEN);
+        }
+        return new JsonResponse(array('result' => 'ok'));
+    }
+    
 }

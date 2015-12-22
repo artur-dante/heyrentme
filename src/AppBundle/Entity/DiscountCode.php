@@ -9,8 +9,13 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass="DiscountCodeRepository")
  * @ORM\Table(name="discount_code")
  */
-class DiscountCode
-{
+class DiscountCode {
+    
+    const STATUS_NEW = 1;
+    const STATUS_ASSIGNED = 2;
+    const STATUS_USED = 3;
+    const STATUS_CANCELLED = 4;        
+    
     /**
      * @ORM\Column(type="integer")
      * @ORM\id
@@ -66,23 +71,21 @@ class DiscountCode
         return $this->status;
     }
     
-    const status_new = 1;
-    const status_assignet = 2;
-    const status_used = 3;
-    const status_cancelled = 4;        
+    /**
+     * @ORM\OneToOne(targetEntity="Inquiry", inversedBy="discountCode");
+     * @ORM\JoinColumn(name="inquiry_id", referencedColumnName="id")
+     */
+    private $inquiry;
+
     
-    public function getStatusStr()
-    {
-        if ($this->status == DiscountCode::status_new){
-            return "new";
-        } else if ($this->status == DiscountCode::status_assignet){
-            return "assignet";
-        } else if ($this->status == DiscountCode::status_used){
-            return "used";
-        } else if ($this->status == DiscountCode::status_cancelled){
-            return "cancelled";
-        } else {
-            return 'unknown';
+    public function getStatusStr() {
+        switch ($this->status) {
+            case self::STATUS_NEW: return "new";
+            case self::STATUS_ASSIGNED: return "assigned";
+            case self::STATUS_USED: return "used";
+            case self::STATUS_CANCELLED: return "cancelled";
+            default:
+                throw new RuntimeException("DiscountCode status corrupt!");
         }
     }
     
@@ -158,4 +161,28 @@ class DiscountCode
     }
 
    
+
+    /**
+     * Set inquiry
+     *
+     * @param \AppBundle\Entity\Inquiry $inquiry
+     *
+     * @return DiscountCode
+     */
+    public function setInquiry(\AppBundle\Entity\Inquiry $inquiry = null)
+    {
+        $this->inquiry = $inquiry;
+
+        return $this;
+    }
+
+    /**
+     * Get inquiry
+     *
+     * @return \AppBundle\Entity\Inquiry
+     */
+    public function getInquiry()
+    {
+        return $this->inquiry;
+    }
 }

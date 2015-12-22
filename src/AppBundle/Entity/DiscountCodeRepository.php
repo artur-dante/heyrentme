@@ -3,7 +3,6 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
-use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * BlogRepository
@@ -47,5 +46,25 @@ class DiscountCodeRepository extends EntityRepository
         }
         return $q->getResult();        
     }
-    
+ 
+    public function assignToUser($user) {
+        // find a free discount code
+        $dql = sprintf("select dc from AppBundle:DiscountCode dc where dc.status = %d",
+                DiscountCode::STATUS_NEW);
+        $q = $this->getEntityManager()->createQuery($dql);
+        $q->setMaxResults(1);
+        $rows = $q->getResult();
+        
+        if (count($rows) == 0) {
+            return null;
+        } 
+        $code = $rows[0];
+        
+        // assign to the user
+        $code->setUser($user);
+        $code->setStatus(DiscountCode::STATUS_ASSIGNED);
+        $this->getEntityManager()->flush();
+        
+        return $code;
+    }
 }

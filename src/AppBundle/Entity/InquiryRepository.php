@@ -10,4 +10,11 @@ namespace AppBundle\Entity;
  */
 class InquiryRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function updateInquiries($user) {
+        $dql = "update AppBundle:Inquiry i set i.user = :userId where i.email = :email";
+        $q = $this->getEntityManager()->createQuery($dql);
+        $q->setParameter(':userId', $user->getId());
+        $q->setParameter(':email', $user->getEmail());
+        $q->execute();        
+    }
 }
