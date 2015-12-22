@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\Inquiry;
 use DateTime;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Swift_Message;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Constraints\Email;
@@ -26,13 +27,12 @@ class BookingController extends BaseController {
         $to = DateTime::createFromFormat('Y-m-d\TH:i+', $dateTo);
         $days = $to->diff($from)->days;
         $price = ($days + 1) * $eq->getPrice();
-        $addr = sprintf('%s, %s %s', $eq->getAddrStreet(), $eq->getAddrPostcode(), $eq->getAddrPlace());
         $inquiry = array(
             'from' => $from,
             'to' => $to,
             'days' => $days,
             'price' => $price,
-            'whereabouts' => $addr
+            'whereabouts' => $eq->getWhereaboutsAsString()
         );
         //</editor-fold>
         
@@ -80,7 +80,7 @@ class BookingController extends BaseController {
         if ($form->isValid()) {
             $data = $form->getData();
             $inq = new Inquiry();
-            // map fields
+            // map fields & save
             //<editor-fold>
             if (!$loggedIn) {
                 $inq->setName($data['name']);
@@ -105,7 +105,24 @@ class BookingController extends BaseController {
             
             // send email
             //<editor-fold>
-            
+            // prepare params
+            $provider = $eq->getUser();
+            $url = $request->getSchemeAndHttpHost() .
+                    $this->generateUrl('inquiry-response', array('id' => $inq->getId()));
+            $from = array($this->getParameter('mailer_fromemail') => $this->getParameter('mailer_fromname'));
+            $emailHtml = $this->renderView('emails/inquiry.html.twig', array(
+                'mailer_image_url_prefix' => $this->getParameter('mailer_image_url_prefix'),
+                'provider' => $provider,
+                'inquiry' => $inq,
+                'equipment' => $eq,
+                'url' => $url
+            ));
+            $message = Swift_Message::newInstance()
+                ->setSubject('Du hast soeben eine Anfrage erhalten')
+                ->setFrom($from)
+                ->setTo($provider->getEmail())
+                ->setBody($emailHtml, 'text/html');
+            $this->get('mailer')->send($message);
             //</editor-fold>
             
             return new JsonResponse(array('status' => 'ok'));
@@ -118,4 +135,12 @@ class BookingController extends BaseController {
             'equipment' => $eq           
         ));
     }
+
+    /**
+     * @Route("inquiry-response/{id}", name="inquiry-response")
+     */
+    public function inquiryResponseAction(Request $request, $id) {
+        
+    }
+    
 }
