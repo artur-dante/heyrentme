@@ -319,7 +319,7 @@ class BookingController extends BaseController {
         }
         
         $dcode = $this->getDoctrineRepo('AppBundle:DiscountCode')->findOneByCode($data['discountCode']);
-        if ($dcode === null) {
+        if ($dcode === null || $dcode->getStatus() != DiscountCode::STATUS_ASSIGNED) {
             $context->buildViolation('This is not a valid discount code')->atPath('discountCode')->addViolation();
             return;
         }
@@ -339,7 +339,7 @@ class BookingController extends BaseController {
          * so it's not impossible to brute-force-hack discount codes
          */
         $dcode = $this->getDoctrineRepo('AppBundle:DiscountCode')->findOneByCode($code);
-        if ($dcode === null) {
+        if ($dcode === null || $dcode->getStatus() !== DiscountCode::STATUS_ASSIGNED) {
             return new Response('', Response::HTTP_FORBIDDEN);
         }
         
