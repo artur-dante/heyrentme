@@ -116,10 +116,8 @@ class ProviderController extends BaseController {
      * @Route("user-image", name="user-image")
      */
     public function userImage(Request $request) {                
-        //$log = $this->get('monolog.logger.artur');
         $file = $request->files->get('upl');
         if ($file->isValid()) {
-            //$log->info("received a file: {$file->getClientOriginalName()} ({$file->getClientSize()} bytes)");    
             $session = $request->getSession();
             $eqFiles = $session->get('UserAddFile');
             
@@ -467,9 +465,6 @@ class ProviderController extends BaseController {
         else {
             $this->fileCount = count($session->get('EquipmentAddFileArray'));
             $this->imageCount = count($eq->getImages());
-            $logger = $this->get('monolog.logger.artur');
-            $logger->debug("file count: {$this->fileCount}");
-            $logger->debug("image count: {$this->imageCount}");
         }
         
         
@@ -669,10 +664,8 @@ class ProviderController extends BaseController {
      * @Route("equipment-image", name="equipment-image")
      */
     public function equipmentImage(Request $request) {        
-        $log = $this->get('monolog.logger.artur');
         $file = $request->files->get('upl');
         if ($file->isValid()) {
-            $log->info("received a file: {$file->getClientOriginalName()} ({$file->getClientSize()} bytes)");    
             $session = $request->getSession();
             $eqFiles = $session->get('EquipmentAddFileArray');
             if (count($eqFiles) < 3) {
@@ -695,7 +688,6 @@ class ProviderController extends BaseController {
                 );
                 
                 array_push($eqFiles, $ef);
-                $log->info("\taccepted");
                 $session->set('EquipmentAddFileArray', $eqFiles);
             }
         }
