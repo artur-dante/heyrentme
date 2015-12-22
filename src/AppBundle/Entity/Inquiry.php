@@ -54,11 +54,38 @@ class Inquiry {
     private $createdAt;
     
     /**
+     * @ORM\Column(type="integer")
+     */
+    private $accepted;
+    /**
+     * @ORM\Column(type="string")
+     */
+    private $response;
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $modifiedAt;
+    /**
+     * @ORM\Column(type="string")
+     */
+    private $uuid;
+    
+    /**
      * @ORM\ManyToOne(targetEntity="User", inversedBy="inquiries")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      */
     private $user;
     
+    /**
+     * @ORM\ManyToOne(targetEntity="Equipment")
+     * @ORM\JoinColumn(name="equipment_id", referencedColumnName="id")
+     */
+    private $equipment;
+    
+    /**
+     * @ORM\OneToOne(targetEntity="Booking", mappedBy="inquiry")
+     */
+    private $inquiry;
 
     /**
      * Get id
@@ -308,5 +335,149 @@ class Inquiry {
     public function getUser()
     {
         return $this->user;
+    }
+
+    /**
+     * Set equipment
+     *
+     * @param \AppBundle\Entity\Equipment $equipment
+     *
+     * @return Inquiry
+     */
+    public function setEquipment(\AppBundle\Entity\Equipment $equipment = null)
+    {
+        $this->equipment = $equipment;
+
+        return $this;
+    }
+
+    /**
+     * Get equipment
+     *
+     * @return \AppBundle\Entity\Equipment
+     */
+    public function getEquipment()
+    {
+        return $this->equipment;
+    }
+
+    /**
+     * Set accepted
+     *
+     * @param integer $accepted
+     *
+     * @return Inquiry
+     */
+    public function setAccepted($accepted)
+    {
+        $this->accepted = $accepted;
+
+        return $this;
+    }
+
+    /**
+     * Get accepted
+     *
+     * @return integer
+     */
+    public function getAccepted()
+    {
+        return $this->accepted;
+    }
+
+    /**
+     * Set response
+     *
+     * @param string $response
+     *
+     * @return Inquiry
+     */
+    public function setResponse($response)
+    {
+        $this->response = $response;
+
+        return $this;
+    }
+
+    /**
+     * Get response
+     *
+     * @return string
+     */
+    public function getResponse()
+    {
+        return $this->response;
+    }
+
+    /**
+     * Set modifiedAt
+     *
+     * @param \DateTime $modifiedAt
+     *
+     * @return Inquiry
+     */
+    public function setModifiedAt($modifiedAt)
+    {
+        $this->modifiedAt = $modifiedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get modifiedAt
+     *
+     * @return \DateTime
+     */
+    public function getModifiedAt()
+    {
+        return $this->modifiedAt;
+    }
+
+    /**
+     * Set uuid
+     *
+     * @param string $uuid
+     *
+     * @return Inquiry
+     */
+    public function setUuid($uuid)
+    {
+        $this->uuid = $uuid;
+
+        return $this;
+    }
+
+    /**
+     * Get uuid
+     *
+     * @return string
+     */
+    public function getUuid()
+    {
+        return $this->uuid;
+    }
+
+    /**
+     * Set inquiry
+     *
+     * @param \AppBundle\Entity\Booking $inquiry
+     *
+     * @return Inquiry
+     */
+    public function setInquiry(\AppBundle\Entity\Booking $inquiry = null)
+    {
+        $this->inquiry = $inquiry;
+
+        return $this;
+    }
+
+    /**
+     * Get inquiry
+     *
+     * @return \AppBundle\Entity\Booking
+     */
+    public function getInquiry()
+    {
+        return $this->inquiry;
     }
 }

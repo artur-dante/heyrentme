@@ -170,6 +170,11 @@ class User extends BaseUser
         $this->phonePrefix = $phonePrefix;
     }
     
+    public function getFullPhone() {
+        return trim(sprintf("%s %s", $this->phonePrefix, $this->phone));
+    }
+    
+    
       /**
      * @var string
      *

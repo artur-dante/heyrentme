@@ -713,7 +713,7 @@
         to = new Date(to.getTime() - tzoffset);
         
         // assemble params
-        var url = '{{ path('inquiry', { 'id': equipment.id, 'dateFrom': ':FROM', 'dateTo': ':TO' }) }}'
+        var url = '{{ path('booking-inquiry', { 'id': equipment.id, 'dateFrom': ':FROM', 'dateTo': ':TO' }) }}'
                 .replace(':FROM', from.toISOString())
                 .replace(':TO', to.toISOString());
                 
