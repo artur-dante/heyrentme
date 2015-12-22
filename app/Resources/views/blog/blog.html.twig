@@ -39,14 +39,12 @@
             {% for post in posts %}
                 <a class="text-black" href="{{ path('blog_detail', { 'slug' : post.slug }) }}">
                     <div class="col-sm-4">
-                        <div class="blog-img-container">
-                            {% if post.image %}
-                                <img src="{{ post.image.urlPath(image_url_prefix) }}" alt="{{ post.title }}" class="blogimg"/>
-                            {% else %}
-                                {# TODO: change default blog photo #}
-                                <img src="/img/placeholder/blog2.jpg" alt="{{ post.title }}" class="blogimg"/>
-                            {% endif %}
-                        </div>
+                        {% if post.image %}
+                            <img src="{{ post.image.urlPath(image_url_prefix) }}" alt="{{ post.title }}" class="blogimg"/>
+                        {% else %}
+                            {# TODO: change default blog photo #}
+                            <img src="/img/placeholder/blog2.jpg" alt="{{ post.title }}" class="blogimg"/>
+                        {% endif %}
                         <div class="product-info">
                             <div class="row">
                                 <div class="col-md-8 col-xs-12">
