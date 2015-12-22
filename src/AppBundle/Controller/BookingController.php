@@ -117,7 +117,7 @@ class BookingController extends BaseController {
             $url = $request->getSchemeAndHttpHost() .
                     $this->generateUrl('booking-response', array('id' => $inq->getId()));
             $from = array($this->getParameter('mailer_fromemail') => $this->getParameter('mailer_fromname'));
-            $emailHtml = $this->renderView('emails/inquiry.html.twig', array(
+            $emailHtml = $this->renderView('Emails/inquiry.html.twig', array(
                 'mailer_image_url_prefix' => $this->getParameter('mailer_image_url_prefix'),
                 'provider' => $provider,
                 'inquiry' => $inq,
@@ -184,7 +184,7 @@ class BookingController extends BaseController {
             $url = $request->getSchemeAndHttpHost() .
                     $this->generateUrl('booking-confirmation', array('uuid' => $inq->getUuid()));
             $from = array($this->getParameter('mailer_fromemail') => $this->getParameter('mailer_fromname'));
-            $emailHtml = $this->renderView('emails/response.html.twig', array(
+            $emailHtml = $this->renderView('Emails/response.html.twig', array(
                 'mailer_image_url_prefix' => $this->getParameter('mailer_image_url_prefix'),
                 'provider' => $provider,
                 'inquiry' => $inq,
@@ -271,7 +271,7 @@ class BookingController extends BaseController {
             $provider = $inq->getEquipment()->getUser();
             $from = array($this->getParameter('mailer_fromemail') => $this->getParameter('mailer_fromname'));
             
-            $emailHtml = $this->renderView('emails/booking_confirmation_provider.html.twig', array(
+            $emailHtml = $this->renderView('Emails/booking_confirmation_provider.html.twig', array(
                 'mailer_image_url_prefix' => $this->getParameter('mailer_image_url_prefix'),
                 'provider' => $provider,
                 'inquiry' => $inq,
@@ -290,7 +290,7 @@ class BookingController extends BaseController {
             else {
                 $email = $inq->getEmail();
             }
-            $emailHtml = $this->renderView('emails/booking_confirmation_user.html.twig', array(
+            $emailHtml = $this->renderView('Emails/booking_confirmation_user.html.twig', array(
                 'mailer_image_url_prefix' => $this->getParameter('mailer_image_url_prefix'),
                 'provider' => $provider,
                 'inquiry' => $inq,
